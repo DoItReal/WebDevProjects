@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+
+<!-- HTML  !-->
+<html lang="en">
+
+<!-- HEAD -->
+<head>
+
+<meta charset="utf-8">
+    <script src="script.js"></script>
+    <link rel="stylesheet" href="style.css">
+
+<title>Web Components Tutorial</title>
+</head>  
+
+<!-- BODY -->
+<body onload="init();">
+    <script>var worker = new Worker('worker.js');
+        worker.onmessage = function (event) {
+            console.log(event);
+            
+        }</script>
+    <template id="mytemplate">
+        <div>
+        <style>
+            h1 {
+                color: white;
+                background: red
+            }
+            div{ border: 1px solid black;}
+            p{
+                font-weight:bold;
+            }
+        </style>
+        <h1>
+        <slot name="my-header">Templete slot header default</slot>
+            </h1>
+        <p>
+            <slot name="my-paragraph">Template slot paragraph default</slot>
+        </p>
+            </div>
+    </template>
+
+    <h1 id="withShadowDom"><span slot="my-header">This is the injected text slot</span></h1>
+    <my-widget>
+    <span slot="my-header">My widged element injected header</span>
+    <span slot="my-paragraph">My injected paragraph</span>
+    </my-widget>
+</body>
+</html>
