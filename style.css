@@ -3,87 +3,99 @@
     --navigation-background: #436386;
     --navigation-hover: #556b87;
     --navigation-submenu-background: #436386;
+    --nav-text-color: #9b7653;
 }
 
 body {
     background: var(--background-color);
-    margin:0;
-    padding:0;
-}
-
-#navigation {
-    position: relative;
-    top: 0;
-    left: 0;
-    width: auto;
-    z-index: var(--z-index-top);
-    clear: both;
-    margin-bottom: 1px;
-    padding: 0px;
-    background: var(--navigation-background);
-}
-#navigation ul {
-    
-    height:inherit;
-    position:sticky;
-    overflow-x:auto;
-    overflow-y:hidden;
-    white-space:nowrap;
-    list-style: none;
-   
-    
-    box-shadow: #226399 0 -1px inset;
     margin: 0;
     padding: 0;
-    z-index: 99;
- 
-
 }
-#navigation li{
-    display:inline-block;
-    padding:0.2em 0.9em;
-    cursor:pointer;
+
+
+
+nav {
+    font-family: Bahnschrift;
+    font-style: italic;
+    font-weight: bold;
+    font-size: 34px;
+    color: #9b7653;
+    text-shadow: 0 0 0.05em black, 0.05em 0.05em 0.2em #404040, 0.05em 0.05em 0.1em #f6f6e8, 0 0 0.2em #404040;
+    margin: 0 auto;
+    width: 100%;
+    height: auto;
+    display: inline-block;
+    background: var(--navigation-background);
 }
-    #navigation li:hover {
-        background-color: var(--navigation-hover) ;
-    }
-    #navigation #about > ul {
-        position: fixed;
-        margin-top: 0.25em;
-        margin-left: 5px;
-        overflow: visible;
+
+
+    nav ul {
+        margin: 0;
+        padding: 0;
+        list-style-type: none;
+        float: left;
+        display: inline-block;
     }
 
-.submenu {
-    position:relative;
-    width:5em;
-    padding: 0px;
+        nav ul li {
+            position: relative;
+            margin: 0 20px 0 0;
+            float: left;
+            display: inline-block;
+            transition: all 0.3s ease-in-out;
+        }
+
+li > a:after {
+    content: ' +';
+}
+/* Change this in order to change the Dropdown symbol */
+
+li > a:only-child:after {
+    content: '';
+}
+
+nav ul li a {
+    padding: 20px;
+    display: inline-block;
+    color: var(--nav-text-color);
+    text-decoration: none;
+}
+
+    nav ul li a:hover {
+        opacity: 0.8;
+        transition: all 1.5s ease-in-out;
+    }
+
+nav ul li ul {
     display: none;
-    font-size:0.8em;
-    margin-top:15px;
-    
+    position: absolute;
+    left: 0;
+    background: var(--navigation-background);
+    float: left;
+    height:0px;
+    z-index: 9999;
 }
-    .submenu li {
-        position: relative;
-        display:block;
-        left: -25%;
-        background: var(--navigation-submenu-background);
-        width: 100%;
-        margin: 0px;
-        padding: 0px;
-        float:left;
-    }
-#projects:hover .submenu {
-    display: block;
-  
-     position: relative;
 
-  
+    nav ul li ul li {
+        width: 100%;
+        border-bottom: 1px solid rgba(255,255,255,.3);
+    }
+
+nav ul li:hover ul {
+    display: block;
+    transition: height 5s;
+    height: auto;
+    color: var(--navigation-submenu-background);
 }
-#projects a, #projects a:visited{
-    text-decoration:none;
-    color:inherit;
+
+nav ul li:hover {
+    background: var(--navigation-hover);
+
 }
+
+
+
+
 .context-menu {
     display: none;
     position: absolute;
@@ -94,14 +106,17 @@ body {
     box-shadow: 1px 1px 2px #cfcfcf;
     z-index: 999;
 }
+
 .context-menu--active {
     display: block;
 }
+
 .context-menu__items {
     list-style: none;
     margin: 0;
     padding: 0;
 }
+
 .context-menu__item {
     display: block;
     margin-bottom: 4px;
@@ -109,34 +124,32 @@ body {
     color: #0066aa;
     text-decoration: none;
 }
+
     .context-menu__item:last-child {
         margin-bottom: 0;
     }
+
     .context-menu__item:hover {
         color: #fff;
         background-color: #0066aa;
     }
-nav{
-    font-family: Bahnschrift;
-    font-style: italic;
-    font-weight: bold;
-    font-size: 34px;
-    color: #9b7653;
-    text-shadow: 0 0 0.05em black, 0.05em 0.05em 0.2em #404040, 0.05em 0.05em 0.1em #f6f6e8, 0 0 0.2em #404040;
-}
+
+
 
 img {
     width: 150px;
     border-radius: 50%;
 }
 
-
+#container {
+    display: flex;
+    flex-direction: row;
+}
 #mainContent {
-    position:relative;
-   flex:3 80%;
+    position: relative;
+    flex: 3 80%;
     min-height: 100px;
     height: auto;
-    border: 1px solid black;
     overflow: auto;
     font-family: Bahnschrift;
     font-style: normal;
@@ -145,23 +158,24 @@ img {
     color: white;
     text-shadow: 0 0 0.05em black, 0.05em 0.05em 0.2em #404040, 0.05em 0.05em 0.1em #f6f6e8, 0 0 0.2em #404040;
 }
-#footer{
-    position:relative;
-    text-align:end;
-    margin:0px;
-    margin-top:1px;
-    background:green;
-    padding:5px;
+
+#footer {
+    position: relative;
+    text-align: end;
+    margin: 0px;
+    margin-top: 1px;
+    background: green;
+    padding: 5px;
 }
-#asideLeft{
-    background:cyan;
-    flex:1 10%;
+
+#asideLeft {
+    background: cyan;
+    flex: 1 10%;
 }
-#asideRight{
-    background:brown;
-    flex:1 10%;
+
+#asideRight {
+    background: brown;
+    flex: 1 10%;
 }
-#container{
-    display:flex;
-    flex-direction:row;
-}
+
+

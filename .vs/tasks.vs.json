@@ -1,0 +1,18 @@
+{
+  "version": "0.2.1",
+  "tasks": [
+    {
+      "taskLabel": "task-style",
+      "appliesTo": "style.scss",
+      "type": "launch"
+
+    {
+      "inputFile": "main.scss",
+      "outputFile": "main.css",
+      "useNodeSass": true,
+      "options": {
+        "sourceMap": true,
+        "relativeUrls": false
+      }
+  ]
+}
