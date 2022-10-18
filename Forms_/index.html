@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Forms</title>
+    <script src='script.js'></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="divFlex0">
+        <video id="myVideo" preload="metadata" controls crossOrigin="anonymous" muted>
+            <source src="https://mainline.i3s.unice.fr/mooc/elephants-dream-medium.mp4" type="video/mp4">
+            <source src="https://mainline.i3s.unice.fr/mooc/elephants-dream-medium.webm" type="video/webm">
+            <track label="English subtitles" kind="subtitles" srclang="en"
+                   src="https://mainline.i3s.unice.fr/mooc/elephants-dream-subtitles-en.vtt">
+            <track label="Deutsch subtitles" kind="subtitles" srclang="de"
+                   src="https://mainline.i3s.unice.fr/mooc/elephants-dream-subtitles-de.vtt" default>
+            <track label="English chapters" kind="chapters" srclang="en"
+                   src="https://mainline.i3s.unice.fr/mooc/elephants-dream-chapters-en.vtt">
+        </video>
+        <div id="divTranscript"></div>
+        <!-- <p>Track Info</p> -->
+        <div id="trackStatusesDiv">
+            <h3>HTML track descriptions</h3>
+        </div>
+    </div>
+    <button id="buttonTrackStatuses" onclick=updateTrackStatuses()>Refresh track statuses</button>
+    <span id="currentLangSpan"></span>
+    <div id="langButtonDiv"></div>
+
+    <div id="webAudio">
+    <audio src="https://mainline.i3s.unice.fr/mooc/guitarRiff1.mp3"
+           id="gainExample"
+           controls loop
+           crossorigin="anonymous">
+    </audio>
+        <button id="playButton" disabled="true">Play</button>
+        </div>
+    <br>
+    
+    <div id="input_form">
+        <div id="mainFilters">
+            <ul>
+
+                <li>
+                    <label for="gainSlider">Gain: </label>
+
+                    <input type="range" min="0" max="1" step="0.01" value="1" id="gainSlider" />
+                    <output id="gainValue"></output>
+        </li>
+        <li>
+
+            <label for="balance">Balance: </label>
+                <input id="balanceSlider" step="0.05" required type="range" min="-1.00" max="1.00" "value=" 0" />
+                <output id="balanceValue"></output>
+        </li>
+        <li>
+                <button id="compressorButton">Turn compressor ON</button>
+        </li>
+
+        </ul>
+    </div>
+       
+        <div id="BiquadFilter">
+            <label for="BiquadFilter">Biquad Filter</label>
+            <ul>
+                <li>
+                    <label>60Hz</label>
+                    <input type="range" min="-30" max="30" step="1" oninput="BiquadFilter(this.value, 0);" />
+                </li>
+                <li>
+                    <label>170Hz</label>
+                    <input type="range" min="-30" max="30" step="1" oninput="BiquadFilter(this.value, 1);" />
+                </li>
+                <li>
+                    <label>350Hz</label>
+                    <input type="range" min="-30" max="30" step="1" oninput="BiquadFilter(this.value, 2);" />
+                </li>
+                <li>
+                    <label>1000Hz</label>
+                    <input type="range" min="-30" max="30" step="1" oninput="BiquadFilter(this.value, 3);" />
+                </li>
+                <li>
+                    <label>3500Hz</label>
+                    <input type="range" min="-30" max="30" step="1" oninput="BiquadFilter(this.value, 4);" />
+                </li>
+                <li>
+                    <label>10000Hz</label>
+                    <input type="range" min="-30" max="30" step="1" oninput="BiquadFilter(this.value, 5);" />
+                </li>
+            </ul>
+
+        </div>
+        </div>
+    <div id="radioButtons">
+        <button id="waveButton" onclick="changeVisualizerType('wave');">Wave</button>
+        <button id="barButton" onclick="changeVisualizerType('bar');">Bar</button>
+    </div>
+    <div id="divVisualaser">
+        <canvas id="canvasVisualizerBefore" width="700" height="250" class="wave"></canvas>
+        <canvas id="canvasVisualizerAfter" width="700" height="250" class="wave"></canvas>
+    </div>
+
+
+    <p>Track Content Live</p>
+    <div id="cuesLiveDiv">
+    </div>
+    <p>Track Content List</p>
+    <div id="cuesDiv">
+        <h3>The showing track contain</h3>
+    </div>
+
+
+
+</body>
+</html>

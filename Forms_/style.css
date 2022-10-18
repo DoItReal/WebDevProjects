@@ -1,0 +1,141 @@
+#trackStatusesDiv {
+    border: 1px solid;
+    height: auto;
+    padding: 20px;
+    margin-top: 10px;
+}
+#webAudio{
+    border: 1px solid gray;
+    padding:5px;
+}
+#cuesDiv{
+    overflow:scroll;
+    border: 1px solid;
+    height: 400px;
+    padding: 5px;
+    margin-top:10px;
+}
+#cuesLiveDiv {
+    overflow: scroll;
+    border: 1px solid;
+    height: 100px;
+    padding: 5px;
+    margin-top: 10px;
+}
+#divTranscript {
+    padding: 0px;
+    float: left;
+ 
+    overflow: auto;
+    width: auto;
+    margin: 0;
+    font-size: 14px;
+    list-style: none;
+    background:black;
+    color:gray;
+}
+#compressorButton{
+    background:red;
+    border-radius:10px;
+    padding:2px;
+    margin:5px;
+    margin-top:0px;
+    min-width:170px;
+
+}
+.divFlex0{
+   display:flex;
+   width:100%;
+   height:auto;
+   max-height:520px;
+   justify-content:flex-start;
+   flex-flow:row;
+   margin:0px;
+   padding:0px;
+   border:3px solid red;
+}
+#buttonTrackStatuses{
+    float:right;
+    margin-right:5px;
+    margin-top:5px;
+    width:220px;
+    background:red;
+    font-size:16px;
+    border-radius:10px;
+}
+#trackStatusesDiv{
+    overflow:auto;
+    margin:0px;
+}
+#trackStatusesDiv ul {
+    border: 3px solid;
+}
+
+#input_form {
+    
+    display: flex;
+    width: 100%;
+    height: auto;
+    justify-content: flex-start;
+    flex-flow: row;
+    margin: 0px;
+    padding: 0px;
+    border: 2px solid cyan;
+}
+#input_form > *{
+    margin:5px;
+}
+#input_form > #mainFilters {
+    border: 1px dashed black;
+}
+#BiquadFilter{
+    border: 1px dashed green;
+    max-width:280px;
+    min-width:200px;
+}
+#BiquadFilter > ul > li{
+    float:right;
+}
+#divVisualaser{
+    display:flex;
+    width:auto;
+    height:auto;
+    justify-content:safe center;
+    flex-flow:row;
+    margin:0px;
+    padding:0px;
+    border: 4px dotted gray;
+}
+#divVisualaser > * {
+    border: 1px solid green;
+}
+ul {
+        list-style-type: none;
+    }
+#mainFilters{
+
+}
+
+video {
+    display: block;
+    float: left;
+    width: 55%;
+    background-color: black;
+    position: relative;
+    border: 5px solid black;
+}
+#all{
+    display:inline-block;
+}
+
+.trans:hover{
+    text-decoration:underline;
+
+}
+#langButtonDiv > button {
+    background: aquamarine;
+    width: 10%;
+    border-radius:15px;
+    margin:10px;
+    margin-right:0px;
+}
