@@ -139,11 +139,13 @@ nav ul li:hover {
 img {
     width: 150px;
     border-radius: 50%;
+    
 }
 
 #container {
     display: flex;
     flex-direction: row;
+    margin: 0;
 }
 #mainContent {
     position: relative;
@@ -163,7 +165,7 @@ img {
     position: relative;
     text-align: end;
     margin: 0px;
-    margin-top: 1px;
+    margin-top: px;
     background: green;
     padding: 5px;
 }

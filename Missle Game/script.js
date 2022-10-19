@@ -8,10 +8,11 @@ var mousePosScr;
 
 //To do class for missles and storing it in array
 class Missle{
-  constructor(x,y,speed){
+  constructor(x,y,speed, homing){
       this.x = x;
       this.y = y;
       this.speed = speed;
+      this.homing = homing;
   }
 }
 class Missles {
@@ -21,7 +22,7 @@ class Missles {
     
     newMissle(num) {
         for (let i = 0; i < num; i++) {
-            let tmp = new Missle(getRandomInt(790 + 5), 0, getRandomInt(4)+1);
+            let tmp = new Missle(getRandomInt(790 + 5), 0, getRandomInt(4)+1, getRandomBoolean());
             this.missles.push(tmp);
         }
     }
@@ -32,12 +33,16 @@ class Missles {
         return this.missles.length;
     }
     updateMissles() {
-        for (let i = 0; i < this.missles.length; i++) {
+        for (let i = 0; i < this.numberOfMissles; i++) {
             if (this.missles[i].y == 0 || this.missles[i].y >= 600) {
                 this.missles[i].x = getRandomInt(790 + 5);
                 this.missles[i].y = 0;
             }
             this.missles[i].y += this.missles[i].speed;
+            if (this.missles[i].homing) {
+                if (this.missles[i].x < playerX+40 && this.missles[i].x+40+1 <= 800) this.missles[i].x += 0.5;
+                if (this.missles[i].x > playerX+40 && this.missles[i].x+40-1 >= 0) this.missles[i].x -= 0.5;
+            }
         }
     }
     clearMissles() {
@@ -45,7 +50,7 @@ class Missles {
     }
     fireMissles() {
         for (let i = 0; i < this.missles.length; i++) {
-            missle(this.missles[i].x, this.missles[i].y);
+            missle(this.missles[i].x, this.missles[i].y, this.missles[i].homing);
             }
         }
 }
@@ -58,8 +63,7 @@ game1.newMissle(missleNum);
 function init() {
   //get context playground ctx
    canvas = document.getElementById('Playground');
-   ctx = canvas.getContext('2d');
-  
+    ctx = canvas.getContext('2d');
   //position ctx
   /*canvas.style.position = 'relative';
   canvas.style.top = '0px';
@@ -145,6 +149,9 @@ function scoreboardUpdate() {
   ctxs.fillStyle = "#256794";
     ctxs.fillRect(0, 0, canvasScr.width, canvasScr.height);
 
+    //import number of missles
+    missleCounter(10, 10);
+
     //import timer
     timer(300, 10);
 
@@ -154,15 +161,18 @@ function scoreboardUpdate() {
 
 
 //textures
-function missle(x,y){
+function missle(x,y, homing){
   ctx.save();
   ctx.beginPath();
-    ctx.translate(x, y);
-    
+  ctx.translate(x, y);
+    let color = 'blue';
+    if (homing) {
+        color = 'red';
+    }
 
     
   ctx.lineWidth = 5;
-  ctx.strokeStyle="red";
+  ctx.strokeStyle=color;
   ctx.moveTo(0,0);
   ctx.lineTo(0,30);
   ctx.stroke();
@@ -262,7 +272,35 @@ function logo(x,y){
   ctxs.fillText("The Game!",5,55);
   ctxs.restore();
 }
+function missleCounter(x,y) {
+    ctxs.save();
+    ctxs.beginPath();
+    ctxs.translate(x, y);
+    ctxs.strokeStyle = "white";
+    ctxs.lineWidth = 1;
+    ctxs.rect(0, 15, 200, 50);
+    ctxs.rect(5, 20, 190, 40);
+    ctxs.stroke();
+    ctxs.beginPath();
 
+    ctxs.strokeStyle = 'gray';
+    ctxs.lineWidth = 4;
+    ctxs.fillStyle = "white";
+    ctxs.font = "25px Monaco";
+    ctxs.strokeText("Missles: ", 50, 10);
+    ctxs.fillText("Missles:", 50, 10);
+
+    ctxs.strokeStyle = 'yellow';
+    ctxs.lineWidth = 4;
+    ctxs.fillStyle = 'red';
+    ctxs.textAlign = 'center';
+    let missles = '';
+    missles = missleNum;
+    ctxs.font = "25px Arial";
+    ctxs.strokeText(missles, 100, 50);
+    ctxs.fillText(missles, 100, 50);
+    ctxs.restore();
+}
 
 //event listeners canvas
 function setFocus(){
@@ -293,6 +331,9 @@ function mouseDown(e) {
 //tools
 function getRandomInt(max) {
   return Math.floor(Math.random() * max);
+}
+function getRandomBoolean() {
+    return Math.random() < 0.5;
 }
 function reset() {
     console.log('reset');
