@@ -61,6 +61,9 @@ game1.newMissle(missleNum);
 
 
 function init() {
+
+    define_controlPanel();
+    event_playerSpeedSlider();
   //get context playground ctx
    canvas = document.getElementById('Playground');
     ctx = canvas.getContext('2d');
@@ -107,7 +110,8 @@ canvas.addEventListener('mouseenter',setFocus,false);
 
 //start scoreboard  
     scoreboardUpdate();
-    
+
+  
 }
 
 
@@ -302,6 +306,27 @@ function missleCounter(x,y) {
     ctxs.restore();
 }
 
+var divPlayerSpeedSlider, divPlayerSpeedOutput;
+//defining control panel variables
+function define_controlPanel() {
+    
+    divPlayerSpeedSlider = document.querySelector('#playerSpeedSlider');
+    divPlayerSpeedOutput = document.querySelector('#playerSpeedOutput');
+}
+
+//event listeners control panel
+function event_playerSpeedSlider() {
+    divPlayerSpeedOutput.value = divPlayerSpeedSlider.value;
+    divPlayerSpeedSlider.oninput = function (evt) {
+        divPlayerSpeedOutput.value = evt.target.value;
+        //visual update Player speed
+        playerSpeedSlider.value = evt.target.value;
+        //functional update Player speed
+        playerSpeed = Number(playerSpeedSlider.value);
+        console.log(playerSpeed);
+    }
+}
+
 //event listeners canvas
 function setFocus(){
   canvas.focus();
@@ -310,12 +335,13 @@ function blurFocus(){
   canvas.blur();
 }
 function handleKeyUp(e){
-  if(e.keyCode == '39'){
-    if(playerX < 720)
-     playerX += playerSpeed;
-     }else if(e.keyCode == '37'){
-       if(playerX > 0) playerX -= playerSpeed;
-     }
+  if(e.keyCode == '39'){ //right arrow
+      if (playerX + playerSpeed <= 720 ) playerX += playerSpeed;
+      else playerX = 720;
+  } else if (e.keyCode == '37') { //left arrow
+      if (playerX - playerSpeed >= 0) playerX -= playerSpeed;
+      else playerX = 0;
+    }
 }
 
 //event listeners canvasScr
