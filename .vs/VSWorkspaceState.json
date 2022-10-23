@@ -2,8 +2,10 @@
   "ExpandedNodes": [
     "",
     "\\Forms",
-    "\\Missle Game"
+    "\\Game Project\\js",
+    "\\Missle Game",
+    "\\Missle Game\\js"
   ],
-  "SelectedNode": "\\Missle Game\\script.js",
+  "SelectedNode": "\\Missle Game\\js\\tools.js",
   "PreviewInSolutionExplorer": false
 }

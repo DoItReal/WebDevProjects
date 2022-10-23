@@ -13,10 +13,10 @@ function reset() {
     game1.clearMissles();
     missleNum += 1;
     game1.initMissles(missleNum);
-    missleId = requestAnimationFrame(playNow);
+    animationID = requestAnimationFrame(playNow);
 
     //dont know why but it doesnt work without this line ...
-    missleId = requestAnimationFrame(playNow);
+    animationID = requestAnimationFrame(playNow);
 }
 
 function visualButtonUpdate() {
@@ -68,7 +68,7 @@ function hitCheck() {
     let tmpMissles = game1.allMissles;
     for (let i = 0; i < tmpMissles.length; i++) {
         if (tmpMissles[i].y >= 490) {
-            if (tmpMissles[i].x >= playerX && tmpMissles[i].x <= playerX + 80) {
+            if (tmpMissles[i].x >= player1.x && tmpMissles[i].x <= player1.x + 80) {
                 alert('GameOver');
                 play = 0;
                 reset();

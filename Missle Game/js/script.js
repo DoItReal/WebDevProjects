@@ -1,11 +1,64 @@
-var missleId = null;
+var animationID = null;
 var playerX = 350, playerY = 520, playerSpeed = 10;
 var play = false, pause = false;
 var startTime = null, pauseTime = null;
 var missleNum = 2;
 var mousePosScr;
 
-//To do class for missles and storing it in array
+
+class Item {
+    //stackable = true; TO DO
+    constructor(name, type, rarity, value) {
+        this.name = name; //string
+        this.type = type; //string
+        this.rarity = rarity; //string
+        this.value = value; //int
+    }
+}
+class Inventory { //TO DO it singleton
+    constructor() {
+        this.inventory = [];
+        this.size = 0;
+    }
+
+    //METHODS
+    add_item(item) {
+        this.inventory.push(item);
+        this.size++;
+    }
+    drop_item(slotIndex) {
+        inventory.splice(slotIndex, 1);
+        this.size--;
+    }
+    get_item_OBJ(itemIndex) {
+        return this.inventory[itemIndex];
+    }
+    fill_inventory() { //to do getting items from DB
+        this.add_item(new Item('Diamonds', 'Currency', 'Legendary', 100));
+        this.add_item(new Item('Gold', 'Currency', 'Elite', 2));
+        this.add_item(new Item('Silver', 'Currency', 'Rare', 34));
+        this.add_item(new Item('Copper', 'Currency', 'Uncommon', 85));
+    }
+    return_inventory() {
+        return this.inventory;
+    }
+    get_info(itemIndex) {
+        return String(this.get_item_OBJ(itemIndex).value + 'x ' + this.get_item_OBJ(itemIndex).name);
+    }
+
+}
+class Player { //TO DO it singleton and to extends (to do)USER
+
+    constructor(x, y, speed, inventory) {
+        this.x = x; //X location of player /int
+        this.y = y; //Y location of player /int
+        this.speed = speed; //speed of player/int
+        this.inventory = inventory; //Inventory of player /array of $items
+    }
+    move() {
+        player(this.x);
+    }
+}
 class Missle{
   constructor(x,y,speed, homing){
       this.x = x;
@@ -21,6 +74,7 @@ class Missles {
     
     initMissles(num) {
         for (let i = 0; i < num; i++) {
+            //generating missles -->TO DO improve functionality
             let tmp = new Missle(getRandomInt(790 + 5), 0, getRandomInt(4)+1, getRandomBoolean());
             this.missles.push(tmp);
         }
@@ -31,6 +85,7 @@ class Missles {
     get numberOfMissles() {
         return this.missles.length;
     }
+    // UPDATING MISSLES LOCATION IN GAME -->> TO DO * integrate missle destruction logic * <<--
     updateMissles() {
         for (let i = 0; i < this.numberOfMissles; i++) {
             if (this.missles[i].y == 0 || this.missles[i].y >= 600) {
@@ -39,8 +94,8 @@ class Missles {
             }
             this.missles[i].y += this.missles[i].speed;
             if (this.missles[i].homing) {
-                if (this.missles[i].x < playerX+40 && this.missles[i].x+40+1 <= 800) this.missles[i].x += 0.5;
-                if (this.missles[i].x > playerX+40 && this.missles[i].x+40-1 >= 0) this.missles[i].x -= 0.5;
+                if (this.missles[i].x < player1.x+40 && this.missles[i].x+40+1 <= 800) this.missles[i].x += 0.5;
+                if (this.missles[i].x > player1.x+40 && this.missles[i].x+40-1 >= 0) this.missles[i].x -= 0.5;
             }
         }
     }
@@ -55,11 +110,18 @@ class Missles {
 }
 
 var game1 = new Missles();
+var inventory = new Inventory();
+inventory.fill_inventory();
+var player1 = new Player(playerX, playerY, playerSpeed, inventory);
+
+
 
 function init() {
-
+  //  console.log(player1.inventory.get_info());
+    define_inventoryPanel();
     define_controlPanel();
     initialize_events_controlPanel();
+  
   //get context playground ctx
    canvas = document.getElementById('Playground');
     ctx = canvas.getContext('2d');
@@ -113,7 +175,7 @@ function playNow() {
         clearPlayground();
         if (!play) {
             console.log('cancelFire');
-            cancelAnimationFrame(missleId);
+            cancelAnimationFrame(animationID);
             return 'Game Over';
         }
 
@@ -122,17 +184,17 @@ function playNow() {
         game1.fireMissles();
 
         //position the player
-        player(playerX);
+        player1.move();
 
         //check for hit
         if (hitCheck()) {
-            cancelAnimationFrame(missleId);
+            cancelAnimationFrame(animationID);
             return 'Game Over';
         }
 
         scoreboardUpdate();
     }
-    missleId = requestAnimationFrame(playNow);
+    animationID = requestAnimationFrame(playNow);
 }
 function scoreboardUpdate() {
     //clear scoreboard
@@ -176,6 +238,25 @@ function define_controlPanel() {
     PauseResumeButton = document.querySelector("#pauseResumeButton");
 }
 
+var divInventory;
+//initializing inventory
+function define_inventoryPanel() {
+    divInventory = document.querySelector('#divInventory');
+
+    list = document.createElement('ul');
+    for (i = 0; i < player1.inventory.size; i++) {
+        console.log('Poppulating: ' + i);
+        console.log(player1.inventory.get_info(i));
+        row = document.createElement('li');
+        row.innerHTML = player1.inventory.get_info(i);
+        list.appendChild(row);
+        divInventory.appendChild(list);
+        
+    }
+    console.log(list);
+}
+
+
 //initializing control panel events
 
 function initialize_events_controlPanel() {
@@ -189,23 +270,25 @@ function initialize_events_controlPanel() {
 
 function event_playerSpeedSlider() {
     PlayerSpeedOutput.value = PlayerSpeedSlider.value;
+    player1.speed = Number(PlayerSpeedSlider.value);
     PlayerSpeedSlider.oninput = function (evt) {    
         //visual update Player speed output
         PlayerSpeedOutput.value = evt.target.value;
       //  playerSpeedSlider.value = evt.target.value;
         //functional update Player speed
-        playerSpeed = Number(playerSpeedSlider.value);
+        player1.speed = Number(evt.target.value);
     }
 }
 function event_missleNumSlider() {
     MissleNumOutput.value = MissleNumSlider.value;
+    missleNum = Number(MissleNumSlider.value);
     MissleNumSlider.oninput = function (evt) {
         //visual update Missle Num OUTPUT
         MissleNumOutput.value = evt.target.value;
         //visual update Missle Num output
       //  MissleNumSlider.value = evt.target.value;
         //functional update Missle Num
-        missleNum = Number(missleNumSlider.value);
+        missleNum = Number(Number(missleNumSlider.value));
     }
 }
 
@@ -216,12 +299,12 @@ function event_startStopButton() {
         visualButtonUpdate();
         if (!play) { 
                 //start animation playNow
-            missleId = startGame();
+            animationID = startGame();
          //   PauseResumeButton.disabled = false;
             visualButtonUpdate();
         } else { //stop
                //stop animation playNow
-            stopGame(missleId);
+            stopGame(animationID);
             //  PauseResumeButton.disabled = true;
             visualButtonUpdate();
             
@@ -260,11 +343,11 @@ function blurFocus(){
 }
 function handleKeyUp(e){
   if(e.keyCode == '39'){ //right arrow
-      if (playerX + playerSpeed <= 720 ) playerX += playerSpeed;
-      else playerX = 720;
+      if (player1.x + player1.speed <= 720 ) player1.x += player1.speed;
+      else player1.x = 720;
   } else if (e.keyCode == '37') { //left arrow
-      if (playerX - playerSpeed >= 0) playerX -= playerSpeed;
-      else playerX = 0;
+      if (player1.x - player1.speed >= 0) player1.x -= player1.speed;
+      else player1.x = 0;
     }
 }
 
