@@ -8,11 +8,13 @@ var mousePosScr;
 
 class Item {
     //stackable = true; TO DO
-    constructor(name, type, rarity, value) {
+    constructor(name, type, rarity, value, icon, stack) {
         this.name = name; //string
         this.type = type; //string
         this.rarity = rarity; //string
         this.value = value; //int
+        this.icon = icon;
+        this.stack = stack;
     }
 }
 class Inventory { //TO DO it singleton
@@ -34,10 +36,14 @@ class Inventory { //TO DO it singleton
         return this.inventory[itemIndex];
     }
     fill_inventory() { //to do getting items from DB
-        this.add_item(new Item('Diamonds', 'Currency', 'Legendary', 100));
-        this.add_item(new Item('Gold', 'Currency', 'Elite', 2));
-        this.add_item(new Item('Silver', 'Currency', 'Rare', 34));
-        this.add_item(new Item('Copper', 'Currency', 'Uncommon', 85));
+        this.add_item(new Item('Diamonds', 'Currency', 'Legendary', 100, 'textures/icons/items/diamonds-icon.png', true));
+        this.add_item(new Item('Gold', 'Currency', 'Elite', 2, 'textures/icons/items/gold-icon.png', true));
+        this.add_item(new Item('Silver', 'Currency', 'Rare', 13, 'textures/icons/items/silver-icon.png', true));
+        this.add_item(new Item('Copper', 'Currency', 'Uncommon', 88, 'textures/icons/items/copper-icon.png', true));
+        this.add_item(new Item('Junk', 'Junk', 'Junk',31, 'textures/icons/items/junk-icon.png', true));
+        this.add_item(new Item('Sword', 'Weapon', 'Rare', 1, 'textures/icons/items/sword-icon.png', false));
+        this.add_item(new Item('Shield', 'Off Hand', 'Rare', 1, 'textures/icons/items/shield-icon.png', false));
+        this.add_item(new Item('Chest', 'Armor', 'Rare', 1, 'textures/icons/items/armor-icon.png', false));
     }
     return_inventory() {
         return this.inventory;
@@ -243,17 +249,48 @@ var divInventory;
 function define_inventoryPanel() {
     divInventory = document.querySelector('#divInventory');
 
-    list = document.createElement('ul');
+    
     for (i = 0; i < player1.inventory.size; i++) {
-        console.log('Poppulating: ' + i);
-        console.log(player1.inventory.get_info(i));
-        row = document.createElement('li');
-        row.innerHTML = player1.inventory.get_info(i);
-        list.appendChild(row);
-        divInventory.appendChild(list);
-        
+        let divItem = document.createElement('div');
+
+        divItem = setItemDivAttributes(divItem, player1.inventory.get_item_OBJ(i), i);
+
+        divInventory.appendChild(divItem);  
     }
-    console.log(list);
+}
+
+function setItemDivAttributes(divItem, itemObj,i) {
+    divItem.id = 'item' + (i + 1);
+    divItem.classList.add('divItem');
+    let color;
+    switch (itemObj.rarity) {
+        case 'Junk': color = 'lightgray'; break;
+        case 'Common': color = 'lightgray'; break;
+        case 'Uncommon': color = 'lightgreen'; break;
+        case 'Rare': color = 'lightblue'; break;
+        case 'Elite': color = 'purple'; break;
+        case 'Legendary': color = 'yellow'; break;
+
+    }
+  //  divItem.style = 'background-color:'+color;
+    divItem.style = (
+        'background-image: url(' + player1.inventory.get_item_OBJ(i).icon + ');' +
+        'background-color:' + color + ';'
+    );
+    
+    if (itemObj.stack) {
+        let divValue = document.createElement('div');
+        divValue.classList.add('itemValue');
+        divValue.innerHTML = itemObj.value;
+        divItem.appendChild(divValue);
+    }
+    
+    divItem.name = itemObj.name;
+    divItem.value = itemObj.value;
+    divItem.rarity = itemObj.rarity;
+    divItem.stack = itemObj.stack;
+    divItem.title = itemObj.name;
+    return divItem;
 }
 
 

@@ -15,7 +15,7 @@
     margin: 0;
 }
 #divControlPanelContainer{
-    flex: 1 30%;
+    flex: 15%;
     border: 1px solid black;
 }
 #spanControlPanel{
@@ -27,7 +27,7 @@
 }
 #divCanvas {
     border: 5px solid gray;
-    flex: 3 auto;
+    flex: 60%;
     min-width: 50%;
     max-width: 50%;
     min-height: 37.5%;
@@ -61,6 +61,41 @@ button {
 
 #divInventory {
     flex: auto;
-    list-style:none;
-    border:1px solid black;
+    display: grid;
+    grid-template-columns: repeat(4, 25% [col-start]);
+    gap: 0.5px;
+    
+    border: 5px solid black;
+}
+
+.divItem {
+    position:relative;
+    
+    border: 1px solid red;
+    min-width:70px;
+    min-height:70px;
+
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center center;
+
+}
+.itemValue {
+    position: absolute;
+    min-height:15px;
+    min-width:15px;
+    bottom: 0;
+    right: 0;
+    font: 10px arial;
+    color: black;
+    border-style: solid;
+    border-width: 1px;
+    border-color: white;
+    border-right: 1px;
+    border-bottom: 1px;
+    text-align:center;
+    vertical-align:bottom;
+    font:10px Arial black;
+    background-color:gray;
+    color:white;
 }
