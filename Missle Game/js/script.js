@@ -124,7 +124,7 @@ var player1 = new Player(playerX, playerY, playerSpeed, inventory);
 
 function init() {
   //  console.log(player1.inventory.get_info());
-    define_inventoryPanel();
+    init_inventory();
     define_controlPanel();
     initialize_events_controlPanel();
   
@@ -244,67 +244,6 @@ function define_controlPanel() {
     PauseResumeButton = document.querySelector("#pauseResumeButton");
 }
 
-var divInventory,divHeader,divContent,divFooter;
-//initializing inventory
-function define_inventoryPanel() {
-    divInventory = document.querySelector('#divInventory');
-    divHeader = document.createElement('div');
-    divHeader.classList.add('invHeader');
-    divButton = document.createElement('button');
-    divButton.id = 'Xbutton';
-    divButton.innerHTML = 'X';
-    divHeader.appendChild(divButton);
-    divInventory.appendChild(divHeader);    
-    divContent = document.createElement('div');
-    divContent.classList.add('invContent');
-    divInventory.appendChild(divContent);
-    divFooter = document.createElement('div');
-    divFooter.classList.add('invFooter');
-    divInventory.appendChild(divFooter);
-
-    
-    for (i = 0; i < player1.inventory.size; i++) {
-        let divItem = document.createElement('div');
-
-        divItem = setItemDivAttributes(divItem, player1.inventory.get_item_OBJ(i), i);
-
-        divContent.appendChild(divItem);  
-    }
-}
-
-function setItemDivAttributes(divItem, itemObj,i) {
-    divItem.id = 'item' + (i + 1);
-    divItem.classList.add('divItem');
-    let color;
-    switch (itemObj.rarity) {
-        case 'Junk': color = 'lightgray'; break;
-        case 'Common': color = 'lightgray'; break;
-        case 'Uncommon': color = 'lightgreen'; break;
-        case 'Rare': color = 'lightblue'; break;
-        case 'Elite': color = 'purple'; break;
-        case 'Legendary': color = 'yellow'; break;
-
-    }
-  //  divItem.style = 'background-color:'+color;
-    divItem.style = (
-        'background-image: url(' + player1.inventory.get_item_OBJ(i).icon + ');' +
-        'background-color:' + color + ';'
-    );
-    
-    if (itemObj.stack) {
-        let divValue = document.createElement('div');
-        divValue.classList.add('itemValue');
-        divValue.innerHTML = itemObj.value;
-        divItem.appendChild(divValue);
-    }
-    
-    divItem.name = itemObj.name;
-    divItem.value = itemObj.value;
-    divItem.rarity = itemObj.rarity;
-    divItem.stack = itemObj.stack;
-    divItem.title = itemObj.name;
-    return divItem;
-}
 
 
 //initializing control panel events

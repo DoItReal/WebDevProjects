@@ -1,10 +1,10 @@
 {
   "ExpandedNodes": [
     "",
-    "\\Forms",
     "\\Missle Game",
-    "\\Missle Game\\js"
+    "\\Missle Game\\js",
+    "\\Missle Game\\styles"
   ],
-  "SelectedNode": "\\Missle Game\\js\\script.js",
+  "SelectedNode": "\\Missle Game\\js\\inventory.js",
   "PreviewInSolutionExplorer": false
 }
