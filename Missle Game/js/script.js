@@ -244,10 +244,23 @@ function define_controlPanel() {
     PauseResumeButton = document.querySelector("#pauseResumeButton");
 }
 
-var divInventory;
+var divInventory,divHeader,divContent,divFooter;
 //initializing inventory
 function define_inventoryPanel() {
     divInventory = document.querySelector('#divInventory');
+    divHeader = document.createElement('div');
+    divHeader.classList.add('invHeader');
+    divButton = document.createElement('button');
+    divButton.id = 'Xbutton';
+    divButton.innerHTML = 'X';
+    divHeader.appendChild(divButton);
+    divInventory.appendChild(divHeader);    
+    divContent = document.createElement('div');
+    divContent.classList.add('invContent');
+    divInventory.appendChild(divContent);
+    divFooter = document.createElement('div');
+    divFooter.classList.add('invFooter');
+    divInventory.appendChild(divFooter);
 
     
     for (i = 0; i < player1.inventory.size; i++) {
@@ -255,7 +268,7 @@ function define_inventoryPanel() {
 
         divItem = setItemDivAttributes(divItem, player1.inventory.get_item_OBJ(i), i);
 
-        divInventory.appendChild(divItem);  
+        divContent.appendChild(divItem);  
     }
 }
 
