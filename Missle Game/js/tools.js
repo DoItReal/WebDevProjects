@@ -36,21 +36,7 @@ function visualButtonUpdate() {
 }
 
 
-function hitCheck() {
-    tmpMissles = game1.game.allMissles();
-    for (let i = 0; i < tmpMissles.length; i++) {
-        if (tmpMissles[i].y >= 490) {
-            if (tmpMissles[i].x >= game1.player.x && tmpMissles[i].x <= game1.player.x + 80) {
-                alert('GameOver');
-                play = 0;
-                game1.game.reset();
-                return 1;
 
-            }
-        }
-    }
-    return 0;
-}
 function setTimer() {
     if (startTime == null) {
         startTime = Date.now();

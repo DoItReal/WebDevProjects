@@ -172,13 +172,15 @@ class Game {
             this.player.move();
 
             //check for hit
-            if (hitCheck()) {
+            if (this.hitCheck()) {
                 cancelAnimationFrame(animationID);
                 return 'Game Over';
             }
-
+            
             scoreboardUpdate();
         }
+        timer(30, 10);
+
         animationID = requestAnimationFrame(this.playNow);
 
     }
@@ -195,7 +197,7 @@ class Game {
             }
         }
     }
-    return 0;
+        return 0;
 }
 }
 
@@ -260,13 +262,12 @@ function scoreboardUpdate() {
     //define the background
   ctxs.fillStyle = "#256794";
     ctxs.fillRect(0, 0, canvasScr.width, canvasScr.height);
-
+   
     //import number of missles
     missleCounter(10, 10);
-
+    
     //import timer
-    timer(300, 10);
-
+    texture_timer(300, 10);
     //import logo
     logo(680,10);
 }
