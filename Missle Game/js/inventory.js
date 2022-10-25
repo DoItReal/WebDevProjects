@@ -35,10 +35,10 @@ function define_inventoryPanel() {
     divInventory.appendChild(divFooter);
 
 
-    for (i = 0; i < player1.inventory.size; i++) {
+    for (i = 0; i < game1.inventory.size; i++) {
         let divItem = document.createElement('div');
 
-        divItem = setItemDivAttributes(divItem, player1.inventory.get_item_OBJ(i), i);
+        divItem = setItemDivAttributes(divItem, game1.player.inventory.get_item_OBJ(i), i);
 
         divContent.appendChild(divItem);
     }
@@ -61,7 +61,6 @@ function event_moveInventory() {
     divHeader.onmousedown = function (e) {
         drag = true;
         x = e.clientX;
-        console.log(x);
         y = e.clientY;
     }
     window.onmousemove = function (e) {

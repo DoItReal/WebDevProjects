@@ -23,13 +23,25 @@ var measureFPS = function (newTime) {
 
     //and display it in an element we appended to the 
     // document in the start() function
-    fpsContainer.innerHTML = 'FPS: ' + fps;
+    if(fps || fps == 0)fpsContainer.innerHTML = 'FPS: ' + fps;
     frameCount++;
 };
 
-var initFPSCounter = function() {
+var initFPSCounter = function () {
     // adds a div for displaying the fps value
     fpsContainer = document.createElement('div');
-    document.body.appendChild(fpsContainer);
+    fpsContainer.id = 'fpsContainer';
+    divControlPanel.appendChild(fpsContainer);
 }
+function timer(currentTime) {
+    var delta = currentTime - oldTime;
+    oldTime = currentTime;
+    return delta;
 
+}
+// High resolution timer
+var oldTime = performance.now();
+var initFPS = function (time) {
+    measureFPS(time);
+    delta = timer(time);
+}

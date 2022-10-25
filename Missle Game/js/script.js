@@ -5,6 +5,7 @@ var startTime = null, pauseTime = null;
 var missleNum = 2;
 var mousePosScr;
 
+var divControlPanel;
 
 class Item {
     //stackable = true; TO DO
@@ -79,14 +80,15 @@ class Missles {
     }
     
     initMissles(num) {
-        for (let i = 0; i < num; i++) {
-            //generating missles -->TO DO improve functionality
-            let tmp = new Missle(getRandomInt(790 + 5), 0, getRandomInt(4)+1, getRandomBoolean());
-            this.missles.push(tmp);
-        }
+            for (let i = 0; i < num; i++) {
+                //generating missles -->TO DO improve functionality
+                let tmp = new Missle(getRandomInt(790 + 5), 0, getRandomInt(4) + 1, getRandomBoolean());
+                this.missles.push(tmp);
+            }
     }
-    get allMissles() {
+    allMissles() {
         return this.missles;
+       
     }
     get numberOfMissles() {
         return this.missles.length;
@@ -100,8 +102,8 @@ class Missles {
             }
             this.missles[i].y += this.missles[i].speed;
             if (this.missles[i].homing) {
-                if (this.missles[i].x < player1.x+40 && this.missles[i].x+40+1 <= 800) this.missles[i].x += 0.5;
-                if (this.missles[i].x > player1.x+40 && this.missles[i].x+40-1 >= 0) this.missles[i].x -= 0.5;
+                if (this.missles[i].x < game1.player.x+40 && this.missles[i].x+40+1 <= 800) this.missles[i].x += 0.5;
+                if (this.missles[i].x > game1.player.x+40 && this.missles[i].x+40-1 >= 0) this.missles[i].x -= 0.5;
             }
         }
     }
@@ -112,22 +114,98 @@ class Missles {
         for (let i = 0; i < this.missles.length; i++) {
             missle(this.missles[i].x, this.missles[i].y, this.missles[i].homing);
             }
+    }
+    reset() {
+    playerX = 350, playerY = 520, playerSpeed = 10;
+    play = true;
+        timerReset();
+        game1.game.clearMissles();
+    missleNum += 1;
+    game1.game.initMissles(missleNum);
+    animationID = requestAnimationFrame(game1.playNow);
+
+    //dont know why but it doesnt work without this line ...
+    animationID = requestAnimationFrame(game1.playNow);
+}
+}
+class Game {
+    constructor() {
+        this.game = new Missles();
+        this.inventory = new Inventory();
+        this.player = new Player(playerX, playerY, playerSpeed, this.inventory)
+        this.changeGame = function (game) { this.game = game };
+        this.playNow = this.playNow.bind(this);
+        this.startGame = this.startGame.bind(this);
+    }
+
+   
+    startGame() {
+        play = true;
+        this.game.initMissles(missleNum);
+        animationID = requestAnimationFrame(this.playNow);
+       // console.log(animationID);
+    return this.game;
+    }
+    stopGame(game) {
+    play = false;
+    playerX = 350, playerY = 520;
+    timerReset();
+    this.game.clearMissles();
+    cancelAnimationFrame(this.game);
+    pause = false;
+    }
+    playNow() {
+        initFPS(performance.now());
+        //clear Playground
+        if (!pause) {
+            clearPlayground();
+            if (!play) {
+                console.log('cancelFire');
+                cancelAnimationFrame(animationID);
+                return 'Game Over';
+            }
+            //update missles cordinates
+            this.game.updateMissles();
+            this.game.fireMissles();
+
+            //position the player
+            this.player.move();
+
+            //check for hit
+            if (hitCheck()) {
+                cancelAnimationFrame(animationID);
+                return 'Game Over';
+            }
+
+            scoreboardUpdate();
         }
+        animationID = requestAnimationFrame(this.playNow);
+
+    }
+    hitCheck() {
+    let tmpMissles = this.game.allMissles();
+    for (let i = 0; i < tmpMissles.length; i++) {
+        if (tmpMissles[i].y >= 490) {
+            if (tmpMissles[i].x >= this.player.x && tmpMissles[i].x <= this.player.x + 80) {
+                alert('GameOver');
+                play = 0;
+                this.game.reset();
+                return 1;
+
+            }
+        }
+    }
+    return 0;
+}
 }
 
-var game1 = new Missles();
-var inventory = new Inventory();
-inventory.fill_inventory();
-var player1 = new Player(playerX, playerY, playerSpeed, inventory);
-
-
+//creating new Game() OBJECT 
+var game1 = new Game();
 
 function init() {
-  //  console.log(player1.inventory.get_info());
     init_inventory();
-    define_controlPanel();
-    initialize_events_controlPanel();
-  
+    init_controlPanel();
+    initFPSCounter();
   //get context playground ctx
    canvas = document.getElementById('Playground');
     ctx = canvas.getContext('2d');
@@ -169,39 +247,12 @@ canvas.addEventListener('mouseenter',setFocus,false);
 
     //window.addEventListener('resize', event_Resize, false);
  
-
+ 
 //start scoreboard  
     scoreboardUpdate();
-
 }
 
-function playNow() {
-    //clear Playground
-    if (!pause) {
-        clearPlayground();
-        if (!play) {
-            console.log('cancelFire');
-            cancelAnimationFrame(animationID);
-            return 'Game Over';
-        }
 
-        //update missles cordinates
-        game1.updateMissles();
-        game1.fireMissles();
-
-        //position the player
-        player1.move();
-
-        //check for hit
-        if (hitCheck()) {
-            cancelAnimationFrame(animationID);
-            return 'Game Over';
-        }
-
-        scoreboardUpdate();
-    }
-    animationID = requestAnimationFrame(playNow);
-}
 function scoreboardUpdate() {
     //clear scoreboard
     ctxs.clearRect(0, 0, canvasScr.width, canvasScr.height);
@@ -226,9 +277,14 @@ function scoreboardUpdate() {
 var PlayerSpeedSlider, PlayerSpeedOutput;
 var MissleNumSlider, MissleNumOutput;
 var StartStopButton, PauseResumeButton;
+
+function init_controlPanel() {
+    define_controlPanel();
+    initialize_events_controlPanel();
+}
 //defining control panel variables
 function define_controlPanel() {
-
+    divControlPanel = document.querySelector('#divControlPanelContainer');
     //player speed objects definition
     PlayerSpeedSlider = document.querySelector('#playerSpeedSlider');
     PlayerSpeedOutput = document.querySelector('#playerSpeedOutput');
@@ -242,6 +298,7 @@ function define_controlPanel() {
 
     //PauseResume button definition
     PauseResumeButton = document.querySelector("#pauseResumeButton");
+    
 }
 
 
@@ -259,13 +316,13 @@ function initialize_events_controlPanel() {
 
 function event_playerSpeedSlider() {
     PlayerSpeedOutput.value = PlayerSpeedSlider.value;
-    player1.speed = Number(PlayerSpeedSlider.value);
+    game1.player.speed = Number(PlayerSpeedSlider.value);
     PlayerSpeedSlider.oninput = function (evt) {    
         //visual update Player speed output
         PlayerSpeedOutput.value = evt.target.value;
       //  playerSpeedSlider.value = evt.target.value;
         //functional update Player speed
-        player1.speed = Number(evt.target.value);
+        game1.player.speed = Number(evt.target.value);
     }
 }
 function event_missleNumSlider() {
@@ -287,13 +344,13 @@ function event_startStopButton() {
     StartStopButton.onclick = function (evt) {
         visualButtonUpdate();
         if (!play) { 
-                //start animation playNow
-            animationID = startGame();
+                //start animation game1.playNow
+            animationID = game1.startGame();
          //   PauseResumeButton.disabled = false;
             visualButtonUpdate();
         } else { //stop
-               //stop animation playNow
-            stopGame(animationID);
+               //stop animation game1.playNow
+            game1.stopGame(animationID);
             //  PauseResumeButton.disabled = true;
             visualButtonUpdate();
             
@@ -332,11 +389,11 @@ function blurFocus(){
 }
 function handleKeyUp(e){
   if(e.keyCode == '39'){ //right arrow
-      if (player1.x + player1.speed <= 720 ) player1.x += player1.speed;
-      else player1.x = 720;
+      if (game1.player.x + game1.player.speed <= 720 ) game1.player.x += game1.player.speed;
+      else game1.player.x = 720;
   } else if (e.keyCode == '37') { //left arrow
-      if (player1.x - player1.speed >= 0) player1.x -= player1.speed;
-      else player1.x = 0;
+      if (game1.player.x - game1.player.speed >= 0) game1.player.x -= game1.player.speed;
+      else game1.player.x = 0;
     }
 }
 

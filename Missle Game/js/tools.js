@@ -5,19 +5,7 @@ function getRandomInt(max) {
 function getRandomBoolean() {
     return Math.random() < 0.5;
 }
-function reset() {
-    console.log('reset');
-    playerX = 350, playerY = 520, playerSpeed = 10;
-    play = true;
-    timerReset();
-    game1.clearMissles();
-    missleNum += 1;
-    game1.initMissles(missleNum);
-    animationID = requestAnimationFrame(playNow);
 
-    //dont know why but it doesnt work without this line ...
-    animationID = requestAnimationFrame(playNow);
-}
 
 function visualButtonUpdate() {
     if (play) { //game running
@@ -47,31 +35,15 @@ function visualButtonUpdate() {
     }
 }
 
-function stopGame(game) {
-    play = false;
-    playerX = 350, playerY = 520;
-    timerReset();
-    game1.clearMissles();
-    cancelAnimationFrame(game);
-    pause = false;
-}
-
-function startGame() {
-    play = true;
-    game1.initMissles(missleNum);
-    game = requestAnimationFrame(playNow);
-    return game;
-}
-
 
 function hitCheck() {
-    let tmpMissles = game1.allMissles;
+    tmpMissles = game1.game.allMissles();
     for (let i = 0; i < tmpMissles.length; i++) {
         if (tmpMissles[i].y >= 490) {
-            if (tmpMissles[i].x >= player1.x && tmpMissles[i].x <= player1.x + 80) {
+            if (tmpMissles[i].x >= game1.player.x && tmpMissles[i].x <= game1.player.x + 80) {
                 alert('GameOver');
                 play = 0;
-                reset();
+                game1.game.reset();
                 return 1;
 
             }
