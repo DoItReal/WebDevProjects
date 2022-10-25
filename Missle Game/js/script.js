@@ -7,53 +7,6 @@ var mousePosScr;
 
 var divControlPanel;
 
-class Item {
-    //stackable = true; TO DO
-    constructor(name, type, rarity, value, icon, stack) {
-        this.name = name; //string
-        this.type = type; //string
-        this.rarity = rarity; //string
-        this.value = value; //int
-        this.icon = icon;
-        this.stack = stack;
-    }
-}
-class Inventory { //TO DO it singleton
-    constructor() {
-        this.inventory = [];
-        this.size = 0;
-    }
-
-    //METHODS
-    add_item(item) {
-        this.inventory.push(item);
-        this.size++;
-    }
-    drop_item(slotIndex) {
-        inventory.splice(slotIndex, 1);
-        this.size--;
-    }
-    get_item_OBJ(itemIndex) {
-        return this.inventory[itemIndex];
-    }
-    fill_inventory() { //to do getting items from DB
-        this.add_item(new Item('Diamonds', 'Currency', 'Legendary', 100, 'textures/icons/items/diamonds-icon.png', true));
-        this.add_item(new Item('Gold', 'Currency', 'Elite', 2, 'textures/icons/items/gold-icon.png', true));
-        this.add_item(new Item('Silver', 'Currency', 'Rare', 13, 'textures/icons/items/silver-icon.png', true));
-        this.add_item(new Item('Copper', 'Currency', 'Uncommon', 88, 'textures/icons/items/copper-icon.png', true));
-        this.add_item(new Item('Junk', 'Junk', 'Junk',31, 'textures/icons/items/junk-icon.png', true));
-        this.add_item(new Item('Sword', 'Weapon', 'Rare', 1, 'textures/icons/items/sword-icon.png', false));
-        this.add_item(new Item('Shield', 'Off Hand', 'Rare', 1, 'textures/icons/items/shield-icon.png', false));
-        this.add_item(new Item('Chest', 'Armor', 'Rare', 1, 'textures/icons/items/armor-icon.png', false));
-    }
-    return_inventory() {
-        return this.inventory;
-    }
-    get_info(itemIndex) {
-        return String(this.get_item_OBJ(itemIndex).value + 'x ' + this.get_item_OBJ(itemIndex).name);
-    }
-
-}
 class Player { //TO DO it singleton and to extends (to do)USER
 
     constructor(x, y, speed, inventory) {
@@ -136,10 +89,15 @@ class Game {
         this.changeGame = function (game) { this.game = game };
         this.playNow = this.playNow.bind(this);
         this.startGame = this.startGame.bind(this);
+
+        //TO DO fetch the inventory from DB
+        this.inventory.fill_inventory();
+        
     }
 
    
     startGame() {
+        console.log('start');
         play = true;
         this.game.initMissles(missleNum);
         animationID = requestAnimationFrame(this.playNow);
@@ -208,180 +166,28 @@ function init() {
     init_inventory();
     init_controlPanel();
     initFPSCounter();
-  //get context playground ctx
-   canvas = document.getElementById('Playground');
-    ctx = canvas.getContext('2d');
-  //position ctx
-  /*canvas.style.position = 'relative';
-  canvas.style.top = '0px';
-    canvas.style.left = '200px';
-    canvas.style.padding = '0px';
-    canvas.style.padding = '0px';
-  */
-  //get context scoreboard ctxs
-   canvasScr = document.getElementById('Scoreboard');
-   ctxs = canvasScr.getContext('2d');
-  
-  //position ctxs
- /* canvasScr.style.position = 'relative';
-  canvasScr.style.top = '2px';
-    canvasScr.style.left = '200px';
-    canvasScr.style.padding = '0px';
-    canvasScr.style.margin = '0px';
-    */
-  
-  //event listener on 'keydown'
-canvas.addEventListener('keydown', handleKeyUp, false);
-  
-  //event listener on 'mouseenter'
-canvas.addEventListener('mouseenter',setFocus,false);
- 
-  //event listener on 'mouseout'
-    canvas.addEventListener('mouseout', blurFocus, false);
-
-  //event listener on 'mousemove'
-    canvasScr.addEventListener('mousemove', mouseMove, false);
-
-  //event listener on 'mousedown'
-    canvasScr.addEventListener('mousedown', mouseDown, false);
-
-  //event listener on 'resize' JUNK
-
-    //window.addEventListener('resize', event_Resize, false);
- 
- 
-//start scoreboard  
-    scoreboardUpdate();
+    init_canvas();
+    //init event listeners on controls
+    init_events_controls();
 }
-
-
-function scoreboardUpdate() {
-    //clear scoreboard
-    ctxs.clearRect(0, 0, canvasScr.width, canvasScr.height);
-
-    //define the background
-  ctxs.fillStyle = "#256794";
-    ctxs.fillRect(0, 0, canvasScr.width, canvasScr.height);
-   
-    //import number of missles
-    missleCounter(10, 10);
-    
-    //import timer
-    texture_timer(300, 10);
-    //import logo
-    logo(680,10);
-}
-
-
-
-
-var PlayerSpeedSlider, PlayerSpeedOutput;
-var MissleNumSlider, MissleNumOutput;
-var StartStopButton, PauseResumeButton;
-
-function init_controlPanel() {
-    define_controlPanel();
-    initialize_events_controlPanel();
-}
-//defining control panel variables
-function define_controlPanel() {
-    divControlPanel = document.querySelector('#divControlPanelContainer');
-    //player speed objects definition
-    PlayerSpeedSlider = document.querySelector('#playerSpeedSlider');
-    PlayerSpeedOutput = document.querySelector('#playerSpeedOutput');
-
-    //missle num objects definition
-    MissleNumSlider = document.querySelector('#missleNumSlider');
-    MissleNumOutput = document.querySelector('#missleNumOutput');
-
-    //StartStop button definition
-    StartStopButton = document.querySelector("#startStopButton");
-
-    //PauseResume button definition
-    PauseResumeButton = document.querySelector("#pauseResumeButton");
-    
-}
-
-
-
-//initializing control panel events
-
-function initialize_events_controlPanel() {
-    event_playerSpeedSlider();
-    event_missleNumSlider();
-
-    event_startStopButton();
-    event_pauseResumeButton();
-}
-//event listeners control panel
-
-function event_playerSpeedSlider() {
-    PlayerSpeedOutput.value = PlayerSpeedSlider.value;
-    game1.player.speed = Number(PlayerSpeedSlider.value);
-    PlayerSpeedSlider.oninput = function (evt) {    
-        //visual update Player speed output
-        PlayerSpeedOutput.value = evt.target.value;
-      //  playerSpeedSlider.value = evt.target.value;
-        //functional update Player speed
-        game1.player.speed = Number(evt.target.value);
-    }
-}
-function event_missleNumSlider() {
-    MissleNumOutput.value = MissleNumSlider.value;
-    missleNum = Number(MissleNumSlider.value);
-    MissleNumSlider.oninput = function (evt) {
-        //visual update Missle Num OUTPUT
-        MissleNumOutput.value = evt.target.value;
-        //visual update Missle Num output
-      //  MissleNumSlider.value = evt.target.value;
-        //functional update Missle Num
-        missleNum = Number(Number(missleNumSlider.value));
-    }
-}
-
-function event_startStopButton() {
-    visualButtonUpdate();
-        //event onclick StartStopButton
-    StartStopButton.onclick = function (evt) {
-        visualButtonUpdate();
-        if (!play) { 
-                //start animation game1.playNow
-            animationID = game1.startGame();
-         //   PauseResumeButton.disabled = false;
-            visualButtonUpdate();
-        } else { //stop
-               //stop animation game1.playNow
-            game1.stopGame(animationID);
-            //  PauseResumeButton.disabled = true;
-            visualButtonUpdate();
-            
-        }
-    }
-}
-
-function event_pauseResumeButton() {
-    visualButtonUpdate();
-        //event PauseResumeButton onclick
-    PauseResumeButton.onclick = function () {
-        pause = !pause;
-        if (!pause) { //game running
-            startTime += Date.now() - pauseTime;
-            pauseTime = null;
-            visualButtonUpdate();
-        } else { //game paused
-            pauseTime = Date.now();
-            visualButtonUpdate();
-        }
-    };
-}
-
-
-
-
-
-
 
 //event listeners canvas
+function init_events_controls() {
+    //event listener on 'keydown'
+    canvas.addEventListener('keydown', handleKeyUp, false);
+
+    //event listener on 'mouseenter'
+    canvas.addEventListener('mouseenter', setFocus, false);
+
+    //event listener on 'mouseout'
+    canvas.addEventListener('mouseout', blurFocus, false);
+
+    //event listener on 'mousemove'
+    canvasScr.addEventListener('mousemove', mouseMove, false);
+
+    //event listener on 'mousedown'
+    canvasScr.addEventListener('mousedown', mouseDown, false);
+}
 function setFocus(){
   canvas.focus();
 }
@@ -416,20 +222,3 @@ function getMousePos(canv, e) {
         y: e.clientY - rect.top
     }
 }
-
-// junk 
-/* 
- *
-function event_Resize() {
-    let height = window.innerHeight;
-    let width = window.innerWidth
-    var divCanv = document.getElementById('divCanvas');
-
-
-    reportSize();
-}
-function reportSize() {
-    console.log('height: ' + window.innerHeight + ' width: ' + window.innerWidth);
-}
-*
- */

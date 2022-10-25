@@ -37,7 +37,6 @@ function player(x) {
 
 
 function texture_timer(x, y) {
-    console.log('update');
     ctxs.save();
     ctxs.beginPath();
     ctxs.translate(x, y);

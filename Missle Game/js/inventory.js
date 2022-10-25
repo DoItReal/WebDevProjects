@@ -1,4 +1,62 @@
 var divInvContainer, divInventory, divHeader, divContent, divFooter, invButton;
+
+
+class Item {
+    //stackable = true; TO DO
+    constructor(name, type, rarity, value, icon, stack) {
+        this.name = name; //string
+        this.type = type; //string
+        this.rarity = rarity; //string
+        this.value = value; //int
+        this.icon = icon;
+        this.stack = stack;
+    }
+}
+class Inventory { //TO DO it singleton
+    constructor() {
+        this.inventory = [];
+        this.size = 0;
+        this.minSize = 20;
+    }
+
+    //METHODS
+    add_item(item) {
+        this.inventory.push(item);
+        this.size++;
+    }
+    drop_item(slotIndex) {
+        inventory.splice(slotIndex, 1);
+        this.size--;
+    }
+    get_item_OBJ(itemIndex) {
+        return this.inventory[itemIndex];
+    }
+    fill_inventory() { //to do getting items from DB
+        this.add_item(new Item('Diamonds', 'Currency', 'Legendary', 100, 'textures/icons/items/diamonds-icon.png', true));
+        this.add_item(new Item('Gold', 'Currency', 'Elite', 2, 'textures/icons/items/gold-icon.png', true));
+        this.add_item(new Item('Silver', 'Currency', 'Rare', 13, 'textures/icons/items/silver-icon.png', true));
+        this.add_item(new Item('Copper', 'Currency', 'Uncommon', 88, 'textures/icons/items/copper-icon.png', true));
+        this.add_item(new Item('Junk', 'Junk', 'Junk', 31, 'textures/icons/items/junk-icon.png', true));
+        this.add_item(new Item('Sword', 'Weapon', 'Rare', 1, 'textures/icons/items/sword-icon.png', false));
+        this.add_item(new Item('Shield', 'Off Hand', 'Rare', 1, 'textures/icons/items/shield-icon.png', false));
+        this.add_item(new Item('Chest', 'Armor', 'Rare', 1, 'textures/icons/items/armor-icon.png', false));
+        this.fill_emptySpace();
+    }
+    fill_emptySpace() {
+        let emptyCell = new Item('Empty', 'Empty', 'Empty', 0, '', false);
+        for (let i = 0; i < this.size % 5 || this.size < this.minSize; i++) {
+            this.add_item(emptyCell);
+        }
+    }
+    return_inventory() {
+        return this.inventory;
+    }
+    get_info(itemIndex) {
+        return String(this.get_item_OBJ(itemIndex).value + 'x ' + this.get_item_OBJ(itemIndex).name);
+    }
+
+}
+
 //initializing inventory
 function init_inventory() {
     define_inventoryPanel();
@@ -93,7 +151,7 @@ function setItemDivAttributes(divItem, itemObj, i) {
     }
     //  divItem.style = 'background-color:'+color;
     divItem.style = (
-        'background-image: url(' + player1.inventory.get_item_OBJ(i).icon + ');' +
+        'background-image: url(' + game1.inventory.get_item_OBJ(i).icon + ');' +
         'background-color:' + color + ';'
     );
 
