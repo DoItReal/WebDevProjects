@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+
+<!-- HTML  !-->
+<html lang="en">
+
+<!-- HEAD -->
+<head>
+
+    <meta charset="utf-8">
+
+    <script src="js/textures.js"></script>
+    <script src="js/tools.js"></script>
+    <script src="js/inventory.js"></script>
+    <script src="js/script.js"></script>
+    <script src="js/fps.js"></script>
+    <script src="js/canvas.js"></script>
+    <script src="js/controlPanel.js"></script>
+    <script src="js/controls.js"></script>
+    <link rel="stylesheet" href="styles/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <title>TD Project</title>
+</head>  
+
+<!-- BODY -->
+<body onload="init();">
+
+    <!-- Defining Inventory -->
+    <div id="divInvContainer">
+    </div>
+    <!-- Defining flex container -->
+    <div id="flexContainer">
+
+        <!-- Defining Canvas -->
+        <div id="divCanvas">
+            <canvas id="Scoreboard" width="800" height="80">Your browser doesn't support canvas Scoreboard</canvas>
+            <canvas id="Playground" width="800" height="600" tabindex='1'>Your browser doesn't support canvas</canvas>
+        </div>
+        <div id="divControlPanelContainer">
+            <span id="spanControlPanel">Control Panel</span>
+            <div id="divPlayerControls">
+                <ul>
+                    <li>
+                        <label for="playerSpeed">Player Speed: </label>
+                        <input type="range" min="100" max="250" step="1" value="5" id="playerSpeedSlider" />
+                        <output id="playerSpeedOutput"></output>
+                    </li>
+                </ul>
+            </div>
+            <div id="divMisslesControls">
+                <ul>
+                    <li>
+                        <label for="missleNum">Missles: </label>
+                        <input type="range" min="0" max="100" step="1" value="2" id="missleNumSlider" />
+                        <output id="missleNumOutput"></output>
+                    </li>
+                </ul>
+            </div>
+            <div id="divGameControls">
+                <ul>
+                    <li>
+                        <button id="startStopButton" class="buttons"></button>
+                        <button id="pauseResumeButton" class="buttons" disabled="true"></button>
+                        <button id="invButton" class="buttons">Inventory</button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

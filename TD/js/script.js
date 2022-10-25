@@ -12,12 +12,38 @@ class Player { //TO DO it singleton and to extends (to do)USER
     constructor(x, y, speed, inventory) {
         this.x = x; //X location of player /int
         this.y = y; //Y location of player /int
-        this.speed = speed; //speed of player/int
+        this.speed = speed; //speed of player pixels/click /int
         this.inventory = inventory; //Inventory of player /array of $items
     }
     move() {
-        player(this.x);
+        let moveLeft = function () {
+                if (game1.player.x - game1.player.speed/fps >= 0) game1.player.x -= game1.player.speed/fps;
+            else game1.player.x = 0;
+            
+        }
+        let moveUp = function () {
+            if (game1.player.y - (game1.player.speed / fps) >= 0) game1.player.y -= game1.player.speed / fps;
+            else game1.player.y = 0;
+
+        }
+        let moveRight = function () {
+            if (game1.player.x + game1.player.speed / fps <= canvas.width - 80) game1.player.x += game1.player.speed / fps;
+            else game1.player.x = canvas.width - 80;
+
+        }
+        let moveDown = function () {
+            if (game1.player.y + game1.player.speed / fps <= canvas.height - 80) game1.player.y += game1.player.speed / fps;
+            else game1.player.y = canvas.height - 80;
+
+        }
+        if (pressedKeys.has(37)) moveLeft();
+        if (pressedKeys.has(38)) moveUp();
+        if (pressedKeys.has(39)) moveRight();
+        if (pressedKeys.has(40)) moveDown();
+        player(this.x, this.y);
+        
     }
+    
 }
 class Missle{
   constructor(x,y,speed, homing){
@@ -86,7 +112,6 @@ class Game {
         this.game = new Missles();
         this.inventory = new Inventory();
         this.player = new Player(playerX, playerY, playerSpeed, this.inventory)
-        this.changeGame = function (game) { this.game = game };
         this.playNow = this.playNow.bind(this);
         this.startGame = this.startGame.bind(this);
 
@@ -97,18 +122,15 @@ class Game {
 
    
     startGame() {
-        console.log('start');
         play = true;
         this.game.initMissles(missleNum);
         animationID = requestAnimationFrame(this.playNow);
-       // console.log(animationID);
     return this.game;
     }
     stopGame(game) {
     play = false;
     playerX = 350, playerY = 520;
     timerReset();
-    this.game.clearMissles();
     cancelAnimationFrame(this.game);
     pause = false;
     }
@@ -118,13 +140,9 @@ class Game {
         if (!pause) {
             clearPlayground();
             if (!play) {
-                console.log('cancelFire');
                 cancelAnimationFrame(animationID);
                 return 'Game Over';
             }
-            //update missles cordinates
-            this.game.updateMissles();
-            this.game.fireMissles();
 
             //position the player
             this.player.move();
@@ -143,18 +161,19 @@ class Game {
 
     }
     hitCheck() { // TO DO
-    let tmpMissles = this.game.allMissles();
-    for (let i = 0; i < tmpMissles.length; i++) {
-        if (tmpMissles[i].y >= 490) { // ???? TO DO
-            if (tmpMissles[i].x >= this.player.x && tmpMissles[i].x <= this.player.x + 80) {
-                alert('GameOver');
-                play = 0;
-                this.game.reset();
-                return 1;
+    /***********************************************************
+     *   ___________________________________________________   * 
+     *  |  ###############################################  |  *
+     *  |  ### Here goes the logic for collision check ###  |  *  
+     *  |  ###############################################  |  *
+     *  |___________________________________________________|  *
+     ***********************************************************/
 
-            }
-        }
-    }
+/*      for(let i=0;i<variations;i++){
+ *          if(collission(i) == true) return 1;
+ *      }
+ * 
+ */
         return 0;
 }
 }
@@ -171,54 +190,3 @@ function init() {
     init_events_controls();
 }
 
-//event listeners canvas
-function init_events_controls() {
-    //event listener on 'keydown'
-    canvas.addEventListener('keydown', handleKeyUp, false);
-
-    //event listener on 'mouseenter'
-    canvas.addEventListener('mouseenter', setFocus, false);
-
-    //event listener on 'mouseout'
-    canvas.addEventListener('mouseout', blurFocus, false);
-
-    //event listener on 'mousemove'
-    canvasScr.addEventListener('mousemove', mouseMove, false);
-
-    //event listener on 'mousedown'
-    canvasScr.addEventListener('mousedown', mouseDown, false);
-}
-function setFocus(){
-  canvas.focus();
-}
-function blurFocus(){
-  canvas.blur();
-}
-function handleKeyUp(e){
-  if(e.keyCode == '39'){ //right arrow
-      if (game1.player.x + game1.player.speed <= 720 ) game1.player.x += game1.player.speed;
-      else game1.player.x = 720;
-  } else if (e.keyCode == '37') { //left arrow
-      if (game1.player.x - game1.player.speed >= 0) game1.player.x -= game1.player.speed;
-      else game1.player.x = 0;
-    }
-}
-
-//event listeners canvasScr
-function mouseMove(e) {
-    mousePosScr = getMousePos(canvasScr, e);
-    console.log("x: " + mousePosScr.x + ' // y: ' + mousePosScr.y);
-}
-function mouseDown(e) {
-    let button = e.button;
-    console.log('Button: ' + button + ' pressed at x: ' + mousePosScr.x + ' y: ' + mousePosScr.y);
-}
-
-//get mouse position relative to the position of the canvas
-function getMousePos(canv, e) {
-    var rect = canv.getBoundingClientRect();
-    return {
-        x: e.clientX - rect.left,
-        y: e.clientY - rect.top
-    }
-}
