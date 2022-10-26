@@ -217,11 +217,11 @@ class Game {
         //clear Playground
         if (!pause) {
             clearPlayground();
+            init_background();
             if (!play) {
                 cancelAnimationFrame(animationID);
                 return 'Game Over';
             }
-
             //position the player
             this.player.move();
             //position the enemies
@@ -232,11 +232,9 @@ class Game {
                 cancelAnimationFrame(animationID);
                 return 'Game Over';
             }
-            
             scoreboardUpdate();
         }
         timer(30, 10);
-
         animationID = requestAnimationFrame(this.playNow);
 
     }
@@ -270,6 +268,11 @@ var game1;
 function init() {
     init_canvas();
     
+    try {
+        load_textures();
+    } catch (e) {
+        console.log('Failed to load textures: error: ' + e);
+    }
     game1 = new Game();
 
     init_inventory();

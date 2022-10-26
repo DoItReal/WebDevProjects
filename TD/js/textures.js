@@ -1,4 +1,12 @@
 //textures
+
+var png_background;
+
+function load_textures() {
+    png_background = new Image();
+    png_background.src = 'textures/content/terrain/floor/floor4.png';
+}
+
 function missle(x, y, homing) {
     ctx.save();
     ctx.beginPath();
@@ -51,7 +59,24 @@ function enemy(x, y) {
 
     ctx.restore();
 }
+function init_background() {
+    var tileWidth = 100;
+    var tileHeight = 100;
+    var angle = Math.PI; //Math.PI - straight, Math.PI/2 - 90 degr;
+    for (i = 0; i < canvas.width + tileWidth; i += tileWidth) {
+        for (j = 0; j < canvas.height + tileHeight; j += tileHeight) {
+            backgroundTile(i, j,tileWidth,tileHeight, angle);
+        }
+    }
+}
+function backgroundTile(x, y, w, h,angle) {
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.rotate(angle);
+    ctx.drawImage(png_background, 0, 0,w,h);
 
+    ctx.restore();  
+}
 
 function texture_timer(x, y) {
     ctxs.save();
