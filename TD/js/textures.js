@@ -19,8 +19,25 @@ function missle(x, y, homing) {
 function player(x,y) {
     ctx.save();
     ctx.translate(x, y);
-
     ctx.fillStyle = "green";
+    ctx.fillRect(0, 0, 80, 80);
+    ctx.fillStyle = "white";
+    ctx.fillRect(15, 20, 20, 20);
+    ctx.fillRect(50, 20, 20, 20);
+    ctx.fillStyle = "blue";
+    ctx.fillRect(19, 24, 12, 12);
+    ctx.fillRect(54, 24, 12, 12);
+    ctx.fillStyle = "black";
+    ctx.fillRect(22, 27, 6, 6);
+    ctx.fillRect(57, 27, 6, 6);
+
+    ctx.restore();
+}
+function enemy(x, y) {
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.scale(0.5, 0.5);
+    ctx.fillStyle = "red";
     ctx.fillRect(0, 0, 80, 80);
     ctx.fillStyle = "white";
     ctx.fillRect(15, 20, 20, 20);

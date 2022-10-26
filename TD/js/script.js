@@ -1,5 +1,5 @@
 var animationID = null;
-var playerX = 350, playerY = 520, playerSpeed = 10;
+var playerX = 350, playerY = 520, playerSpeed = 10; //to be overrided in Game.constructor();
 var play = false, pause = false;
 var startTime = null, pauseTime = null;
 var missleNum = 2;
@@ -7,44 +7,8 @@ var mousePosScr;
 
 var divControlPanel;
 
-class Player { //TO DO it singleton and to extends (to do)USER
-
-    constructor(x, y, speed, inventory) {
-        this.x = x; //X location of player /int
-        this.y = y; //Y location of player /int
-        this.speed = speed; //speed of player pixels/click /int
-        this.inventory = inventory; //Inventory of player /array of $items
-    }
-    move() {
-        let moveLeft = function () {
-                if (game1.player.x - game1.player.speed/fps >= 0) game1.player.x -= game1.player.speed/fps;
-            else game1.player.x = 0;
-            
-        }
-        let moveUp = function () {
-            if (game1.player.y - (game1.player.speed / fps) >= 0) game1.player.y -= game1.player.speed / fps;
-            else game1.player.y = 0;
-
-        }
-        let moveRight = function () {
-            if (game1.player.x + game1.player.speed / fps <= canvas.width - 80) game1.player.x += game1.player.speed / fps;
-            else game1.player.x = canvas.width - 80;
-
-        }
-        let moveDown = function () {
-            if (game1.player.y + game1.player.speed / fps <= canvas.height - 80) game1.player.y += game1.player.speed / fps;
-            else game1.player.y = canvas.height - 80;
-
-        }
-        if (pressedKeys.has(37)) moveLeft();
-        if (pressedKeys.has(38)) moveUp();
-        if (pressedKeys.has(39)) moveRight();
-        if (pressedKeys.has(40)) moveDown();
-        player(this.x, this.y);
-        
-    }
-    
-}
+//Missle class
+/*
 class Missle{
   constructor(x,y,speed, homing){
       this.x = x;
@@ -57,7 +21,7 @@ class Missles {
     constructor() {
         this.missles = [];
     }
-    
+   
     initMissles(num) {
             for (let i = 0; i < num; i++) {
                 //generating missles -->TO DO improve functionality
@@ -67,7 +31,7 @@ class Missles {
     }
     allMissles() {
         return this.missles;
-       
+      
     }
     get numberOfMissles() {
         return this.missles.length;
@@ -107,31 +71,145 @@ class Missles {
     animationID = requestAnimationFrame(game1.playNow);
 }
 }
-class Game {
-    constructor() {
-        this.game = new Missles();
-        this.inventory = new Inventory();
-        this.player = new Player(playerX, playerY, playerSpeed, this.inventory)
-        this.playNow = this.playNow.bind(this);
-        this.startGame = this.startGame.bind(this);
+*/
 
-        //TO DO fetch the inventory from DB
-        this.inventory.fill_inventory();
+class Player { //TO DO it singleton and to extends (to do)USER
+
+    constructor(x, y, speed) {
+        this.x = x; //X location of player /int
+        this.y = y; //Y location of player /int
+        this.speed = speed; //speed of player pixels/s /int
+        this.inventory = new Inventory(); //Inventory of player /array of $items
+        this.move = this.move.bind(this);
+    }
+
+    move() {
+        var unit = this; //saving this in variable to save the context
+        let moveLeft = function () {
+                if (unit.x - unit.speed/fps >= 0) unit.x -= unit.speed/fps;
+            else unit.x = 0;
+            
+        }
+        let moveUp = function () {
+            if (unit.y - (unit.speed / fps) >= 0) unit.y -= unit.speed / fps;
+            else unit.y = 0;
+
+        }
+        let moveRight = function () {
+            if (unit.x + unit.speed / fps <= canvas.width - 80) unit.x += unit.speed / fps;
+            else unit.x = canvas.width - 80;
+
+        }
+        let moveDown = function () {
+            if (unit.y + unit.speed / fps <= canvas.height - 80) unit.y += unit.speed / fps;
+            else unit.y = canvas.height - 80;
+
+        }
+        if (pressedKeys.has(37)) moveLeft();
+        if (pressedKeys.has(38)) moveUp();
+        if (pressedKeys.has(39)) moveRight();
+        if (pressedKeys.has(40)) moveDown();
+        player(this.x, this.y);
         
     }
+    
+}
 
+class Enemy { //TO DO it singleton and to extends (to do)USER
+
+    constructor(x, y, speed, inventory) {
+        this.x = x; //X location of enemy unit /int
+        this.y = y; //Y location of enemy unit /int
+        this.speed = speed; //speed of player pixels/click /int
+     //TO DO   this.inventory = inventory; //Inventory of enemy Unit /array of $items
+    }
+    move() {
+        var unit = this; //saving this in variable to save the context
+        let moveLeft = function () {
+            if (unit.x - unit.speed / fps >= 0) {
+                unit.x -= unit.speed / fps;
+                return 1;
+            }
+            else {
+                unit.x = 0;
+                return 0;
+            }
+        }
+        let moveUp = function () {
+            if (unit.y - (unit.speed / fps) >= 0) {
+                unit.y -= unit.speed / fps;
+                return 1;
+            } else {
+                unit.y = 0;
+                return 0;
+            }
+
+        }
+        let moveRight = function () {
+            if (unit.x + unit.speed / fps <= canvas.width - 40) {
+                unit.x += unit.speed / fps;
+                return 1;
+            }
+            else {
+                unit.x = canvas.width - 40;
+                return 0;
+            }
+        }
+        let moveDown = function () {
+            if (unit.y + unit.speed / fps <= canvas.height - 40) {
+                unit.y += unit.speed / fps;
+                return 1;
+            }
+            else {
+                unit.y = canvas.height - 40;
+                return 0;
+            }
+        }
+
+        if (!moveRight()) unit.x = 0;
+
+        enemy(this.x, this.y);
+
+    }
+
+}
+
+
+class Game {
+    defaultSpeed = 150;
+    /*          Constructor()
+     *          
+     *          For creating Game instance we need: 
+     *              1- Player ID - fetch info from DB - to do
+     *          
+     *  creating new Player;
+     *  binding this to playNow() - main animation function
+     *  
+     *  TO DO 
+     *      1- Fetch Player from DB
+     *      
+     */
+    constructor() {
+        this.player = new Player(canvas.width / 2, canvas.height / 2, this.defaultSpeed);
+        this.enemies = [];
+        this.playNow = this.playNow.bind(this);
+
+        //TO DO fetch the inventory from DB
+        this.player.inventory.fill_inventory();
+        
+    }
+    get getGame() { return this;}
    
     startGame() {
+        this.addEnemy();
         play = true;
-        this.game.initMissles(missleNum);
         animationID = requestAnimationFrame(this.playNow);
-    return this.game;
     }
-    stopGame(game) {
+    stopGame() {
     play = false;
-    playerX = 350, playerY = 520;
+    this.player.x = canvas.width/2, this.player.y = canvas.height/2;
     timerReset();
-    cancelAnimationFrame(this.game);
+    animationID = cancelAnimationFrame(animationID);
     pause = false;
     }
     playNow() {
@@ -146,6 +224,8 @@ class Game {
 
             //position the player
             this.player.move();
+            //position the enemies
+            this.enemies.forEach(element => element.move());
 
             //check for hit
             if (this.hitCheck()) {
@@ -161,6 +241,7 @@ class Game {
 
     }
     hitCheck() { // TO DO
+
     /***********************************************************
      *   ___________________________________________________   * 
      *  |  ###############################################  |  *
@@ -168,24 +249,33 @@ class Game {
      *  |  ###############################################  |  *
      *  |___________________________________________________|  *
      ***********************************************************/
+        //check for player<--->enemy collision
+        if (this.enemies.length) {
+            for (let i = 0; i < this.enemies.length; i++) {
+                if (rectsOverlap(this.player.x, this.player.y, 80, 80, this.enemies[i].x, this.enemies[i].y, 40, 40) == true)
+                    console.log('Collision');
+            }
+        }
+    }
 
-/*      for(let i=0;i<variations;i++){
- *          if(collission(i) == true) return 1;
- *      }
- * 
- */
-        return 0;
-}
+    addEnemy() {
+        this.enemies.push(new Enemy(0,200,100,new Inventory()));
+    }
 }
 
 //creating new Game() OBJECT 
-var game1 = new Game();
+
+var game1;
 
 function init() {
+    init_canvas();
+    
+    game1 = new Game();
+
     init_inventory();
     init_controlPanel();
     initFPSCounter();
-    init_canvas();
+    
     //init event listeners on controls
     init_events_controls();
 }

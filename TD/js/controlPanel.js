@@ -67,7 +67,7 @@ function event_startStopButton() {
         visualButtonUpdate();
         if (!play) {
             //start animation game1.playNow
-            animationID = game1.startGame();
+            game1.startGame();
             //   PauseResumeButton.disabled = false;
             visualButtonUpdate();
         } else { //stop

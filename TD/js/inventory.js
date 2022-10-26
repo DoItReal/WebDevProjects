@@ -93,7 +93,7 @@ function define_inventoryPanel() {
     divInventory.appendChild(divFooter);
 
 
-    for (i = 0; i < game1.inventory.size; i++) {
+    for (i = 0; i < game1.player.inventory.size; i++) {
         let divItem = document.createElement('div');
 
         divItem = setItemDivAttributes(divItem, game1.player.inventory.get_item_OBJ(i), i);
@@ -151,7 +151,7 @@ function setItemDivAttributes(divItem, itemObj, i) {
     }
     //  divItem.style = 'background-color:'+color;
     divItem.style = (
-        'background-image: url(' + game1.inventory.get_item_OBJ(i).icon + ');' +
+        'background-image: url(' + game1.player.inventory.get_item_OBJ(i).icon + ');' +
         'background-color:' + color + ';'
     );
 
