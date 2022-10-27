@@ -60,8 +60,8 @@ function enemy(x, y) {
     ctx.restore();
 }
 function init_background() {
-    var tileWidth = 100;
-    var tileHeight = 100;
+    var tileWidth = 50;
+    var tileHeight = 50;
     var angle = Math.PI; //Math.PI - straight, Math.PI/2 - 90 degr;
     for (i = 0; i < canvas.width + tileWidth; i += tileWidth) {
         for (j = 0; j < canvas.height + tileHeight; j += tileHeight) {
@@ -77,7 +77,22 @@ function backgroundTile(x, y, w, h,angle) {
 
     ctx.restore();  
 }
+function tower(x, y, w, h, radius) {
+    ctx.save();
+    ctx.beginPath();
+    ctx.translate(x, y);
+    ctx.fillStyle = "blue";
+    ctx.fillRect(-(w/2), -h/2, 30, 30);
+    ctx.fillStyle = "green";
+    ctx.fillRect(-w/2+5, -h/2+5, 20, 20);
+    ctx.fillStyle = "red";
+    ctx.fillRect(-w/2+10, -h/2+10, 10, 10);
+    ctx.strokeStyle = "black";
+    ctx.arc(0, 0, radius, 0, 2 * Math.PI, false);
+    ctx.stroke();
 
+    ctx.restore();
+}
 function texture_timer(x, y) {
     ctxs.save();
     ctxs.beginPath();
@@ -134,7 +149,18 @@ function texture_timer(x, y) {
 
     ctxs.restore();
 }
-
+function texture_arrow(x,y,w,h) {
+    ctx.save();
+    ctx.beginPath();
+    ctx.translate(x, y);
+    let color = 'green';
+    ctx.lineWidth = w;
+    ctx.strokeStyle = color;
+    ctx.moveTo(0, 0);
+    ctx.lineTo(0, h);
+    ctx.stroke();
+    ctx.restore();
+}
 function missleCounter(x, y) {
     ctxs.save();
     ctxs.beginPath();

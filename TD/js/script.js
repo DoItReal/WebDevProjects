@@ -117,10 +117,13 @@ class Player { //TO DO it singleton and to extends (to do)USER
 
 class Enemy { //TO DO it singleton and to extends (to do)USER
 
-    constructor(x, y, speed, inventory) {
+    constructor(x, y, w, h, speed,hp, inventory) {
         this.x = x; //X location of enemy unit /int
         this.y = y; //Y location of enemy unit /int
-        this.speed = speed; //speed of player pixels/click /int
+        this.width = w; //Width of enemy unit [px]/int
+        this.height = h; //Width of enemy unit [px]/int
+        this.speed = speed; //speed of player [pixels/s] /int
+        this.hp = hp;
      //TO DO   this.inventory = inventory; //Inventory of enemy Unit /array of $items
     }
     move() {
@@ -171,7 +174,106 @@ class Enemy { //TO DO it singleton and to extends (to do)USER
         enemy(this.x, this.y);
 
     }
+    receiveDmg(dmg) {
+        this.hp -= dmg;
+    }
+}
+var tower_archer = { dmg: 2, range: 200, speed: 1, w: 30, h: 30 }; //lvl 1 archer tower, dmg:2 /shot, range:200 [px]radius, speed 1 [1/s]
+class arrow {
+    constructor(x, y, w, h, speed, dmg, target, tower) {
+        this.x = x;             //X start
+        this.y = y;             //Y start
+        this.w = w;             //Width
+        this.h = h;             //Height
+        this.speed = speed;     //Speed [px/s]
+        this.dmg = dmg;         //Dmg /hit
+        this.target = target;  //Target Enemy() Object
+        this.tower = tower;
+    }
+    update() {
+        if (this.x < this.target.x) this.x += this.speed / fps;
+        else if (this.x > this.target.x) this.x -= this.speed / fps;
 
+        if (this.y < this.target.y) this.y += this.speed/fps;
+        else if (this.y > this.target.y) this.y -= this.speed/fps;
+        texture_arrow(this.x, this.y, this.w, this.h);
+
+        if (rectsOverlap(this.x, this.y, this.w, this.h, this.target.x, this.target.y, this.target.width, this.target.height)) {
+            this.target.receiveDmg(this.dmg);
+            if (this.target.hp <= 0) this.tower.enemyDestroyed(this.target);
+            return 1;
+        }
+        else return 0;
+
+    }
+}
+class Tower {
+    constructor(x, y, type, lvl) {
+        this.x = x;
+        this.y = y;
+        this.type = tower_archer; //to do different towers and switch based definition
+        this.lvl = lvl;
+        this.target = null;
+        this.shots = [];
+        this.attackCD = 0;
+    }
+    place() {
+        tower(this.x, this.y,this.type.w,this.type.h, this.type.range);
+    }
+    radar(game) {
+
+        if (this.target == null) {
+            for (i = 0; i < game.enemies.length; i++) {
+                let enemyX = game.enemies[i].x;
+                let enemyY = game.enemies[i].y;
+                let enemyW = game.enemies[i].width;
+                let enemyH = game.enemies[i].height;
+                if (circRectsOverlap(enemyX, enemyY, enemyW, enemyH, this.x, this.y, this.type.range) && game.enemies[i].hp > 0) {
+                    return game.enemies[i];
+                }
+            }
+        } else if (!circRectsOverlap(this.target.x, this.target.y, this.target.width, this.target.height, this.x, this.y, this.type.range)) { //if target is not in range
+            return null;
+        } else return this.target;
+        return null;
+    }
+    attack() {
+        if (this.attackCD <= 0) {
+            this.shoot();
+            this.attackCD = this.type.speed;
+        } else this.reload();
+
+        if (this.shots && this.shots.length > 0) {
+            for (i = 0; i < this.shots.length; i++) {
+                if (this.shots[i].update()) { //update arrows
+                    console.log('arrow reached destination');
+                    this.shots.splice(i, 1);
+                    i--;
+                }
+            }
+        }
+    }
+    shoot() {
+        this.shots.push(new arrow(this.x, this.y, 5, 10, 100, this.type.dmg*this.lvl, this.target, this));
+    }
+    update(game) {
+        this.target = this.radar(game);
+        if (this.target != null) this.attack();
+        else {
+            this.reload();
+            this.shots = [];
+        }
+    }
+    reload() {
+        if (this.attackCD > 0) this.attackCD -= 1 / fps;
+        if (this.attackCD < 0) this.attackCD = 0;
+    }
+    enemyDestroyed(enemy) {
+        if (this.target == enemy) {
+            this.target = null;
+            this.shots = [];
+        }
+    }
 }
 
 
@@ -192,6 +294,7 @@ class Game {
     constructor() {
         this.player = new Player(canvas.width / 2, canvas.height / 2, this.defaultSpeed);
         this.enemies = [];
+        this.towers = [];
         this.playNow = this.playNow.bind(this);
 
         //TO DO fetch the inventory from DB
@@ -201,7 +304,8 @@ class Game {
     get getGame() { return this;}
    
     startGame() {
-        this.addEnemy();
+       // this.addEnemy();
+      //  this.addTower();
         play = true;
         animationID = requestAnimationFrame(this.playNow);
     }
@@ -226,7 +330,8 @@ class Game {
             this.player.move();
             //position the enemies
             this.enemies.forEach(element => element.move());
-
+            this.towers.forEach(element => { element.place(); element.update(this); });
+            if (this.enemies && this.enemies.length > 0) this.checkEnemies();
             //check for hit
             if (this.hitCheck()) {
                 cancelAnimationFrame(animationID);
@@ -255,9 +360,31 @@ class Game {
             }
         }
     }
-
+    checkEnemies() {
+        for (i = 0; i < this.enemies.length; i++) {
+            if (this.enemies[i].hp <= 0) this.destroyEnemy(i);
+        }
+    }
     addEnemy() {
-        this.enemies.push(new Enemy(0,200,100,new Inventory()));
+        let x = 0;
+        let y = 200;
+        let w = 40;
+        let h = 40;
+        let speed = 100;
+        let hp = 10;
+        let inventory = new Inventory();
+        this.enemies.push(new Enemy(x,y,w,h,speed,hp,inventory));
+    }
+    addTower() {
+        let x = 600;
+        let y = 300;
+        let type = tower_archer;
+        let lvl = 2;
+        this.towers.push(new Tower(x, y, type, lvl));
+    }
+    destroyEnemy(index) {
+        if (this.towers && this.towers.length > 0) this.towers.forEach(element => element.enemyDestroyed(this.enemies[index]));
+        this.enemies.splice(index, 1);
     }
 }
 

@@ -1,6 +1,7 @@
 var PlayerSpeedSlider, PlayerSpeedOutput;
 var MissleNumSlider, MissleNumOutput;
 var StartStopButton, PauseResumeButton;
+var AddEnemyButton, AddTowerButton;
 
 function init_controlPanel() {
     define_controlPanel();
@@ -23,6 +24,11 @@ function define_controlPanel() {
     //PauseResume button definition
     PauseResumeButton = document.querySelector("#pauseResumeButton");
 
+    //PauseResume button definition
+    AddEnemyButton = document.querySelector("#addEnemyButton");
+
+    //PauseResume button definition
+    AddTowerButton = document.querySelector("#addTowerButton");
 }
 
 //initializing control panel events
@@ -32,6 +38,8 @@ function initialize_events_controlPanel() {
 
     event_startStopButton();
     event_pauseResumeButton();
+    event_addEnemyButton();
+    event_addTowerButton();
 }
 
 //event listeners control panel
@@ -95,3 +103,21 @@ function event_pauseResumeButton() {
         }
     };
 }
+function event_addEnemyButton() {
+    //   visualButtonUpdate();
+    //event onclick AddEnemyButton
+    AddEnemyButton.onclick = function (evt) {
+        //    visualButtonUpdate();
+        //add enemy Game().addEnemy();
+        game1.addEnemy();
+    }
+}
+    function event_addTowerButton() {
+        //   visualButtonUpdate();
+        //event onclick AddEnemyButton
+        AddTowerButton.onclick = function (evt) {
+            //    visualButtonUpdate();
+            //add enemy Game().addTower();
+            game1.addTower();
+        }
+    }
