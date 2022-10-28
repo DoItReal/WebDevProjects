@@ -1,10 +1,17 @@
 var pressedKeys = new Map();
 //event listeners canvas
 function init_events_controls() {
+    //event getMousePos
+    document.addEventListener('mouseenter', setMousePos, false);
+    document.addEventListener('mousemove', setMousePos, false);
+
     //event listener on 'keydown'
     canvas.addEventListener('keydown', handleKeyDown, false);
     canvas.addEventListener('keyup', handleKeyUp, false);
 
+    //prevent opening context menu on right click;
+    canvas.addEventListener('contextmenu', function (e) { e.preventDefault(); }, false);
+    canvasScr.addEventListener('contextmenu', function (e) { e.preventDefault(); }, false);
     //event listener on 'mouseenter'
     canvas.addEventListener('mouseenter', setFocus, false);
 
@@ -20,6 +27,10 @@ function init_events_controls() {
 
     //event listener on 'mousedown' Playground
     canvas.addEventListener('mousedown', mouseDownPlayground, false);
+}
+function setMousePos(e) {
+    mousePos.x = e.clientX;
+    mousePos.y = e.clientY;
 }
 function setFocus() {
     canvas.focus();
@@ -87,27 +98,37 @@ function mouseMove(e) {
     }
 }
 var clipboard;
-function handleMouseMovePlayground(mousePos) {
-    if (clipboard != null && play && !pause) {
-        game1.updatePreview(mousePos.x, mousePos.y);
-        
+function handleMouseMovePlayground(mousePosRelative) {
+    if (clipboard != null && play && !pause) { //if there is item in the clipboard 
+        game1.updatePreview(mousePosRelative.x, mousePosRelative.y); 
+    } else if (clipboard == null && play && !pause) { //if there is no item in the clipboard
+    
     }
-
 }
 function handleMouseMoveScoreboard(mousePos) {
-    console.log("x: " + mousePos.x + ' // y: ' + mousePos.y);
+  //  console.log("x: " + mousePos.x + ' // y: ' + mousePos.y);
 }
 function mouseDownScoreboard(e) {
-    let button = e.button;
-    console.log('Button: ' + button + ' pressed at x: ' + mousePosScr.x + ' y: ' + mousePosScr.y);
-}
-function mouseDownPlayground(e) {
+    e.preventDefault();
     let button = e.button;
     let canv = getCanvasMouseOverlaping(e);
-    let mousePos = getMousePos(canv,e);
-    if (clipboard != null && play && !pause) {
-        game1.addTower(mousePos.x, mousePos.y, clipboard.type);
-        clipboard = null;
+    let mousePos = getMousePos(canv, e);
+    console.log('Button: ' + button + ' pressed at x: ' + mousePos.x + ' y: ' + mousePos.y);
+}
+function mouseDownPlayground(e) {
+    e.preventDefault();
+    let button = e.button;
+    let canv = getCanvasMouseOverlaping(e);
+    let mousePos = getMousePos(canv, e);
+    if (button == 0) { //left click  //PLACE, USE, SELECT
+        if (clipboard != null && play && !pause) {
+            game1.addTower(mousePos.x, mousePos.y, clipboard.type);
+            clipboard = null;
+        }
+    } else if (button == 1) { //scroll (middle button) click
+        //to do
+    } else if (button == 2) { //right click 
+        clipboard = null;       //empty the clipboard // DISMISS
     }
 }
 function getCanvasMouseOverlaping(e) {

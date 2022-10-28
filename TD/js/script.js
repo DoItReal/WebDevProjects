@@ -3,6 +3,7 @@ var playerX = 350, playerY = 520, playerSpeed = 10; //to be overrided in Game.co
 var play = false, pause = false;
 var startTime = null, pauseTime = null;
 var missleNum = 2;
+var mousePos = {x:null,y:null};
 //var mousePosScr;
 
 var divControlPanel;
@@ -117,13 +118,15 @@ class Player { //TO DO it singleton and to extends (to do)USER
 
 class Enemy { //TO DO it singleton and to extends (to do)USER
 
-    constructor(x, y, w, h, speed,hp, inventory) {
+    constructor(name, lvl, x, y, w, h, speed,hp, inventory) {
+        this.name = name;
         this.x = x; //X location of enemy unit /int
         this.y = y; //Y location of enemy unit /int
         this.width = w; //Width of enemy unit [px]/int
         this.height = h; //Width of enemy unit [px]/int
         this.speed = speed; //speed of player [pixels/s] /int
         this.hp = hp;
+        this.lvl = lvl;
      //TO DO   this.inventory = inventory; //Inventory of enemy Unit /array of $items
     }
     move() {
@@ -177,8 +180,36 @@ class Enemy { //TO DO it singleton and to extends (to do)USER
     receiveDmg(dmg) {
         this.hp -= dmg;
     }
+    tooltip(mousePosR) {
+        let w = 120; //width of the tooltip
+        let h = 50; //height of the tooltip
+
+        ctx.save();
+        if (mousePosR.x + w > canvas.width) mousePosR.x = canvas.width - w;
+        if (mousePosR.y + h > canvas.height) mousePosR.y = canvas.height - h;
+        ctx.translate(mousePosR.x, mousePosR.y);
+        ctx.globalAlpha = 0.3;
+        ctx.fillStyle = "lightblue";
+        ctx.strokeStyle = "white";
+        ctx.fillRect(0, 0, w, h);
+        ctx.lineWidth = 2;
+        ctx.globalAlpha = 0.7;
+        ctx.strokeRect(0, 0, w, h);
+        ctx.globalAlpha = 1;
+        ctx.fillStyle = "white";
+        ctx.font = "20px Roboto";
+        ctx.fillText(this.name + ' lvl ' + this.lvl, 10, 30);
+
+
+        ctx.restore();
+    }
 }
-var tower_archer = { dmg: 2, range: 200, speed: 0.5, w: 30, h: 30 }; //lvl 1 archer tower, dmg:2 /shot, range:200 [px]radius, speed 1 [1/s]
+class enemy_Peon extends Enemy {
+    constructor(lvl, x, y, inventory) {
+        super('Peon', lvl, x, y, 40, 40, 100, 10, new Inventory());
+    }
+}
+var tower_archer = { name:'Archer Tower', dmg: 2, range: 200, speed: 0.5, width: 30, height: 30 }; //lvl 1 archer tower, dmg:2 /shot, range:200 [px]radius, speed 1 [1/s]
 class arrow {
     constructor(x, y, w, h, speed, dmg, target, tower) {
         this.x = x;             //X start
@@ -217,9 +248,6 @@ class Tower {
         this.shots = [];
         this.attackCD = 0;
     }
-    place() {
-        tower(this.x, this.y,this.type.w,this.type.h, this.type.range);
-    }
     radar(game) {
 
         if (this.target == null) {
@@ -257,6 +285,7 @@ class Tower {
         this.shots.push(new arrow(this.x, this.y, 5, 10, 100, this.type.dmg*this.lvl, this.target, this));
     }
     update(game) {
+        this.texture();
         this.target = this.radar(game);
         if (this.target != null) this.attack();
         else {
@@ -273,6 +302,47 @@ class Tower {
             this.target = null;
             this.shots = [];
         }
+    }
+    texture(preview = false) {
+        ctx.save();
+        ctx.beginPath();
+        if (preview) ctx.globalAlpha = 0.5;
+        ctx.translate(this.x, this.y);
+        ctx.fillStyle = "blue";
+        ctx.fillRect(-(this.type.width / 2), -this.type.height / 2, 30, 30);
+        ctx.fillStyle = "green";
+        ctx.fillRect(-this.type.width / 2 + 5, -this.type.height / 2 + 5, 20, 20);
+        ctx.fillStyle = "red";
+        ctx.fillRect(-this.type.width / 2 + 10, -this.type.height / 2 + 10, 10, 10);
+        ctx.strokeStyle = "black";
+        ctx.arc(0, 0, this.type.range, 0, 2 * Math.PI, false);
+        ctx.stroke();
+
+        ctx.restore();
+    }
+    tooltip(mousePosR) {
+        let w = 180;
+        let h = 50;
+    
+
+        ctx.save();
+        if (mousePosR.x + w > canvas.width) mousePosR.x = canvas.width - w;
+        if (mousePosR.y + h > canvas.height) mousePosR.y = canvas.height - h;
+        ctx.translate(mousePosR.x, mousePosR.y);
+        ctx.globalAlpha = 0.3;
+        ctx.fillStyle = "lightblue";
+        ctx.strokeStyle = "white";
+        ctx.fillRect(0, 0, w, h);
+        ctx.lineWidth = 2;
+        ctx.globalAlpha = 0.7;
+        ctx.strokeRect(0, 0, w, h);
+        ctx.globalAlpha = 1;
+        ctx.fillStyle = "white";
+        ctx.font = "20px Roboto";
+        ctx.fillText(this.type.name + ' lvl ' + this.lvl, 10, 30);
+       
+
+        ctx.restore();
     }
 }
 
@@ -331,7 +401,7 @@ class Game {
             this.player.move();
             //position the enemies
             this.enemies.forEach(element => element.move());
-            this.towers.forEach(element => { element.place(); element.update(this); });
+            this.towers.forEach(element => element.update(this));
             if (this.enemies && this.enemies.length > 0) this.checkEnemies();
             //check for hit
             if (this.hitCheck()) {
@@ -340,6 +410,7 @@ class Game {
             }
             scoreboardUpdate();
             this.visualisePreview();
+            if (canvas === document.activeElement) this.checkForOverlapingObjectsPlayground();
         }
         timer(30, 10);
         animationID = requestAnimationFrame(this.playNow);
@@ -367,21 +438,17 @@ class Game {
             if (this.enemies[i].hp <= 0) this.destroyEnemy(i);
         }
     }
-    addEnemy() {
+    addEnemyPeon() {
         let x = 0;
         let y = 200;
-        let w = 40;
-        let h = 40;
-        let speed = 100;
-        let hp = 10;
         let inventory = new Inventory();
-        this.enemies.push(new Enemy(x, y, w, h, speed, hp, inventory));
+        this.enemies.push(new enemy_Peon(1,x, y,inventory));
     }
     addTower(x, y, type) {
         // x = 600;
         // y = 300;
         let lvl = 2;
-        this.towers.push(new Tower(x, y, type, lvl));
+        this.towers.push(new Tower(x+40, y, type, lvl)); //to do X
     }
     destroyEnemy(index) {
         if (this.towers && this.towers.length > 0) this.towers.forEach(element => element.enemyDestroyed(this.enemies[index]));
@@ -389,16 +456,45 @@ class Game {
     }
     visualisePreview() {
         if (clipboard != null && this.preview != null) {
-            tower(this.preview.x, this.preview.y, clipboard.type.w, clipboard.type.h, clipboard.type.range, 30, 200, true);
+            tower(this.preview.x, this.preview.y, clipboard.type.width, clipboard.type.height, clipboard.type.range, 30, 200, true);
         }
     }
     updatePreview(getX, getY) {
         if (clipboard != null) {
             this.preview = {
-                x: getX,
+                x: getX+40, // to do
                 y: getY
             }
         } else this.preview = null;
+    }
+    checkMouse() {
+
+    }
+    checkForOverlapingObjectsPlayground() {
+        let obj = null;
+        let rect = canvas.getBoundingClientRect();
+        let mousePosR = {
+            x: mousePos.x - rect.left,
+            y: mousePos.y - rect.top
+        };
+        if (this.enemies && this.enemies.length > 0) {
+            for (i = 0; i < this.enemies.length; i++) {
+                if (circRectsOverlap(this.enemies[i].x-40, this.enemies[i].y, this.enemies[i].width, this.enemies[i].height, mousePosR.x, mousePosR.y, 5)) {
+                    obj = this.enemies[i];
+                    obj.tooltip(mousePosR);
+                    return;
+                }
+            }
+        }
+        if (this.towers && this.towers.length > 0) {
+            for (i = 0; i < this.towers.length; i++) {
+                if (circRectsOverlap(this.towers[i].x-40, this.towers[i].y-20, this.towers[i].type.width, this.towers[i].type.height, mousePosR.x, mousePosR.y, 5)) {
+                    obj = this.towers[i];
+                    obj.tooltip(mousePosR);
+                    return;
+                }
+            }
+        }
     }
 }
 

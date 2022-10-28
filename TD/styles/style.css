@@ -1,6 +1,7 @@
 @import 'inventory.css';
 
 #Playground {
+    cursor:crosshair;
   border: 1px solid black;
   flex: 1;
 }

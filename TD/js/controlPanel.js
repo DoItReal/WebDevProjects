@@ -109,7 +109,7 @@ function event_addEnemyButton() {
     AddEnemyButton.onclick = function (evt) {
         //    visualButtonUpdate();
         //add enemy Game().addEnemy();
-        game1.addEnemy();
+        game1.addEnemyPeon();
     }
 }
     function event_addTowerButton() {

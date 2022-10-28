@@ -58,6 +58,7 @@
 }
 
 .divItem {
+    cursor: grab;
     position: relative;
     border: 0.01px solid whitesmoke;
     min-width: 50px;
