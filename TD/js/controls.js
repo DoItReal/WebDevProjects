@@ -12,10 +12,14 @@ function init_events_controls() {
     canvas.addEventListener('mouseout', blurFocus, false);
 
     //event listener on 'mousemove'
-    canvasScr.addEventListener('mousemove', mouseMove, false);
+    document.addEventListener('mousemove', mouseMove, false);
 
-    //event listener on 'mousedown'
-    canvasScr.addEventListener('mousedown', mouseDown, false);
+
+    //event listener on 'mousedown' Scoreboard
+    canvasScr.addEventListener('mousedown', mouseDownScoreboard, false);
+
+    //event listener on 'mousedown' Playground
+    canvas.addEventListener('mousedown', mouseDownPlayground, false);
 }
 function setFocus() {
     canvas.focus();
@@ -44,6 +48,7 @@ function removeKey(key) {
 }
 
 function handleKeyDown(e) {
+    e.preventDefault();
     if (e.keyCode == '39') { //arrow right
         addKey(e.keyCode);
     } else if (e.keyCode == '37') { //arrow left
@@ -55,6 +60,7 @@ function handleKeyDown(e) {
     }
 }
 function handleKeyUp(e) {
+    e.preventDefault();
     if (e.keyCode == '39') { //arrow right
         removeKey(e.keyCode);
     } else if (e.keyCode == '37') { //arrow left
@@ -69,14 +75,55 @@ function handleKeyUp(e) {
 
 //event listeners canvasScr
 function mouseMove(e) {
-    mousePosScr = getMousePos(canvasScr, e);
-    console.log("x: " + mousePosScr.x + ' // y: ' + mousePosScr.y);
+    e.preventDefault();
+    let canv = getCanvasMouseOverlaping(e);
+    let relativeMousePos;
+    if (canv != null && canv == canvas) {
+        relativeMousePos = getMousePos(canv, e);
+        handleMouseMovePlayground(relativeMousePos);
+    }else if (canv != null && canv == canvasScr) {
+        relativeMousePos = getMousePos(canv, e);
+        handleMouseMoveScoreboard(relativeMousePos);
+    }
 }
-function mouseDown(e) {
+var clipboard;
+function handleMouseMovePlayground(mousePos) {
+    if (clipboard != null && play && !pause) {
+        game1.updatePreview(mousePos.x, mousePos.y);
+        
+    }
+
+}
+function handleMouseMoveScoreboard(mousePos) {
+    console.log("x: " + mousePos.x + ' // y: ' + mousePos.y);
+}
+function mouseDownScoreboard(e) {
     let button = e.button;
     console.log('Button: ' + button + ' pressed at x: ' + mousePosScr.x + ' y: ' + mousePosScr.y);
 }
-
+function mouseDownPlayground(e) {
+    let button = e.button;
+    let canv = getCanvasMouseOverlaping(e);
+    let mousePos = getMousePos(canv,e);
+    if (clipboard != null && play && !pause) {
+        game1.addTower(mousePos.x, mousePos.y, clipboard.type);
+        clipboard = null;
+    }
+}
+function getCanvasMouseOverlaping(e) {
+    let canv = null;
+    let rect = canvas.getBoundingClientRect();
+    if (circRectsOverlap(rect.left,rect.top,canvas.width,canvas.height,e.clientX,e.clientY,5)) {
+        canv = canvas;
+        return canv;
+    }
+    rect = canvasScr.getBoundingClientRect();
+    if (circRectsOverlap(rect.left, rect.top, canvasScr.width, canvasScr.height, e.clientX, e.clientY, 5)) {
+        canv = canvasScr;
+        return canv;
+    }
+    return canv;
+}
 //get mouse position relative to the position of the canvas
 function getMousePos(canv, e) {
     var rect = canv.getBoundingClientRect();

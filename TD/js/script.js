@@ -3,7 +3,7 @@ var playerX = 350, playerY = 520, playerSpeed = 10; //to be overrided in Game.co
 var play = false, pause = false;
 var startTime = null, pauseTime = null;
 var missleNum = 2;
-var mousePosScr;
+//var mousePosScr;
 
 var divControlPanel;
 
@@ -178,7 +178,7 @@ class Enemy { //TO DO it singleton and to extends (to do)USER
         this.hp -= dmg;
     }
 }
-var tower_archer = { dmg: 2, range: 200, speed: 1, w: 30, h: 30 }; //lvl 1 archer tower, dmg:2 /shot, range:200 [px]radius, speed 1 [1/s]
+var tower_archer = { dmg: 2, range: 200, speed: 0.5, w: 30, h: 30 }; //lvl 1 archer tower, dmg:2 /shot, range:200 [px]radius, speed 1 [1/s]
 class arrow {
     constructor(x, y, w, h, speed, dmg, target, tower) {
         this.x = x;             //X start
@@ -279,6 +279,7 @@ class Tower {
 
 class Game {
     defaultSpeed = 150;
+    preview = null;
     /*          Constructor()
      *          
      *          For creating Game instance we need: 
@@ -299,22 +300,22 @@ class Game {
 
         //TO DO fetch the inventory from DB
         this.player.inventory.fill_inventory();
-        
+
     }
-    get getGame() { return this;}
-   
+    get getGame() { return this; }
+
     startGame() {
-       // this.addEnemy();
-      //  this.addTower();
+        // this.addEnemy();
+        //  this.addTower();
         play = true;
         animationID = requestAnimationFrame(this.playNow);
     }
     stopGame() {
-    play = false;
-    this.player.x = canvas.width/2, this.player.y = canvas.height/2;
-    timerReset();
-    animationID = cancelAnimationFrame(animationID);
-    pause = false;
+        play = false;
+        this.player.x = canvas.width / 2, this.player.y = canvas.height / 2;
+        timerReset();
+        animationID = cancelAnimationFrame(animationID);
+        pause = false;
     }
     playNow() {
         initFPS(performance.now());
@@ -338,6 +339,7 @@ class Game {
                 return 'Game Over';
             }
             scoreboardUpdate();
+            this.visualisePreview();
         }
         timer(30, 10);
         animationID = requestAnimationFrame(this.playNow);
@@ -345,13 +347,13 @@ class Game {
     }
     hitCheck() { // TO DO
 
-    /***********************************************************
-     *   ___________________________________________________   * 
-     *  |  ###############################################  |  *
-     *  |  ### Here goes the logic for collision check ###  |  *  
-     *  |  ###############################################  |  *
-     *  |___________________________________________________|  *
-     ***********************************************************/
+        /***********************************************************
+         *   ___________________________________________________   * 
+         *  |  ###############################################  |  *
+         *  |  ### Here goes the logic for collision check ###  |  *  
+         *  |  ###############################################  |  *
+         *  |___________________________________________________|  *
+         ***********************************************************/
         //check for player<--->enemy collision
         if (this.enemies.length) {
             for (let i = 0; i < this.enemies.length; i++) {
@@ -373,12 +375,11 @@ class Game {
         let speed = 100;
         let hp = 10;
         let inventory = new Inventory();
-        this.enemies.push(new Enemy(x,y,w,h,speed,hp,inventory));
+        this.enemies.push(new Enemy(x, y, w, h, speed, hp, inventory));
     }
-    addTower() {
-        let x = 600;
-        let y = 300;
-        let type = tower_archer;
+    addTower(x, y, type) {
+        // x = 600;
+        // y = 300;
         let lvl = 2;
         this.towers.push(new Tower(x, y, type, lvl));
     }
@@ -386,9 +387,22 @@ class Game {
         if (this.towers && this.towers.length > 0) this.towers.forEach(element => element.enemyDestroyed(this.enemies[index]));
         this.enemies.splice(index, 1);
     }
+    visualisePreview() {
+        if (clipboard != null && this.preview != null) {
+            tower(this.preview.x, this.preview.y, clipboard.type.w, clipboard.type.h, clipboard.type.range, 30, 200, true);
+        }
+    }
+    updatePreview(getX, getY) {
+        if (clipboard != null) {
+            this.preview = {
+                x: getX,
+                y: getY
+            }
+        } else this.preview = null;
+    }
 }
 
-//creating new Game() OBJECT 
+//declaring variable for new $Game() OBJECT // TO DO REWORK creating the object when starting the game with $divStartStopButton
 
 var game1;
 

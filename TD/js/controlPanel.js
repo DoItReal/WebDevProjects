@@ -118,6 +118,7 @@ function event_addEnemyButton() {
         AddTowerButton.onclick = function (evt) {
             //    visualButtonUpdate();
             //add enemy Game().addTower();
-            game1.addTower();
+            clipboard = {
+                type: tower_archer};
         }
     }

@@ -77,9 +77,10 @@ function backgroundTile(x, y, w, h,angle) {
 
     ctx.restore();  
 }
-function tower(x, y, w, h, radius) {
+function tower(x, y, w, h, radius, preview=false) {
     ctx.save();
     ctx.beginPath();
+    if (preview) ctx.globalAlpha = 0.5;
     ctx.translate(x, y);
     ctx.fillStyle = "blue";
     ctx.fillRect(-(w/2), -h/2, 30, 30);
@@ -93,6 +94,7 @@ function tower(x, y, w, h, radius) {
 
     ctx.restore();
 }
+
 function texture_timer(x, y) {
     ctxs.save();
     ctxs.beginPath();

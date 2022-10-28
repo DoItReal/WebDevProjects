@@ -13,6 +13,7 @@ function init_canvas() {
 
 function scoreboardUpdate() {
     //clear scoreboard
+    ctx.save();
     ctxs.clearRect(0, 0, canvasScr.width, canvasScr.height);
 
     //define the background
@@ -24,4 +25,6 @@ function scoreboardUpdate() {
 
     //import timer
     texture_timer(300, 10);
+
+    ctx.restore();
 }
