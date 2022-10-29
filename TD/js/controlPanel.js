@@ -1,5 +1,4 @@
 var PlayerSpeedSlider, PlayerSpeedOutput;
-var MissleNumSlider, MissleNumOutput;
 var StartStopButton, PauseResumeButton;
 var AddEnemyButton, AddTowerButton;
 
@@ -14,9 +13,7 @@ function define_controlPanel() {
     PlayerSpeedSlider = document.querySelector('#playerSpeedSlider');
     PlayerSpeedOutput = document.querySelector('#playerSpeedOutput');
 
-    //missle num objects definition
-    MissleNumSlider = document.querySelector('#missleNumSlider');
-    MissleNumOutput = document.querySelector('#missleNumOutput');
+
 
     //StartStop button definition
     StartStopButton = document.querySelector("#startStopButton");
@@ -34,7 +31,6 @@ function define_controlPanel() {
 //initializing control panel events
 function initialize_events_controlPanel() {
     event_playerSpeedSlider();
-    event_missleNumSlider();
 
     event_startStopButton();
     event_pauseResumeButton();
@@ -55,18 +51,6 @@ function event_playerSpeedSlider() {
     }
 }
 
-function event_missleNumSlider() {
-    MissleNumOutput.value = MissleNumSlider.value;
-    missleNum = Number(MissleNumSlider.value);
-    MissleNumSlider.oninput = function (evt) {
-        //visual update Missle Num OUTPUT
-        MissleNumOutput.value = evt.target.value;
-        //visual update Missle Num output
-        //  MissleNumSlider.value = evt.target.value;
-        //functional update Missle Num
-        missleNum = Number(Number(missleNumSlider.value));
-    }
-}
 
 function event_startStopButton() {
     visualButtonUpdate();

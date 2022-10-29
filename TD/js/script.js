@@ -1,78 +1,14 @@
+"use strict";
+var MainInterface = getInterface.get(); /// TO DO Singleton! interface.js
+
 var animationID = null;
 var playerX = 350, playerY = 520, playerSpeed = 10; //to be overrided in Game.constructor();
 var play = false, pause = false;
 var startTime = null, pauseTime = null;
-var missleNum = 2;
 var mousePos = {x:null,y:null};
 //var mousePosScr;
 
 var divControlPanel;
-
-//Missle class
-/*
-class Missle{
-  constructor(x,y,speed, homing){
-      this.x = x;
-      this.y = y;
-      this.speed = speed;
-      this.homing = homing;
-  }
-}
-class Missles {
-    constructor() {
-        this.missles = [];
-    }
-   
-    initMissles(num) {
-            for (let i = 0; i < num; i++) {
-                //generating missles -->TO DO improve functionality
-                let tmp = new Missle(getRandomInt(790 + 5), 0, getRandomInt(4) + 1, getRandomBoolean());
-                this.missles.push(tmp);
-            }
-    }
-    allMissles() {
-        return this.missles;
-      
-    }
-    get numberOfMissles() {
-        return this.missles.length;
-    }
-    // UPDATING MISSLES LOCATION IN GAME -->> TO DO * integrate missle destruction logic * <<--
-    updateMissles() {
-        for (let i = 0; i < this.numberOfMissles; i++) {
-            if (this.missles[i].y == 0 || this.missles[i].y >= 600) {
-                this.missles[i].x = getRandomInt(790 + 5);
-                this.missles[i].y = 0;
-            }
-            this.missles[i].y += this.missles[i].speed;
-            if (this.missles[i].homing) {
-                if (this.missles[i].x < game1.player.x+40 && this.missles[i].x+40+1 <= 800) this.missles[i].x += 0.5;
-                if (this.missles[i].x > game1.player.x+40 && this.missles[i].x+40-1 >= 0) this.missles[i].x -= 0.5;
-            }
-        }
-    }
-    clearMissles() {
-        this.missles = [];
-    }
-    fireMissles() {
-        for (let i = 0; i < this.missles.length; i++) {
-            missle(this.missles[i].x, this.missles[i].y, this.missles[i].homing);
-            }
-    }
-    reset() {
-    playerX = 350, playerY = 520, playerSpeed = 10;
-    play = true;
-        timerReset();
-        game1.game.clearMissles();
-    missleNum += 1;
-    game1.game.initMissles(missleNum);
-    animationID = requestAnimationFrame(game1.playNow);
-
-    //dont know why but it doesnt work without this line ...
-    animationID = requestAnimationFrame(game1.playNow);
-}
-}
-*/
 
 class Player { //TO DO it singleton and to extends (to do)USER
 
@@ -373,7 +309,10 @@ class Game {
 
     }
     get getGame() { return this; }
-
+    get getEnemiesCount() {
+        if (this.enemies) return this.enemies.length;
+        return 0;
+    }
     startGame() {
         // this.addEnemy();
         //  this.addTower();
@@ -504,7 +443,6 @@ var game1;
 
 function init() {
     init_canvas();
-    
     try {
         load_textures();
     } catch (e) {

@@ -7,23 +7,6 @@ function load_textures() {
     png_background.src = 'textures/content/terrain/floor/floor4.png';
 }
 
-function missle(x, y, homing) {
-    ctx.save();
-    ctx.beginPath();
-    ctx.translate(x, y);
-    let color = 'blue';
-    if (homing) {
-        color = 'red';
-    }
-
-
-    ctx.lineWidth = 5;
-    ctx.strokeStyle = color;
-    ctx.moveTo(0, 0);
-    ctx.lineTo(0, 30);
-    ctx.stroke();
-    ctx.restore();
-}
 function player(x,y) {
     ctx.save();
     ctx.translate(x, y);
@@ -163,7 +146,7 @@ function texture_arrow(x,y,w,h) {
     ctx.stroke();
     ctx.restore();
 }
-function missleCounter(x, y) {
+function enemyCounter(x, y) {
     ctxs.save();
     ctxs.beginPath();
     ctxs.translate(x, y);
@@ -178,17 +161,19 @@ function missleCounter(x, y) {
     ctxs.lineWidth = 4;
     ctxs.fillStyle = "white";
     ctxs.font = "25px Monaco";
-    ctxs.strokeText("Missles: ", 50, 10);
-    ctxs.fillText("Missles:", 50, 10);
+    ctxs.strokeText("Enemies: ", 50, 10);
+    ctxs.fillText("Enemies:", 50, 10);
 
     ctxs.strokeStyle = 'yellow';
     ctxs.lineWidth = 4;
     ctxs.fillStyle = 'red';
     ctxs.textAlign = 'center';
-    let missles = '';
-    missles = missleNum;
+    let enemies;
+    if (game1) {
+        enemies = game1.getEnemiesCount;
+    }else  enemies = 0;
     ctxs.font = "25px Arial";
-    ctxs.strokeText(missles, 100, 50);
-    ctxs.fillText(missles, 100, 50);
+    ctxs.strokeText(enemies, 100, 50);
+    ctxs.fillText(enemies, 100, 50);
     ctxs.restore();
 }

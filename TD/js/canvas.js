@@ -21,7 +21,7 @@ function scoreboardUpdate() {
     ctxs.fillRect(0, 0, canvasScr.width, canvasScr.height);
 
     //import number of missles
-    missleCounter(10, 10);
+    enemyCounter(10, 10);
 
     //import timer
     texture_timer(300, 10);
