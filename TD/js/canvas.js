@@ -16,7 +16,7 @@ class Playground {
         this.init_events();
         try {
             this.png_background = new Image();
-            this.png_background.src = 'textures/content/terrain/floor/floor4.png'
+            this.png_background.src = 'textures/content/terrain/floor/Floor4.png'
         } catch (e) {
             console.log('Failed to load textures');
         };
