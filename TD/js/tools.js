@@ -8,12 +8,12 @@ function getRandomBoolean() {
 
 
 function visualButtonUpdate() {
-    if (play) { //game running
+    if (game1.play) { //game running
         StartStopButton.value = "Stop";
         StartStopButton.innerHTML = "Stop";
         StartStopButton.style = "background: red;";
         PauseResumeButton.disabled = false;
-        if (!pause) {
+        if (!game1.pause) {
             PauseResumeButton.value = "Pause";
             PauseResumeButton.innerHTML = "Pause";
             PauseResumeButton.style = "background: gray;";
@@ -35,22 +35,6 @@ function visualButtonUpdate() {
     }
 }
 
+//TO BE MOVED in CANVAS SCOREBOARD
 
 
-function setTimer() {
-    if (startTime == null) {
-        startTime = Date.now();
-    } else {
-        return (Date.now() - startTime);
-    }
-    return (Date.now() - startTime);
-}
-
-
-function timerReset() {
-    startTime = null;
-}
-
-function clearPlayground() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-}

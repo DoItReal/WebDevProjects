@@ -1,14 +1,9 @@
-"use strict";
-var MainInterface = getInterface.get(); /// TO DO Singleton! interface.js
+"use strict"
+var MainInterface = getInterface.get(); /// Singleton! interface.js
 
-var animationID = null;
-var playerX = 350, playerY = 520, playerSpeed = 10; //to be overrided in Game.constructor();
-var play = false, pause = false;
-var startTime = null, pauseTime = null;
-var mousePos = {x:null,y:null};
-//var mousePosScr;
+ // TO DO CLASS For the FPS counter
 
-var divControlPanel;
+var divControlPanel; //to remove it when the ControlPanel class is ready
 
 class Player { //TO DO it singleton and to extends (to do)USER
 
@@ -21,6 +16,7 @@ class Player { //TO DO it singleton and to extends (to do)USER
     }
 
     move() {
+        let fps = game1.fps.fps;
         var unit = this; //saving this in variable to save the context
         let moveLeft = function () {
                 if (unit.x - unit.speed/fps >= 0) unit.x -= unit.speed/fps;
@@ -33,22 +29,39 @@ class Player { //TO DO it singleton and to extends (to do)USER
 
         }
         let moveRight = function () {
-            if (unit.x + unit.speed / fps <= canvas.width - 80) unit.x += unit.speed / fps;
-            else unit.x = canvas.width - 80;
+            if (unit.x + unit.speed / fps <= MainInterface.getPlayground().getCanvas().width - 80) unit.x += unit.speed / fps;
+            else unit.x = MainInterface.getPlayground().getCanvas().width - 80;
 
         }
         let moveDown = function () {
-            if (unit.y + unit.speed / fps <= canvas.height - 80) unit.y += unit.speed / fps;
-            else unit.y = canvas.height - 80;
+            if (unit.y + unit.speed / fps <= MainInterface.getPlayground().getCanvas().height - 80) unit.y += unit.speed / fps;
+            else unit.y = MainInterface.getPlayground().getCanvas().height - 80;
 
         }
-        if (pressedKeys.has(37)) moveLeft();
-        if (pressedKeys.has(38)) moveUp();
-        if (pressedKeys.has(39)) moveRight();
-        if (pressedKeys.has(40)) moveDown();
-        player(this.x, this.y);
+        if (MainInterface.pressedKeys.has(37)) moveLeft();
+        if (MainInterface.pressedKeys.has(38)) moveUp();
+        if (MainInterface.pressedKeys.has(39)) moveRight();
+        if (MainInterface.pressedKeys.has(40)) moveDown();
+        this.drawPlayer(this.x, this.y);
         
     }
+    drawPlayer(x, y) {
+        let ctx = MainInterface.getPlayground().getContext();
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.fillStyle = "green";
+    ctx.fillRect(0, 0, 80, 80);
+    ctx.fillStyle = "white";
+    ctx.fillRect(15, 20, 20, 20);
+    ctx.fillRect(50, 20, 20, 20);
+    ctx.fillStyle = "blue";
+    ctx.fillRect(19, 24, 12, 12);
+    ctx.fillRect(54, 24, 12, 12);
+    ctx.fillStyle = "black";
+    ctx.fillRect(22, 27, 6, 6);
+    ctx.fillRect(57, 27, 6, 6);
+    ctx.restore();
+}
     
 }
 
@@ -66,6 +79,7 @@ class Enemy { //TO DO it singleton and to extends (to do)USER
      //TO DO   this.inventory = inventory; //Inventory of enemy Unit /array of $items
     }
     move() {
+        let fps = game1.fps.fps;
         var unit = this; //saving this in variable to save the context
         let moveLeft = function () {
             if (unit.x - unit.speed / fps >= 0) {
@@ -88,34 +102,53 @@ class Enemy { //TO DO it singleton and to extends (to do)USER
 
         }
         let moveRight = function () {
-            if (unit.x + unit.speed / fps <= canvas.width - 40) {
+            if (unit.x + unit.speed / fps <= MainInterface.getPlayground().getCanvas().width - 40) {
                 unit.x += unit.speed / fps;
                 return 1;
             }
             else {
-                unit.x = canvas.width - 40;
+                unit.x = MainInterface.getPlayground().getCanvas().width - 40;
                 return 0;
             }
         }
         let moveDown = function () {
-            if (unit.y + unit.speed / fps <= canvas.height - 40) {
+            if (unit.y + unit.speed / fps <= MainInterface.getPlayground().getCanvas().height - 40) {
                 unit.y += unit.speed / fps;
                 return 1;
             }
             else {
-                unit.y = canvas.height - 40;
+                unit.y = MainInterface.getPlayground().getCanvas().height - 40;
                 return 0;
             }
         }
 
         if (!moveRight()) unit.x = 0;
 
-        enemy(this.x, this.y);
+        this.draw(this.x, this.y);
 
     }
     receiveDmg(dmg) {
         this.hp -= dmg;
     }
+    draw(x, y) {
+        let ctx = MainInterface.getPlayground().getContext();
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.scale(0.5, 0.5);
+    ctx.fillStyle = "red";
+    ctx.fillRect(0, 0, 80, 80);
+    ctx.fillStyle = "white";
+    ctx.fillRect(15, 20, 20, 20);
+    ctx.fillRect(50, 20, 20, 20);
+    ctx.fillStyle = "blue";
+    ctx.fillRect(19, 24, 12, 12);
+    ctx.fillRect(54, 24, 12, 12);
+    ctx.fillStyle = "black";
+    ctx.fillRect(22, 27, 6, 6);
+    ctx.fillRect(57, 27, 6, 6);
+
+    ctx.restore();
+}
     tooltip(mousePosR) {
         let w = 120; //width of the tooltip
         let h = 50; //height of the tooltip
@@ -158,12 +191,13 @@ class arrow {
         this.tower = tower;
     }
     update() {
+        let fps = game1.fps.fps;
         if (this.x < this.target.x) this.x += this.speed / fps;
         else if (this.x > this.target.x) this.x -= this.speed / fps;
 
         if (this.y < this.target.y) this.y += this.speed/fps;
         else if (this.y > this.target.y) this.y -= this.speed/fps;
-        texture_arrow(this.x, this.y, this.w, this.h);
+        this.draw(this.x, this.y, this.w, this.h);
 
         if (rectsOverlap(this.x, this.y, this.w, this.h, this.target.x, this.target.y, this.target.width, this.target.height)) {
             this.target.receiveDmg(this.dmg);
@@ -173,6 +207,19 @@ class arrow {
         else return 0;
 
     }
+    draw(x, y, w, h) {
+        let ctx = MainInterface.getPlayground().getContext();
+        ctx.save();
+        ctx.beginPath();
+        ctx.translate(x, y);
+        let color = 'green';
+        ctx.lineWidth = w;
+        ctx.strokeStyle = color;
+        ctx.moveTo(0, 0);
+        ctx.lineTo(0, h);
+        ctx.stroke();
+        ctx.restore();
+}
 }
 class Tower {
     constructor(x, y, type, lvl) {
@@ -230,6 +277,7 @@ class Tower {
         }
     }
     reload() {
+        let fps = game1.fps.fps;
         if (this.attackCD > 0) this.attackCD -= 1 / fps;
         if (this.attackCD < 0) this.attackCD = 0;
     }
@@ -240,6 +288,7 @@ class Tower {
         }
     }
     texture(preview = false) {
+        let ctx = MainInterface.getPlayground().getContext();
         ctx.save();
         ctx.beginPath();
         if (preview) ctx.globalAlpha = 0.5;
@@ -257,6 +306,7 @@ class Tower {
         ctx.restore();
     }
     tooltip(mousePosR) {
+        let ctx = MainInterface.getPlayground().getContext();
         let w = 180;
         let h = 50;
     
@@ -286,6 +336,10 @@ class Tower {
 class Game {
     defaultSpeed = 150;
     preview = null;
+    animationID = null;
+    play = false;
+    pause = false;
+    fps = new FPS();
     /*          Constructor()
      *          
      *          For creating Game instance we need: 
@@ -299,7 +353,7 @@ class Game {
      *      
      */
     constructor() {
-        this.player = new Player(canvas.width / 2, canvas.height / 2, this.defaultSpeed);
+        this.player = new Player(MainInterface.getPlayground().getCanvas().width / 2, MainInterface.getPlayground().getCanvas().height / 2, this.defaultSpeed);
         this.enemies = [];
         this.towers = [];
         this.playNow = this.playNow.bind(this);
@@ -313,46 +367,49 @@ class Game {
         if (this.enemies) return this.enemies.length;
         return 0;
     }
+    init() {
+        this.fps.init();
+    }
     startGame() {
         // this.addEnemy();
         //  this.addTower();
-        play = true;
-        animationID = requestAnimationFrame(this.playNow);
+        this.play = true;
+        this.animationID = requestAnimationFrame(this.playNow);
+        MainInterface.getScoreboard().timerOn = true;
     }
     stopGame() {
-        play = false;
-        this.player.x = canvas.width / 2, this.player.y = canvas.height / 2;
-        timerReset();
-        animationID = cancelAnimationFrame(animationID);
-        pause = false;
+        this.play = false;
+        this.player.x = 100, 100;
+        MainInterface.getScoreboard().timerReset();
+        this.animationID = cancelAnimationFrame(this.animationID);
+        this.pause = false;
+        MainInterface.getScoreboard().timerOn = false;
     }
     playNow() {
-        initFPS(performance.now());
+        this.fps.update(performance.now());
         //clear Playground
-        if (!pause) {
-            clearPlayground();
-            init_background();
-            if (!play) {
-                cancelAnimationFrame(animationID);
+        if (!this.pause) {
+            MainInterface.update();
+            if (!this.play) {
+                cancelAnimationFrame(this.animationID);
                 return 'Game Over';
             }
             //position the player
             this.player.move();
+
             //position the enemies
             this.enemies.forEach(element => element.move());
             this.towers.forEach(element => element.update(this));
             if (this.enemies && this.enemies.length > 0) this.checkEnemies();
             //check for hit
             if (this.hitCheck()) {
-                cancelAnimationFrame(animationID);
+                cancelAnimationFrame(this.animationID);
                 return 'Game Over';
             }
-            scoreboardUpdate();
             this.visualisePreview();
-            if (canvas === document.activeElement) this.checkForOverlapingObjectsPlayground();
+            if (MainInterface.getPlayground === document.activeElement) this.checkForOverlapingObjectsPlayground();
         }
-        timer(30, 10);
-        animationID = requestAnimationFrame(this.playNow);
+        this.animationID = requestAnimationFrame(this.playNow);
 
     }
     hitCheck() { // TO DO
@@ -394,12 +451,12 @@ class Game {
         this.enemies.splice(index, 1);
     }
     visualisePreview() {
-        if (clipboard != null && this.preview != null) {
-            tower(this.preview.x, this.preview.y, clipboard.type.width, clipboard.type.height, clipboard.type.range, 30, 200, true);
+        if (MainInterface.clipboard != null && this.preview != null) {
+            tower(this.preview.x, this.preview.y, MainInterface.clipboard.type.width, MainInterface.clipboard.type.height, MainInterface.clipboard.type.range, 30, 200, true);
         }
     }
     updatePreview(getX, getY) {
-        if (clipboard != null) {
+        if (MainInterface.clipboard != null) {
             this.preview = {
                 x: getX+40, // to do
                 y: getY
@@ -411,7 +468,7 @@ class Game {
     }
     checkForOverlapingObjectsPlayground() {
         let obj = null;
-        let rect = canvas.getBoundingClientRect();
+        let rect = MainInterface.getPlayground.getCanvas.getBoundingClientRect();
         let mousePosR = {
             x: mousePos.x - rect.left,
             y: mousePos.y - rect.top
@@ -442,19 +499,13 @@ class Game {
 var game1;
 
 function init() {
-    init_canvas();
-    try {
-        load_textures();
-    } catch (e) {
-        console.log('Failed to load textures: error: ' + e);
-    }
+    MainInterface.init();
+    MainInterface.init_events();
+
     game1 = new Game();
 
     init_inventory();
     init_controlPanel();
-    initFPSCounter();
-    
-    //init event listeners on controls
-    init_events_controls();
+   game1.init();
 }
 

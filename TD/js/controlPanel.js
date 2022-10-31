@@ -57,14 +57,14 @@ function event_startStopButton() {
     //event onclick StartStopButton
     StartStopButton.onclick = function (evt) {
         visualButtonUpdate();
-        if (!play) {
+        if (!game1.play) {
             //start animation game1.playNow
             game1.startGame();
             //   PauseResumeButton.disabled = false;
             visualButtonUpdate();
         } else { //stop
             //stop animation game1.playNow
-            game1.stopGame(animationID);
+            game1.stopGame();
             //  PauseResumeButton.disabled = true;
             visualButtonUpdate();
 
@@ -76,13 +76,13 @@ function event_pauseResumeButton() {
     visualButtonUpdate();
     //event PauseResumeButton onclick
     PauseResumeButton.onclick = function () {
-        pause = !pause;
-        if (!pause) { //game running
-            startTime += Date.now() - pauseTime;
-            pauseTime = null;
+        game1.pause = !game1.pause;
+        if (!game1.pause) { //game running
+            MainInterface.getScoreboard().startTime += Date.now() - MainInterface.getScoreboard().pauseTime;
+            MainInterface.getScoreboard().pauseTime = null;
             visualButtonUpdate();
         } else { //game paused
-            pauseTime = Date.now();
+            MainInterface.getScoreboard().pauseTime = Date.now();
             visualButtonUpdate();
         }
     };
@@ -96,13 +96,13 @@ function event_addEnemyButton() {
         game1.addEnemyPeon();
     }
 }
-    function event_addTowerButton() {
+function event_addTowerButton() {
         //   visualButtonUpdate();
         //event onclick AddEnemyButton
         AddTowerButton.onclick = function (evt) {
             //    visualButtonUpdate();
             //add enemy Game().addTower();
-            clipboard = {
+            MainInterface.clipboard = {
                 type: tower_archer};
         }
     }
