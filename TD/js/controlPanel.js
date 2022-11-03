@@ -93,16 +93,19 @@ function event_addEnemyButton() {
     AddEnemyButton.onclick = function (evt) {
         //    visualButtonUpdate();
         //add enemy Game().addEnemy();
-        game1.addEnemyPeon();
+        game1.getEnemiesInterface().addEnemy(new enemy_Peon({ x: 0, y: 100, w: 0, h: 0 }, [{ x: 700, y: 100, w: 0, h: 0 }, { x: 700, y: 600, w: 0, h: 0 }]));
     }
 }
 function event_addTowerButton() {
+    AddTowerButton.onclick = function (evt) {
+        game1.getTowersInterface().addTower(new tower_Slinger({ x: 400, y: 300, w: 40, h: 40 }));
+    }
         //   visualButtonUpdate();
         //event onclick AddEnemyButton
-        AddTowerButton.onclick = function (evt) {
+      //  
             //    visualButtonUpdate();
             //add enemy Game().addTower();
-            MainInterface.clipboard = {
+     /*       MainInterface.clipboard = {
                 type: tower_archer};
-        }
+        }  */
     }

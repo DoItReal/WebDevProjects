@@ -65,274 +65,6 @@ class Player { //TO DO it singleton and to extends (to do)USER
     
 }
 
-class Enemy { //TO DO it singleton and to extends (to do)USER
-
-    constructor(name, lvl, x, y, w, h, speed,hp, inventory) {
-        this.name = name;
-        this.x = x; //X location of enemy unit /int
-        this.y = y; //Y location of enemy unit /int
-        this.width = w; //Width of enemy unit [px]/int
-        this.height = h; //Width of enemy unit [px]/int
-        this.speed = speed; //speed of player [pixels/s] /int
-        this.hp = hp;
-        this.lvl = lvl;
-     //TO DO   this.inventory = inventory; //Inventory of enemy Unit /array of $items
-    }
-    move() {
-        let fps = game1.fps.fps;
-        var unit = this; //saving this in variable to save the context
-        let moveLeft = function () {
-            if (unit.x - unit.speed / fps >= 0) {
-                unit.x -= unit.speed / fps;
-                return 1;
-            }
-            else {
-                unit.x = 0;
-                return 0;
-            }
-        }
-        let moveUp = function () {
-            if (unit.y - (unit.speed / fps) >= 0) {
-                unit.y -= unit.speed / fps;
-                return 1;
-            } else {
-                unit.y = 0;
-                return 0;
-            }
-
-        }
-        let moveRight = function () {
-            if (unit.x + unit.speed / fps <= MainInterface.getPlayground().getCanvas().width - 40) {
-                unit.x += unit.speed / fps;
-                return 1;
-            }
-            else {
-                unit.x = MainInterface.getPlayground().getCanvas().width - 40;
-                return 0;
-            }
-        }
-        let moveDown = function () {
-            if (unit.y + unit.speed / fps <= MainInterface.getPlayground().getCanvas().height - 40) {
-                unit.y += unit.speed / fps;
-                return 1;
-            }
-            else {
-                unit.y = MainInterface.getPlayground().getCanvas().height - 40;
-                return 0;
-            }
-        }
-
-        if (!moveRight()) unit.x = 0;
-
-        this.draw(this.x, this.y);
-
-    }
-    receiveDmg(dmg) {
-        this.hp -= dmg;
-    }
-    draw(x, y) {
-        let ctx = MainInterface.getPlayground().getContext();
-    ctx.save();
-    ctx.translate(x, y);
-    ctx.scale(0.5, 0.5);
-    ctx.fillStyle = "red";
-    ctx.fillRect(0, 0, 80, 80);
-    ctx.fillStyle = "white";
-    ctx.fillRect(15, 20, 20, 20);
-    ctx.fillRect(50, 20, 20, 20);
-    ctx.fillStyle = "blue";
-    ctx.fillRect(19, 24, 12, 12);
-    ctx.fillRect(54, 24, 12, 12);
-    ctx.fillStyle = "black";
-    ctx.fillRect(22, 27, 6, 6);
-    ctx.fillRect(57, 27, 6, 6);
-
-    ctx.restore();
-}
-    tooltip(mousePosR) {
-        let w = 120; //width of the tooltip
-        let h = 50; //height of the tooltip
-
-        ctx.save();
-        if (mousePosR.x + w > canvas.width) mousePosR.x = canvas.width - w;
-        if (mousePosR.y + h > canvas.height) mousePosR.y = canvas.height - h;
-        ctx.translate(mousePosR.x, mousePosR.y);
-        ctx.globalAlpha = 0.3;
-        ctx.fillStyle = "lightblue";
-        ctx.strokeStyle = "white";
-        ctx.fillRect(0, 0, w, h);
-        ctx.lineWidth = 2;
-        ctx.globalAlpha = 0.7;
-        ctx.strokeRect(0, 0, w, h);
-        ctx.globalAlpha = 1;
-        ctx.fillStyle = "white";
-        ctx.font = "20px Roboto";
-        ctx.fillText(this.name + ' lvl ' + this.lvl, 10, 30);
-
-
-        ctx.restore();
-    }
-}
-class enemy_Peon extends Enemy {
-    constructor(lvl, x, y, inventory) {
-        super('Peon', lvl, x, y, 40, 40, 100, 10, new Inventory());
-    }
-}
-var tower_archer = { name:'Archer Tower', dmg: 2, range: 200, speed: 0.5, width: 30, height: 30 }; //lvl 1 archer tower, dmg:2 /shot, range:200 [px]radius, speed 1 [1/s]
-class arrow {
-    constructor(x, y, w, h, speed, dmg, target, tower) {
-        this.x = x;             //X start
-        this.y = y;             //Y start
-        this.w = w;             //Width
-        this.h = h;             //Height
-        this.speed = speed;     //Speed [px/s]
-        this.dmg = dmg;         //Dmg /hit
-        this.target = target;  //Target Enemy() Object
-        this.tower = tower;
-    }
-    update() {
-        let fps = game1.fps.fps;
-        if (this.x < this.target.x) this.x += this.speed / fps;
-        else if (this.x > this.target.x) this.x -= this.speed / fps;
-
-        if (this.y < this.target.y) this.y += this.speed/fps;
-        else if (this.y > this.target.y) this.y -= this.speed/fps;
-        this.draw(this.x, this.y, this.w, this.h);
-
-        if (rectsOverlap(this.x, this.y, this.w, this.h, this.target.x, this.target.y, this.target.width, this.target.height)) {
-            this.target.receiveDmg(this.dmg);
-            if (this.target.hp <= 0) this.tower.enemyDestroyed(this.target);
-            return 1;
-        }
-        else return 0;
-
-    }
-    draw(x, y, w, h) {
-        let ctx = MainInterface.getPlayground().getContext();
-        ctx.save();
-        ctx.beginPath();
-        ctx.translate(x, y);
-        let color = 'green';
-        ctx.lineWidth = w;
-        ctx.strokeStyle = color;
-        ctx.moveTo(0, 0);
-        ctx.lineTo(0, h);
-        ctx.stroke();
-        ctx.restore();
-}
-}
-class Tower {
-    constructor(x, y, type, lvl) {
-        this.x = x;
-        this.y = y;
-        this.type = tower_archer; //to do different towers and switch based definition
-        this.lvl = lvl;
-        this.target = null;
-        this.shots = [];
-        this.attackCD = 0;
-    }
-    radar(game) {
-
-        if (this.target == null) {
-            for (i = 0; i < game.enemies.length; i++) {
-                let enemyX = game.enemies[i].x;
-                let enemyY = game.enemies[i].y;
-                let enemyW = game.enemies[i].width;
-                let enemyH = game.enemies[i].height;
-                if (circRectsOverlap(enemyX, enemyY, enemyW, enemyH, this.x, this.y, this.type.range) && game.enemies[i].hp > 0) {
-                    return game.enemies[i];
-                }
-            }
-        } else if (!circRectsOverlap(this.target.x, this.target.y, this.target.width, this.target.height, this.x, this.y, this.type.range)) { //if target is not in range
-            return null;
-        } else return this.target;
-        return null;
-    }
-    attack() {
-        if (this.attackCD <= 0) {
-            this.shoot();
-            this.attackCD = this.type.speed;
-        } else this.reload();
-
-        if (this.shots && this.shots.length > 0) {
-            for (i = 0; i < this.shots.length; i++) {
-                if (this.shots[i].update()) { //update arrows
-                    console.log('arrow reached destination');
-                    this.shots.splice(i, 1);
-                    i--;
-                }
-            }
-        }
-    }
-    shoot() {
-        this.shots.push(new arrow(this.x, this.y, 5, 10, 100, this.type.dmg*this.lvl, this.target, this));
-    }
-    update(game) {
-        this.texture();
-        this.target = this.radar(game);
-        if (this.target != null) this.attack();
-        else {
-            this.reload();
-            this.shots = [];
-        }
-    }
-    reload() {
-        let fps = game1.fps.fps;
-        if (this.attackCD > 0) this.attackCD -= 1 / fps;
-        if (this.attackCD < 0) this.attackCD = 0;
-    }
-    enemyDestroyed(enemy) {
-        if (this.target == enemy) {
-            this.target = null;
-            this.shots = [];
-        }
-    }
-    texture(preview = false) {
-        let ctx = MainInterface.getPlayground().getContext();
-        ctx.save();
-        ctx.beginPath();
-        if (preview) ctx.globalAlpha = 0.5;
-        ctx.translate(this.x, this.y);
-        ctx.fillStyle = "blue";
-        ctx.fillRect(-(this.type.width / 2), -this.type.height / 2, 30, 30);
-        ctx.fillStyle = "green";
-        ctx.fillRect(-this.type.width / 2 + 5, -this.type.height / 2 + 5, 20, 20);
-        ctx.fillStyle = "red";
-        ctx.fillRect(-this.type.width / 2 + 10, -this.type.height / 2 + 10, 10, 10);
-        ctx.strokeStyle = "black";
-        ctx.arc(0, 0, this.type.range, 0, 2 * Math.PI, false);
-        ctx.stroke();
-
-        ctx.restore();
-    }
-    tooltip(mousePosR) {
-        let ctx = MainInterface.getPlayground().getContext();
-        let w = 180;
-        let h = 50;
-    
-
-        ctx.save();
-        if (mousePosR.x + w > canvas.width) mousePosR.x = canvas.width - w;
-        if (mousePosR.y + h > canvas.height) mousePosR.y = canvas.height - h;
-        ctx.translate(mousePosR.x, mousePosR.y);
-        ctx.globalAlpha = 0.3;
-        ctx.fillStyle = "lightblue";
-        ctx.strokeStyle = "white";
-        ctx.fillRect(0, 0, w, h);
-        ctx.lineWidth = 2;
-        ctx.globalAlpha = 0.7;
-        ctx.strokeRect(0, 0, w, h);
-        ctx.globalAlpha = 1;
-        ctx.fillStyle = "white";
-        ctx.font = "20px Roboto";
-        ctx.fillText(this.type.name + ' lvl ' + this.lvl, 10, 30);
-       
-
-        ctx.restore();
-    }
-}
-
-
 class Game {
     defaultSpeed = 150;
     preview = null;
@@ -340,6 +72,9 @@ class Game {
     play = false;
     pause = false;
     fps = new FPS();
+    misslesInterface;
+    towersInterface;
+    enemyInterface;
     /*          Constructor()
      *          
      *          For creating Game instance we need: 
@@ -354,13 +89,22 @@ class Game {
      */
     constructor() {
         this.player = new Player(MainInterface.getPlayground().getCanvas().width / 2, MainInterface.getPlayground().getCanvas().height / 2, this.defaultSpeed);
-        this.enemies = [];
-        this.towers = [];
         this.playNow = this.playNow.bind(this);
-
+        this.misslesInterface = new _Missles();
+        this.towersInterface = new _Towers();
+        this.enemyInterface = new _Enemies();
         //TO DO fetch the inventory from DB
         this.player.inventory.fill_inventory();
 
+    }
+     getMisslesInterface() {
+        return this.misslesInterface;
+    }
+     getTowersInterface() {
+        return this.towersInterface;
+    }
+     getEnemiesInterface() {
+        return this.enemyInterface;
     }
     get getGame() { return this; }
     get getEnemiesCount() {
@@ -371,8 +115,6 @@ class Game {
         this.fps.init();
     }
     startGame() {
-        // this.addEnemy();
-        //  this.addTower();
         this.play = true;
         this.animationID = requestAnimationFrame(this.playNow);
         MainInterface.getScoreboard().timerOn = true;
@@ -398,16 +140,11 @@ class Game {
             this.player.move();
 
             //position the enemies
-            this.enemies.forEach(element => element.move());
-            this.towers.forEach(element => element.update(this));
-            if (this.enemies && this.enemies.length > 0) this.checkEnemies();
-            //check for hit
-            if (this.hitCheck()) {
-                cancelAnimationFrame(this.animationID);
-                return 'Game Over';
-            }
-            this.visualisePreview();
-            if (MainInterface.getPlayground === document.activeElement) this.checkForOverlapingObjectsPlayground();
+            this.enemyInterface.update();
+            this.misslesInterface.update();
+            this.towersInterface.update();
+          //  this.visualisePreview();
+           //*Preview logic *  if (MainInterface.getPlayground === document.activeElement) this.checkForOverlapingObjectsPlayground();
         }
         this.animationID = requestAnimationFrame(this.playNow);
 
@@ -429,27 +166,6 @@ class Game {
             }
         }
     }
-    checkEnemies() {
-        for (i = 0; i < this.enemies.length; i++) {
-            if (this.enemies[i].hp <= 0) this.destroyEnemy(i);
-        }
-    }
-    addEnemyPeon() {
-        let x = 0;
-        let y = 200;
-        let inventory = new Inventory();
-        this.enemies.push(new enemy_Peon(1,x, y,inventory));
-    }
-    addTower(x, y, type) {
-        // x = 600;
-        // y = 300;
-        let lvl = 2;
-        this.towers.push(new Tower(x+40, y, type, lvl)); //to do X
-    }
-    destroyEnemy(index) {
-        if (this.towers && this.towers.length > 0) this.towers.forEach(element => element.enemyDestroyed(this.enemies[index]));
-        this.enemies.splice(index, 1);
-    }
     visualisePreview() {
         if (MainInterface.clipboard != null && this.preview != null) {
             tower(this.preview.x, this.preview.y, MainInterface.clipboard.type.width, MainInterface.clipboard.type.height, MainInterface.clipboard.type.range, 30, 200, true);
@@ -462,9 +178,6 @@ class Game {
                 y: getY
             }
         } else this.preview = null;
-    }
-    checkMouse() {
-
     }
     checkForOverlapingObjectsPlayground() {
         let obj = null;

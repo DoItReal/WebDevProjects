@@ -1,12 +1,13 @@
 {
   "ExpandedNodes": [
     "",
-    "\\Game Project",
     "\\Game Project\\js",
     "\\TD",
     "\\TD\\js",
-    "\\TD\\styles"
+    "\\TD\\js\\out",
+    "\\TD\\styles",
+    "\\TD\\Typescript"
   ],
-  "SelectedNode": "\\TD\\js\\canvas.js",
+  "SelectedNode": "\\TD\\Typescript\\tsconfig.json",
   "PreviewInSolutionExplorer": false
 }
