@@ -13,6 +13,7 @@ interface tower {
 }
 
 class Tower implements tower{ //declares and implements the methods of all towers
+    set: boolean;
     cord: cord;
     dim: dim;
     name: string;
@@ -28,6 +29,8 @@ class Tower implements tower{ //declares and implements the methods of all tower
         if (this.constructor === Tower) {
             throw new Error("Abstract classes can't be instantiated.");
         }
+        this.set = false;
+        this.cord = { x: 0, y: 0 };
         this.dim = { w: 0, h: 0 };
     }
 
@@ -43,7 +46,6 @@ class Tower implements tower{ //declares and implements the methods of all tower
         return circRectsOverlap(enemy.cord.x, enemy.cord.y, enemy.dim.w, enemy.dim.h, this.cord.x, this.cord.y, this.range);
     }
     attack() {
-        console.log('atk');
         if (this.atkCD <= 0) {
             this.shoot();
             this.atkCD = this.speed;
@@ -86,11 +88,11 @@ class Tower implements tower{ //declares and implements the methods of all tower
 
         ctx.restore();
     }
-  /*  tooltip(mousePosR) {
+    tooltip(mousePosR) {
         let ctx = MainInterface.getPlayground().getContext();
+        let canvas = MainInterface.getPlayground().getCanvas();
         let w = 180;
         let h = 50;
-
 
         ctx.save();
         if (mousePosR.x + w > canvas.width) mousePosR.x = canvas.width - w;
@@ -106,18 +108,16 @@ class Tower implements tower{ //declares and implements the methods of all tower
         ctx.globalAlpha = 1;
         ctx.fillStyle = "white";
         ctx.font = "20px Roboto";
-        ctx.fillText(this.type.name + ' lvl ' + this.lvl, 10, 30);
-
+        ctx.fillText(this.name + ' ' + this.lvl + ' lvl', 10, 30);
 
         ctx.restore();
-    } */
+    }
 }
 
 class tower_Slinger extends Tower {
 
-    constructor(cord:cord) {
+    constructor() {
         super();
-        this.cord = cord;
         this.name = "Slinger Tower";
         this.lvl = 1;
         this.speed = 1.2;
@@ -132,7 +132,10 @@ class _Towers {
     towers: Array<Tower>;
     constructor() {
     this.towers = [];
-}
+    }
+    getTowers() {
+        return this.towers;
+    }
     addTower(tower:Tower):void {
         this.towers.push(tower);
     }

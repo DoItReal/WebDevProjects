@@ -1,6 +1,4 @@
-interface way {
-    way: Array<cord>;
-}
+interface way extends Array<cord>{}
 interface enemy {
     cord: cord;      // {x:number,y:number,w:number,h:number}
     dim: dim;        // dimmension width, height
@@ -31,18 +29,18 @@ class Enemy implements enemy{
     }
     update(): void {
         if (this.way && this.way.length > 0)
-        this.move();
+            this.move();
+        else this.draw();
     }
 
     move(): void {
-        let fps = game1.fps.fps;    
-        let tmp = { x: this.cord.x, y: this.cord.y };
+        let fps = game1.fps.fps;
         let speedR = this.calcSpeed(this.cord, this.way[0]);
-        if((this.cord.x + speedR.speedX/fps ) < this.way[0].x)
+        if(this.cord.x != speedR.speedX/fps + this.cord.x )
             this.cord.x += speedR.speedX / fps;
-        if((this.cord.y + speedR.speedY/fps) < this.way[0].y)
+        if(this.cord.y != speedR.speedY/fps + this.cord.y)
             this.cord.y += speedR.speedY / fps;
-        if (tmp.x == this.cord.x && tmp.y == this.cord.y) this.way.splice(0, 1);
+        if (Math.round(this.way[0].x) == Math.round(this.cord.x) && Math.round(this.way[0].y) == Math.round(this.cord.y)) this.way.splice(0, 1);
         this.draw();
     }
     calcSpeed(cord1: cord, cord2: cord): {speedX:number,speedY:number} {
@@ -72,7 +70,6 @@ class Enemy implements enemy{
         ctx.restore();
     }
     receiveDmg(dmg: number): number {
-        console.log(this);
         let receivedDmg = dmg;
         this.hp -= dmg;
         if (this.hp <= 0) this.destroy();
@@ -153,5 +150,9 @@ class _Enemies {
     }
     getEnemies() {
         return this.enemies;
+    }
+    getEnemiesCount() {
+        if (this.enemies) return this.enemies.length;
+        return 0;
     }
 }

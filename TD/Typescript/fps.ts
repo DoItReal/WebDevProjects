@@ -1,5 +1,11 @@
 // vars for counting frames/s, used by the measureFPS function
 class FPS {
+    frameCount: number;
+    lastTime: number;
+    fpsContainer: HTMLDivElement;
+    fps: number;
+    oldTime: number;
+    delta: number;
 
     constructor() {
         this.frameCount = 0;

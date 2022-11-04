@@ -1,3 +1,23 @@
+
+
+class ControlPanel {
+    #container;
+    constructor() {
+
+
+    }
+    init() {
+        this.#container = document.querySelector('#divControlPanelContainer');
+    }
+
+    getContainer() {
+        return this.#container;
+    }
+    update() {
+
+    }
+}
+
 var PlayerSpeedSlider, PlayerSpeedOutput;
 var StartStopButton, PauseResumeButton;
 var AddEnemyButton, AddTowerButton;
@@ -8,12 +28,12 @@ function init_controlPanel() {
 }
 //defining control panel variables
 function define_controlPanel() {
+    //Container definition
     divControlPanel = document.querySelector('#divControlPanelContainer');
-    //player speed objects definition
+
+    //Player speed objects definition
     PlayerSpeedSlider = document.querySelector('#playerSpeedSlider');
     PlayerSpeedOutput = document.querySelector('#playerSpeedOutput');
-
-
 
     //StartStop button definition
     StartStopButton = document.querySelector("#startStopButton");
@@ -93,19 +113,18 @@ function event_addEnemyButton() {
     AddEnemyButton.onclick = function (evt) {
         //    visualButtonUpdate();
         //add enemy Game().addEnemy();
-        game1.getEnemiesInterface().addEnemy(new enemy_Peon({ x: 0, y: 100, w: 0, h: 0 }, [{ x: 700, y: 100, w: 0, h: 0 }, { x: 700, y: 600, w: 0, h: 0 }]));
+        game1.getEnemiesInterface().addEnemy(new enemy_Peon({ x: 700, y: 100 }, [{ x: 500, y: 400 }, { x: 200, y: 200 }, { x: 500, y: 400 }, { x: 200, y: 200 }]));
     }
 }
 function event_addTowerButton() {
     AddTowerButton.onclick = function (evt) {
-        game1.getTowersInterface().addTower(new tower_Slinger({ x: 400, y: 300, w: 40, h: 40 }));
+        MainInterface.setClipboard(new tower_Slinger());
+       // game1.getTowersInterface().addTower(new tower_Slinger({ x: 400, y: 300}));
     }
-        //   visualButtonUpdate();
-        //event onclick AddEnemyButton
-      //  
-            //    visualButtonUpdate();
-            //add enemy Game().addTower();
-     /*       MainInterface.clipboard = {
-                type: tower_archer};
-        }  */
-    }
+    //   visualButtonUpdate();
+    //event onclick AddEnemyButton
+    //  
+    //    visualButtonUpdate();
+    //add enemy Game().addTower();
+    
+}

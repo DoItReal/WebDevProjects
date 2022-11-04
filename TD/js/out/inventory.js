@@ -1,6 +1,4 @@
-var divInvContainer, divInventory, divHeader, divContent, divFooter, invButton;
-
-
+var divInvContainer, divInventory, divHeader, divContent, divFooter, invButton, divButton;
 class Item {
     //stackable = true; TO DO
     constructor(name, type, rarity, value, icon, stack) {
@@ -12,26 +10,25 @@ class Item {
         this.stack = stack;
     }
 }
-class Inventory { //TO DO it singleton
+class Inventory {
     constructor() {
         this.inventory = [];
         this.size = 0;
         this.minSize = 20;
     }
-
     //METHODS
     add_item(item) {
         this.inventory.push(item);
         this.size++;
     }
     drop_item(slotIndex) {
-        inventory.splice(slotIndex, 1);
+        this.inventory.splice(slotIndex, 1);
         this.size--;
     }
     get_item_OBJ(itemIndex) {
         return this.inventory[itemIndex];
     }
-    fill_inventory() { //to do getting items from DB
+    fill_inventory() {
         this.add_item(new Item('Diamonds', 'Currency', 'Legendary', 100, 'textures/icons/items/diamonds-icon.png', true));
         this.add_item(new Item('Gold', 'Currency', 'Elite', 2, 'textures/icons/items/gold-icon.png', true));
         this.add_item(new Item('Silver', 'Currency', 'Rare', 13, 'textures/icons/items/silver-icon.png', true));
@@ -54,9 +51,7 @@ class Inventory { //TO DO it singleton
     get_info(itemIndex) {
         return String(this.get_item_OBJ(itemIndex).value + 'x ' + this.get_item_OBJ(itemIndex).name);
     }
-
 }
-
 //initializing inventory
 function init_inventory() {
     define_inventoryPanel();
@@ -66,13 +61,12 @@ function init_inventory() {
 var openInventory = function () {
     divInvContainer.style.display = 'block';
     invButton.status = 'open';
-}
+};
 var closeInventory = function () {
     divInvContainer.style.display = 'none';
     invButton.status = 'closed';
-}
+};
 function define_inventoryPanel() {
-
     divInvContainer = document.querySelector('#divInvContainer');
     divInventory = document.createElement('div');
     divInventory.id = '#divInventory';
@@ -91,24 +85,20 @@ function define_inventoryPanel() {
     divFooter = document.createElement('div');
     divFooter.classList.add('invFooter');
     divInventory.appendChild(divFooter);
-
-
-    for (i = 0; i < game1.player.inventory.size; i++) {
+    for (let i = 0; i < game1.player.inventory.size; i++) {
         let divItem = document.createElement('div');
-
         divItem = setItemDivAttributes(divItem, game1.player.inventory.get_item_OBJ(i), i);
-
         divContent.appendChild(divItem);
     }
 }
 function define_inventoryButton() {
     invButton = document.querySelector('#invButton');
     invButton.status = 'closed';
-    
     invButton.onclick = function () {
         if (invButton.status == 'closed') {
             openInventory();
-        } else {
+        }
+        else {
             closeInventory();
         }
     };
@@ -120,48 +110,57 @@ function event_moveInventory() {
         drag = true;
         x = e.clientX;
         y = e.clientY;
-    }
+    };
     window.onmousemove = function (e) {
-        if(drag) move(e);
-    }
-    move = function (e) {
-        if (!drag) return;
+        if (drag)
+            move(e);
+    };
+    var move = function (e) {
+        if (!drag)
+            return;
         let rect = divInvContainer.getBoundingClientRect();
         divInvContainer.style.left = (e.clientX - x + rect.left) + 'px';
         divInvContainer.style.top = (e.clientY - y + rect.top) + 'px';
         x = e.clientX;
         y = e.clientY;
-    }
+    };
     window.onmouseup = function () {
         drag = false;
-    }
+    };
 }
 function setItemDivAttributes(divItem, itemObj, i) {
     divItem.id = 'item' + (i + 1);
     divItem.classList.add('divItem');
     let color;
     switch (itemObj.rarity) {
-        case 'Junk': color = 'lightgray'; break;
-        case 'Common': color = 'lightgray'; break;
-        case 'Uncommon': color = 'lightgreen'; break;
-        case 'Rare': color = 'lightblue'; break;
-        case 'Elite': color = 'purple'; break;
-        case 'Legendary': color = 'yellow'; break;
-
+        case 'Junk':
+            color = 'lightgray';
+            break;
+        case 'Common':
+            color = 'lightgray';
+            break;
+        case 'Uncommon':
+            color = 'lightgreen';
+            break;
+        case 'Rare':
+            color = 'lightblue';
+            break;
+        case 'Elite':
+            color = 'purple';
+            break;
+        case 'Legendary':
+            color = 'yellow';
+            break;
     }
     //  divItem.style = 'background-color:'+color;
-    divItem.style = (
-        'background-image: url(' + game1.player.inventory.get_item_OBJ(i).icon + ');' +
-        'background-color:' + color + ';'
-    );
-
+    divItem.style = ('background-image: url(' + game1.player.inventory.get_item_OBJ(i).icon + ');' +
+        'background-color:' + color + ';');
     if (itemObj.stack) {
         let divValue = document.createElement('div');
         divValue.classList.add('itemValue');
         divValue.innerHTML = itemObj.value;
         divItem.appendChild(divValue);
     }
-
     divItem.name = itemObj.name;
     divItem.value = itemObj.value;
     divItem.rarity = itemObj.rarity;
@@ -169,3 +168,4 @@ function setItemDivAttributes(divItem, itemObj, i) {
     divItem.title = itemObj.name;
     return divItem;
 }
+//# sourceMappingURL=inventory.js.map

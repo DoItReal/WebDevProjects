@@ -1,20 +1,5 @@
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        if (typeof b !== "function" && b !== null)
-            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-var Tower = /** @class */ (function () {
-    function Tower() {
+class Tower {
+    constructor() {
         this.lvl = 1;
         this.target = null;
         this.atkCD = 0;
@@ -22,34 +7,35 @@ var Tower = /** @class */ (function () {
         if (this.constructor === Tower) {
             throw new Error("Abstract classes can't be instantiated.");
         }
+        this.set = false;
+        this.cord = { x: 0, y: 0 };
         this.dim = { w: 0, h: 0 };
     }
-    Tower.prototype.radar = function () {
-        var enemies = this.enemiesInterface.getEnemies();
-        for (var i = 0; i < enemies.length; i++) {
+    radar() {
+        let enemies = this.enemiesInterface.getEnemies();
+        for (let i = 0; i < enemies.length; i++) {
             if (this.collisionCheck(enemies[i]) && enemies[i].hp > 0) {
                 return enemies[i];
             }
         }
-    };
-    Tower.prototype.collisionCheck = function (enemy) {
+    }
+    collisionCheck(enemy) {
         return circRectsOverlap(enemy.cord.x, enemy.cord.y, enemy.dim.w, enemy.dim.h, this.cord.x, this.cord.y, this.range);
-    };
-    Tower.prototype.attack = function () {
-        console.log('atk');
+    }
+    attack() {
         if (this.atkCD <= 0) {
             this.shoot();
             this.atkCD = this.speed;
         }
         else
             this.reload();
-    };
-    Tower.prototype.shoot = function () {
+    }
+    shoot() {
         //this.ammunition.setTarget(this.target);
         //game1.getMisslesInterface().addMissle(Object.assign({},this.ammunition)); // SHALLOW COPY
         game1.getMisslesInterface().addMissle(this.ammunition(structuredClone(this.cord), this.target)); //DEEP COPY
-    };
-    Tower.prototype.update = function () {
+    }
+    update() {
         this.draw(); // draw the texture of the tower
         if (!this.target || !this.collisionCheck(this.target) || this.target.hp <= 0) {
             this.target = this.radar();
@@ -59,17 +45,16 @@ var Tower = /** @class */ (function () {
         }
         else
             this.reload();
-    };
-    Tower.prototype.reload = function () {
-        var fps = game1.fps.fps;
+    }
+    reload() {
+        let fps = game1.fps.fps;
         if (this.atkCD > 0)
             this.atkCD -= 1 / fps;
         if (this.atkCD < 0)
             this.atkCD = 0;
-    };
-    Tower.prototype.draw = function (preview) {
-        if (preview === void 0) { preview = false; }
-        var ctx = MainInterface.getPlayground().getContext();
+    }
+    draw(preview = false) {
+        let ctx = MainInterface.getPlayground().getContext();
         ctx.save();
         ctx.beginPath();
         if (preview)
@@ -85,39 +70,61 @@ var Tower = /** @class */ (function () {
         ctx.arc(0, 0, this.range, 0, 2 * Math.PI, false);
         ctx.stroke();
         ctx.restore();
-    };
-    return Tower;
-}());
-var tower_Slinger = /** @class */ (function (_super) {
-    __extends(tower_Slinger, _super);
-    function tower_Slinger(cord) {
-        var _this = _super.call(this) || this;
-        _this.cord = cord;
-        _this.name = "Slinger Tower";
-        _this.lvl = 1;
-        _this.speed = 1.2;
-        _this.target = null;
-        _this.color = null;
-        _this.range = 300;
-        _this.ammunition = function (cord, target) { return new amm_stone(cord, target); };
-        return _this;
     }
-    return tower_Slinger;
-}(Tower));
-var _Towers = /** @class */ (function () {
-    function _Towers() {
+    tooltip(mousePosR) {
+        let ctx = MainInterface.getPlayground().getContext();
+        let canvas = MainInterface.getPlayground().getCanvas();
+        let w = 180;
+        let h = 50;
+        ctx.save();
+        if (mousePosR.x + w > canvas.width)
+            mousePosR.x = canvas.width - w;
+        if (mousePosR.y + h > canvas.height)
+            mousePosR.y = canvas.height - h;
+        ctx.translate(mousePosR.x, mousePosR.y);
+        ctx.globalAlpha = 0.3;
+        ctx.fillStyle = "lightblue";
+        ctx.strokeStyle = "white";
+        ctx.fillRect(0, 0, w, h);
+        ctx.lineWidth = 2;
+        ctx.globalAlpha = 0.7;
+        ctx.strokeRect(0, 0, w, h);
+        ctx.globalAlpha = 1;
+        ctx.fillStyle = "white";
+        ctx.font = "20px Roboto";
+        ctx.fillText(this.name + ' ' + this.lvl + ' lvl', 10, 30);
+        ctx.restore();
+    }
+}
+class tower_Slinger extends Tower {
+    constructor() {
+        super();
+        this.name = "Slinger Tower";
+        this.lvl = 1;
+        this.speed = 1.2;
+        this.target = null;
+        this.color = null;
+        this.range = 300;
+        this.ammunition = function (cord, target) { return new amm_stone(cord, target); };
+    }
+}
+class _Towers {
+    constructor() {
         this.towers = [];
     }
-    _Towers.prototype.addTower = function (tower) {
+    getTowers() {
+        return this.towers;
+    }
+    addTower(tower) {
         this.towers.push(tower);
-    };
-    _Towers.prototype.removeTower = function (ind) {
+    }
+    removeTower(ind) {
         if (typeof ind === "number") {
             this.towers.splice(ind, 1);
         }
         else { // typeof ind === cord
             if (this.towers !== null && this.towers.length > 0) {
-                for (var i = 0; i < this.towers.length; i++) {
+                for (let i = 0; i < this.towers.length; i++) {
                     if (this.towers[i].cord == ind) {
                         this.removeTower(i);
                         return;
@@ -125,12 +132,11 @@ var _Towers = /** @class */ (function () {
                 }
             }
         }
-    };
-    _Towers.prototype.update = function () {
+    }
+    update() {
         if (this.towers !== null && this.towers.length > 0) {
-            this.towers.forEach(function (e) { return e.update(); });
+            this.towers.forEach(e => e.update());
         }
-    };
-    return _Towers;
-}());
+    }
+}
 //# sourceMappingURL=TowerSystem.js.map
