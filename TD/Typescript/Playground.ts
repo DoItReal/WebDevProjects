@@ -41,7 +41,7 @@ class Playground {
     }
     overlapping(e) {
         let rect = this.#canvas.getBoundingClientRect();
-        if (circRectsOverlap(rect.left, rect.top, this.#canvas.width, this.#canvas.height, e.clientX, e.clientY, 5)) {
+        if (circRectsOverlap(rect.left, rect.top, rect.width, rect.height, e.clientX, e.clientY, 1)) {
             return 1;
         }
         return 0;

@@ -71,32 +71,34 @@ class Tower implements tower{ //declares and implements the methods of all tower
         if (this.atkCD < 0) this.atkCD = 0;
     }
     draw(preview = false) {
+      //  console.log(this.cord);
+     //   console.log(MainInterface.getMouse());
         let ctx = MainInterface.getPlayground().getContext();
         ctx.save();
         ctx.beginPath();
         if (preview) ctx.globalAlpha = 0.5;
-        ctx.translate(this.cord.x, this.cord.y);
+        ctx.translate(this.cord.x+this.dim.w/2, this.cord.y+this.dim.h/2);
         ctx.fillStyle = this.color || "blue";
-        ctx.fillRect(-(this.dim.w / 2), -this.dim.h / 2, 30, 30);
+        ctx.fillRect((this.dim.w / 2), this.dim.h / 2, 30, 30);
         ctx.fillStyle = this.color || "green";
-        ctx.fillRect(-this.dim.w / 2 + 5, -this.dim.h / 2 + 5, 20, 20);
+        ctx.fillRect(this.dim.w / 2 + 5, this.dim.h / 2 + 5, 20, 20);
         ctx.fillStyle = this.color || "red";
-        ctx.fillRect(-this.dim.w / 2 + 10, -this.dim.h / 2 + 10, 10, 10);
+        ctx.fillRect(this.dim.w / 2 + 10, this.dim.h / 2 + 10, 10, 10);
         ctx.strokeStyle = this.color || "black";
         ctx.arc(0, 0, this.range, 0, 2 * Math.PI, false);
         ctx.stroke();
 
         ctx.restore();
     }
-    tooltip(mousePosR) {
+    tooltip(mousePosR:cord) {
         let ctx = MainInterface.getPlayground().getContext();
         let canvas = MainInterface.getPlayground().getCanvas();
+        let rect = canvas.getBoundingClientRect();
         let w = 180;
         let h = 50;
-
         ctx.save();
-        if (mousePosR.x + w > canvas.width) mousePosR.x = canvas.width - w;
-        if (mousePosR.y + h > canvas.height) mousePosR.y = canvas.height - h;
+        if (mousePosR.x + w > rect.width) mousePosR.x = rect.width - w;
+        if (mousePosR.y + h > rect.height) mousePosR.y = rect.height - h;
         ctx.translate(mousePosR.x, mousePosR.y);
         ctx.globalAlpha = 0.3;
         ctx.fillStyle = "lightblue";
@@ -120,6 +122,7 @@ class tower_Slinger extends Tower {
         super();
         this.name = "Slinger Tower";
         this.lvl = 1;
+        this.dim = { w: 40, h: 40 };
         this.speed = 1.2;
         this.target = null;
         this.color = null;

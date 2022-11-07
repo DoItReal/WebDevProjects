@@ -38,6 +38,7 @@ class _MainInterface implements mainInterface{
     pressedKeys: Map<Number,String>;
     clipboard; // to rework
     mousePos: cord;
+    sprites = new Map();
     constructor() {
         this.pressedKeys = new Map<Number,String>;
         this.Playground = new Playground();
@@ -61,8 +62,9 @@ class _MainInterface implements mainInterface{
         this.Playground.init();
         this.Scoreboard.init();
         this.ControlPanel.init();
-
+        this.load();
         this.update();
+        
     }
     init_events() {
         //event getMousePos
@@ -158,4 +160,14 @@ class _MainInterface implements mainInterface{
     clearClipboard() {
         this.clipboard = null;
     }
+    load() {
+        let peonSprite = new enemy_PeonSprite();
+        this.sprites.set('enemy_peon', peonSprite.getSprites());
+    }
+    getSprites(obj:string) {
+        if (obj == "Peon") {
+            return this.sprites.get('enemy_peon');
+        }
+    }
+   
 }

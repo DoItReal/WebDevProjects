@@ -23,6 +23,7 @@ KeyCodes.set(39, 'right');
 KeyCodes.set(40, 'down');
 class _MainInterface {
     constructor() {
+        this.sprites = new Map();
         this.pressedKeys = new Map;
         this.Playground = new Playground();
         this.Scoreboard = new Scoreboard();
@@ -44,6 +45,7 @@ class _MainInterface {
         this.Playground.init();
         this.Scoreboard.init();
         this.ControlPanel.init();
+        this.load();
         this.update();
     }
     init_events() {
@@ -142,6 +144,15 @@ class _MainInterface {
     }
     clearClipboard() {
         this.clipboard = null;
+    }
+    load() {
+        let peonSprite = new enemy_PeonSprite();
+        this.sprites.set('enemy_peon', peonSprite.getSprites());
+    }
+    getSprites(obj) {
+        if (obj == "Peon") {
+            return this.sprites.get('enemy_peon');
+        }
     }
 }
 //# sourceMappingURL=MainInterface.js.map

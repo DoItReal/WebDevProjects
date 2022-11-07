@@ -28,7 +28,7 @@
 }
 #divCanvas {
     border: 5px solid gray;
-    flex: 60%;
+    flex: 80%;
     min-width: 50%;
     max-width: 50%;
     min-height: 37.5%;

@@ -1,5 +1,6 @@
 class Enemy {
     constructor() {
+        this.scale = 0.5;
         if (this.constructor === Enemy) {
             throw new Error("Abstract classes can't be instantiated.");
         }
@@ -12,12 +13,11 @@ class Enemy {
             this.draw();
     }
     move() {
-        let fps = game1.fps.fps;
         let speedR = this.calcSpeed(this.cord, this.way[0]);
-        if (this.cord.x != speedR.speedX / fps + this.cord.x)
-            this.cord.x += speedR.speedX / fps;
-        if (this.cord.y != speedR.speedY / fps + this.cord.y)
-            this.cord.y += speedR.speedY / fps;
+        if (this.cord.x != speedR.speedX + this.cord.x)
+            this.cord.x += speedR.speedX;
+        if (this.cord.y != speedR.speedY + this.cord.y)
+            this.cord.y += speedR.speedY;
         if (Math.round(this.way[0].x) == Math.round(this.cord.x) && Math.round(this.way[0].y) == Math.round(this.cord.y))
             this.way.splice(0, 1);
         this.draw();
@@ -28,24 +28,29 @@ class Enemy {
         let c = Math.sqrt((Math.pow(dx, 2) + Math.pow(dy, 2)));
         let sin = dx / c;
         let cos = dy / c;
-        return { speedX: (sin * this.speed), speedY: (cos * this.speed) };
+        //  let tan = dy / dx;
+        return { speedX: game1.calcDistanceToMove(sin * this.speed), speedY: game1.calcDistanceToMove(cos * this.speed) };
     }
     draw() {
         let ctx = MainInterface.getPlayground().getContext();
+        this.sprites.get('walkSprite').draw(ctx, this.cord, this.scale);
+        /*
         ctx.save();
         ctx.translate(this.cord.x, this.cord.y);
         ctx.fillStyle = "red";
         ctx.fillRect(0, 0, this.dim.w, this.dim.h);
         ctx.fillStyle = "white";
-        ctx.fillRect(this.dim.w / 5.33, this.dim.h / 4, this.dim.w / 4, this.dim.h / 4);
+        ctx.fillRect(this.dim.w/5.33, this.dim.h/4, this.dim.w/4, this.dim.h/4);
         ctx.fillRect(this.dim.w / 1.6, this.dim.h / 4, this.dim.w / 4, this.dim.h / 4);
         ctx.fillStyle = "blue";
-        ctx.fillRect(this.dim.w / 4.2, this.dim.h / 3.33, this.dim.w / 6.66, this.dim.h / 6.66);
+        ctx.fillRect(this.dim.w/4.2, this.dim.h/3.33, this.dim.w/6.66, this.dim.h/6.66);
         ctx.fillRect(this.dim.w / 1.48, this.dim.h / 3.33, this.dim.w / 6.66, this.dim.h / 6.66);
         ctx.fillStyle = "black";
         ctx.fillRect(this.dim.w / 3.63, this.dim.h / 2.96, this.dim.w / 13.33, this.dim.h / 13.66);
         ctx.fillRect(this.dim.w / 1.4, this.dim.h / 2.96, this.dim.w / 13.33, this.dim.h / 13.66);
+
         ctx.restore();
+        */
     }
     receiveDmg(dmg) {
         let receivedDmg = dmg;
@@ -83,26 +88,84 @@ class Enemy {
         ctx.fillText(this.name + ' lvl ' + this.lvl, 10, 30);
         ctx.restore();
     }
+    getName() {
+        return this.name;
+    }
+}
+class enemy_PeonSprite {
+    constructor() {
+        this.sprites = new Map();
+        this.tmp = new Map();
+        this.sprites.set("attackSprite", {
+            URL: "textures/content/enemy/Peon/attack/attack.png",
+            Width: 294,
+            Height: 275,
+            NB_Postures: 1,
+            NB_FramesPerPosture: 20
+        });
+        this.sprites.set("walkSprite", {
+            URL: "textures/content/enemy/Peon/attack/walk.png",
+            Width: 294,
+            Height: 275,
+            NB_Postures: 1,
+            NB_FramesPerPosture: 20
+        });
+    }
+    loadAssets() {
+        this.sprites.forEach((value, key) => {
+            /*
+             * var SPRITESHEET_URL = "textures/content/enemy/Peon/attack/attack.png";
+            var SPRITE_WIDTH = 294;
+            var SPRITE_HEIGHT = 275;
+            var NB_POSTURES = 1;
+            var NB_FRAMES_PER_POSTURE = 20;
+            */
+            // load the spritesheet
+            var spritesheet = new Image();
+            spritesheet.src = value.URL;
+            let tmp = new Map();
+            // Called when the spritesheet has been loaded
+            spritesheet.onload = () => {
+                for (var i = 0; i < value.NB_Postures; i++) {
+                    var sprite = new Sprite();
+                    sprite.extractSprites(spritesheet, value.NB_Postures, (i + 1), value.NB_FramesPerPosture, { w: value.Width, h: value.Height });
+                    sprite.setNbImagesPerSecond(20);
+                    this.tmp.set(key, sprite);
+                }
+                // call the callback function passed as a parameter, 
+                // we're done with loading assets and building the sprites
+                //  callback();
+            };
+        });
+    }
+    getSprites() {
+        this.loadAssets();
+        return this.tmp;
+    }
 }
 class enemy_Peon extends Enemy {
     constructor(cord, way) {
         super();
         this.cord = cord;
-        this.dim.w = 40;
-        this.dim.h = 40;
+        this.dim.w = 60;
+        this.dim.h = 60;
         this.way = way;
         this.name = "Peon";
         this.speed = 60;
         this.hp = 10;
         this.dmg = 1;
         this.lvl = 1;
+        this.sprites = MainInterface.getSprites("Peon");
+        this.scale = 0.4;
     }
 }
+//Enemies Interface - Contains all enemies in game
 class _Enemies {
     constructor() {
         this.enemies = [];
     }
     addEnemy(enemy) {
+        enemy.attackSprite = MainInterface.attackSprite;
         this.enemies.push(enemy);
     }
     removeEnemy(ind) {

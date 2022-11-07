@@ -1,7 +1,7 @@
 // Inits
 window.onload = function init() {
     var game = new GF();
-  //  game.start();
+    game.start();
     
     // initDragAndDrop();
     init_indexedDB();

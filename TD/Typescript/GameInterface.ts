@@ -74,7 +74,11 @@ class Game {
             this.misslesInterface.update();
             this.towersInterface.update();
             this.visualisePreview();
-            //*Preview logic *  if (MainInterface.getPlayground === document.activeElement) this.checkForOverlapingObjectsPlayground();
+            let tmp = MainInterface.getMouse();
+            if (MainInterface.getPlayground().overlapping({ clientX: tmp.x, clientY: tmp.y })) {
+                this.checkForOverlapingObjectsPlayground();
+            }
+          //  if (MainInterface.getPlayground() === document.activeElement) this.checkForOverlapingObjectsPlayground();
         }
         this.animationID = requestAnimationFrame(this.playNow);
 
@@ -100,22 +104,21 @@ class Game {
     visualisePreview() {
         if (MainInterface.clipboard != null && this.preview != null) {
             let obj = MainInterface.clipboard;
-            //   tower(this.preview.x, this.preview.y, MainInterface.clipboard.type.width, MainInterface.clipboard.type.height, MainInterface.clipboard.type.range, 30, 200, true);
-            obj.cord = { x: this.preview.x, y: this.preview.y };
+            obj.cord = { x: this.preview.x, y: this.preview.y-obj.dim.h };
             obj.draw(true);
         }
     }
     updatePreview(getX, getY) {
         if (MainInterface.clipboard != null) {
             this.preview = {
-                x: getX + 40, // to do
+                x: getX, // to do
                 y: getY
             }
         } else this.preview = null;
     }
     checkForOverlapingObjectsPlayground() {
         let obj = null;
-        let rect = MainInterface.getPlayground.getCanvas.getBoundingClientRect();
+        let rect = MainInterface.getPlayground().getCanvas().getBoundingClientRect();
         let enemies: Array<Enemy> = this.getEnemiesInterface().getEnemies();
         let mousePos: cord = MainInterface.getMouse();
         let mousePosR:cord = {
@@ -124,7 +127,7 @@ class Game {
         };
         if (enemies && enemies.length > 0) {
             for (let i = 0; i < enemies.length; i++) {
-                if (circRectsOverlap(enemies[i].cord.x - 40, enemies[i].cord.y, enemies[i].dim.w, enemies[i].dim.h, mousePosR.x, mousePosR.y, 5)) {
+                if (circRectsOverlap(enemies[i].cord.x+enemies[i].dim.w/2, enemies[i].cord.y+enemies[i].dim.h/2, enemies[i].dim.w, enemies[i].dim.h, mousePosR.x, mousePosR.y, 1)) {
                     obj = enemies[i];
                     obj.tooltip(mousePosR);
                     return;
@@ -134,12 +137,21 @@ class Game {
         let towers:Array<Tower> = this.getTowersInterface().getTowers();
         if (towers && towers.length > 0) {
             for (let i = 0; i < towers.length; i++) {
-                if (circRectsOverlap(towers[i].cord.x - 40, towers[i].cord.y - 20, towers[i].dim.w, towers[i].dim.h, mousePosR.x, mousePosR.y, 5)) {
+                if (circRectsOverlap(towers[i].cord.x+towers[i].dim.w/2 , towers[i].cord.y+towers[i].dim.h/2, towers[i].dim.w, towers[i].dim.h, mousePosR.x, mousePosR.y, 1)) {
                     obj = towers[i];
                     obj.tooltip(mousePosR);
                     return;
                 }
             }
         }
+    }
+
+     // We want the object to move at speed pixels/s (there are 60 frames in a second)
+    // If we are really running at 60 frames/s, the delay between frames should be 1/60
+    // = 16.66 ms, so the number of pixels to move = (speed * del)/1000. If the delay is twice
+    // longer, the formula works : let's move the rectangle twice longer!
+    calcDistanceToMove(speed) {
+    //console.log("#delta = " + delta + " speed = " + speed);
+    return (speed * this.fps.delta) / 1000;
     }
 }

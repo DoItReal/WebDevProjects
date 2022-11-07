@@ -9,7 +9,7 @@ var divControlPanel; //to remove it when the ControlPanel class is ready
 
 //declaring variable for new $Game() OBJECT // TO DO REWORK creating the object when starting the game with $divStartStopButton
 
-var game1;
+var game1: Game;
 
 function init() {
     MainInterface.init();

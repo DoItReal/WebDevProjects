@@ -19,24 +19,24 @@ class Player implements player{ //TO DO it singleton and to extends (to do)USER
     }
 
     move() {
-        let fps = game1.fps.fps;
+        let speed = game1.calcDistanceToMove(this.speed);
         let moveLeft = function () {
-            if (this.cord.x - this.speed / fps >= 0) this.cord.x -= this.speed / fps;
+            if (this.cord.x - speed >= 0) this.cord.x -= speed;
             else this.cord.x = 0;
 
         }
         let moveUp = function () {
-            if (this.cord.y - (this.speed / fps) >= 0) this.cord.y -= this.speed / fps;
+            if (this.cord.y - speed >= 0) this.cord.y -= speed;
             else this.cord.y = 0;
 
         }
         let moveRight = function () {
-            if (this.cord.x + this.speed / fps <= MainInterface.getPlayground().getCanvas().width - 80) this.cord.x += this.speed / fps;
+            if (this.cord.x + speed <= MainInterface.getPlayground().getCanvas().width - 80) this.cord.x += speed;
             else this.cord.x = MainInterface.getPlayground().getCanvas().width - 80;
 
         }
         let moveDown = function () {
-            if (this.cord.y + this.speed / fps <= MainInterface.getPlayground().getCanvas().height - 80) this.cord.y += this.speed / fps;
+            if (this.cord.y + speed <= MainInterface.getPlayground().getCanvas().height - 80) this.cord.y += speed;
             else this.cord.y = MainInterface.getPlayground().getCanvas().height - 80;
 
         }
