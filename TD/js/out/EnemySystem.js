@@ -1,6 +1,8 @@
 class Enemy {
     constructor() {
         this.scale = 0.5;
+        this.highlight = false;
+        this.scaleX = 1;
         if (this.constructor === Enemy) {
             throw new Error("Abstract classes can't be instantiated.");
         }
@@ -10,7 +12,7 @@ class Enemy {
         if (this.way && this.way.length > 0)
             this.move();
         else
-            this.draw();
+            this.draw('idle');
     }
     move() {
         let speedR = this.calcSpeed(this.cord, this.way[0]);
@@ -20,7 +22,16 @@ class Enemy {
             this.cord.y += speedR.speedY;
         if (Math.round(this.way[0].x) == Math.round(this.cord.x) && Math.round(this.way[0].y) == Math.round(this.cord.y))
             this.way.splice(0, 1);
-        this.draw();
+        if (speedR.speedX > 0) {
+            this.scaleX = 1;
+        }
+        else if (speedR.speedX < 0) {
+            this.scaleX = -1;
+        }
+        if (speedR.speedX != 0 && speedR.speedY != 0)
+            this.draw('walk');
+        else
+            this.draw('idle');
     }
     calcSpeed(cord1, cord2) {
         let dx = cord2.x - cord1.x;
@@ -31,9 +42,23 @@ class Enemy {
         //  let tan = dy / dx;
         return { speedX: game1.calcDistanceToMove(sin * this.speed), speedY: game1.calcDistanceToMove(cos * this.speed) };
     }
-    draw() {
+    getHighlight() {
+        return this.highlight;
+    }
+    setHighlight(value) {
+        this.highlight = value;
+    }
+    draw(str = 'idle') {
         let ctx = MainInterface.getPlayground().getContext();
-        this.sprites.get('walkSprite').draw(ctx, this.cord, this.scale);
+        this.sprites.get(str).draw(ctx, this.cord, this.scale, this.scaleX, 1); // to do logic for choose of the needed sprite
+        if (this.highlight) { // if MouseOn
+            ctx.save();
+            ctx.translate(this.cord.x, this.cord.y);
+            ctx.globalAlpha = 0.2;
+            ctx.fillStyle = "lightgreen";
+            ctx.fillRect(-this.dim.w / 2, -this.dim.h / 2, this.dim.w, this.dim.h);
+            ctx.restore();
+        }
         /*
         ctx.save();
         ctx.translate(this.cord.x, this.cord.y);
@@ -96,15 +121,50 @@ class enemy_PeonSprite {
     constructor() {
         this.sprites = new Map();
         this.tmp = new Map();
-        this.sprites.set("attackSprite", {
-            URL: "textures/content/enemy/Peon/attack/attack.png",
+        this.sprites.set("attack", {
+            URL: "textures/content/enemy/Peon/attack.png",
             Width: 294,
             Height: 275,
             NB_Postures: 1,
             NB_FramesPerPosture: 20
         });
-        this.sprites.set("walkSprite", {
-            URL: "textures/content/enemy/Peon/attack/walk.png",
+        this.sprites.set("walk", {
+            URL: "textures/content/enemy/Peon/walk.png",
+            Width: 294,
+            Height: 275,
+            NB_Postures: 1,
+            NB_FramesPerPosture: 20
+        });
+        this.sprites.set("run", {
+            URL: "textures/content/enemy/Peon/run.png",
+            Width: 294,
+            Height: 275,
+            NB_Postures: 1,
+            NB_FramesPerPosture: 20
+        });
+        this.sprites.set("idle", {
+            URL: "textures/content/enemy/Peon/idle.png",
+            Width: 294,
+            Height: 275,
+            NB_Postures: 1,
+            NB_FramesPerPosture: 20
+        });
+        this.sprites.set("die", {
+            URL: "textures/content/enemy/Peon/die.png",
+            Width: 294,
+            Height: 275,
+            NB_Postures: 1,
+            NB_FramesPerPosture: 20
+        });
+        this.sprites.set("hurt", {
+            URL: "textures/content/enemy/Peon/hurt.png",
+            Width: 294,
+            Height: 275,
+            NB_Postures: 1,
+            NB_FramesPerPosture: 20
+        });
+        this.sprites.set("jump", {
+            URL: "textures/content/enemy/Peon/jump.png",
             Width: 294,
             Height: 275,
             NB_Postures: 1,
@@ -165,7 +225,6 @@ class _Enemies {
         this.enemies = [];
     }
     addEnemy(enemy) {
-        enemy.attackSprite = MainInterface.attackSprite;
         this.enemies.push(enemy);
     }
     removeEnemy(ind) {

@@ -57,6 +57,7 @@ class Playground {
     mouseMove(mousePosRelative) {
         if (MainInterface.clipboard != null && game1.play && !game1.pause) { //if there is item in the clipboard 
             game1.updatePreview(mousePosRelative.x, mousePosRelative.y);
+            //        console.log(mousePosRelative);
         }
         else if (MainInterface.clipboard == null && game1.play && !game1.pause) { //if there is no item in the clipboard
         }
@@ -92,7 +93,7 @@ class Playground {
     }
     update() {
         this.clear();
-        this.background();
+        //   this.background();
     }
     backgroundTile(x, y, w, h, angle) {
         __classPrivateFieldGet(this, _Playground_ctx, "f").save();

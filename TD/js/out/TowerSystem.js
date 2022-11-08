@@ -3,6 +3,7 @@ class Tower {
         this.lvl = 1;
         this.target = null;
         this.atkCD = 0;
+        this.highlight = false;
         this.enemiesInterface = game1.getEnemiesInterface();
         if (this.constructor === Tower) {
             throw new Error("Abstract classes can't be instantiated.");
@@ -54,24 +55,35 @@ class Tower {
             this.atkCD = 0;
     }
     draw(preview = false) {
-        //  console.log(this.cord);
-        //   console.log(MainInterface.getMouse());
         let ctx = MainInterface.getPlayground().getContext();
         ctx.save();
         ctx.beginPath();
-        if (preview)
+        ctx.translate(this.cord.x, this.cord.y);
+        if (preview) {
             ctx.globalAlpha = 0.5;
-        ctx.translate(this.cord.x + this.dim.w / 2, this.cord.y + this.dim.h / 2);
+            ctx.strokeStyle = "green";
+            ctx.arc(0, 0, this.range, 0, 2 * Math.PI, false);
+            ctx.rect(-this.dim.w / 2 - 2, -this.dim.h / 2 - 2, this.dim.w + 4, this.dim.h + 4);
+            ctx.stroke();
+        }
+        if (this.highlight) {
+            ctx.strokeStyle = "green";
+            ctx.strokeRect(-this.dim.w / 2 - 2, -this.dim.h / 2 - 2, this.dim.w + 4, this.dim.h + 4);
+        }
         ctx.fillStyle = this.color || "blue";
-        ctx.fillRect((this.dim.w / 2), this.dim.h / 2, 30, 30);
+        ctx.fillRect(-(this.dim.w / 2), -(this.dim.h / 2), this.dim.w, this.dim.h);
         ctx.fillStyle = this.color || "green";
-        ctx.fillRect(this.dim.w / 2 + 5, this.dim.h / 2 + 5, 20, 20);
+        ctx.fillRect(-(this.dim.w / 2) + this.dim.w * 0.15, -(this.dim.h / 2) + this.dim.h * 0.15, this.dim.w * 0.7, this.dim.h * 0.7);
         ctx.fillStyle = this.color || "red";
-        ctx.fillRect(this.dim.w / 2 + 10, this.dim.h / 2 + 10, 10, 10);
+        ctx.fillRect(-(this.dim.w / 2) + this.dim.w / 3, -(this.dim.h / 2) + this.dim.h / 3, this.dim.w / 3, this.dim.h / 3);
         ctx.strokeStyle = this.color || "black";
-        ctx.arc(0, 0, this.range, 0, 2 * Math.PI, false);
-        ctx.stroke();
         ctx.restore();
+    }
+    getHighlight() {
+        return this.highlight;
+    }
+    setHighlight(value) {
+        this.highlight = value;
     }
     tooltip(mousePosR) {
         let ctx = MainInterface.getPlayground().getContext();

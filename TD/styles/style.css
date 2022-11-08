@@ -1,51 +1,63 @@
 @import 'inventory.css';
 
-#Playground {
-    cursor:crosshair;
-  border: 1px solid black;
-  flex: 1;
-}
-#Scoreboard{
-  border: 1px solid green;
-  flex: 2;
-}
+
 #flexContainer {
     align-items:flex-start;
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     margin: 0;
 }
 #divControlPanelContainer{
-    flex: 15%;
+    display:flex;
+    flex-direction:row;
+    position:relative;
+    flex: 10%;
+    width:100%;
+    max-height:150px;
     border: 1px solid black;
 }
-#spanControlPanel{
-    text-align:center;
-    font: 20px Arial Green;
-    margin-left:30%;
-    border-bottom: 1px solid gray;
-    color: blue;
+    #divControlPanelContainer ul {
+        list-style: none;
+    }
+#divPlayerControls{
+    display:block;
+    flex:1;
+    position:static;
+    border:10px solid red;
 }
+#divGameControls {
+    display: flex;
+    flex-direction:row;
+    border: 10px solid green;
+    flex: 5;
+}
+#divGameControls button{
+    height:fit-content;
+    width:fit-content;
+    flex:2;
+}
+
 #divCanvas {
     border: 5px solid gray;
-    flex: 80%;
-    min-width: 50%;
-    max-width: 50%;
-    min-height: 37.5%;
-    max-height: 37.5%;
+    flex: 3;
     padding: 0;
     margin: 0;
-
-    margin-left: 20%;
-    margin-right: 1%;
+    margin-left: 0%;
+    margin-right: 0%;
     display: -ms-flex;
     display: -webkit-flex;
     display: flex;
     flex-direction: column;
 }
+#Playground {
+    cursor: crosshair;
+    border: 1px solid black;
+    flex: 3;
+}
 
-#divControlPanelContainer ul {
-    list-style: none;
+#Scoreboard {
+    border: 1px solid green;
+    flex: 2;
 }
 
 canvas{
@@ -58,7 +70,7 @@ canvas{
     border: 2px groove gray;
     font: 20px Arial;
     padding: 5px;
-    width:100px;
+    max-width:100px;
 }
 
 #fpsContainer{

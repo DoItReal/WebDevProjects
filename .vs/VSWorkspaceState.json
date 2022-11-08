@@ -1,16 +1,10 @@
 {
   "ExpandedNodes": [
     "",
-    "\\Game Project",
-    "\\Game Project\\js",
     "\\TD",
     "\\TD\\styles",
-    "\\TD\\textures\\content",
-    "\\TD\\textures\\content\\enemy",
-    "\\TD\\textures\\content\\enemy\\Peon",
-    "\\TD\\textures\\content\\enemy\\Peon\\attack",
     "\\TD\\Typescript"
   ],
-  "SelectedNode": "\\Game Project\\js\\sprites.js",
+  "SelectedNode": "\\TD\\Typescript\\ControlPanel.ts",
   "PreviewInSolutionExplorer": false
 }

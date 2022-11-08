@@ -108,7 +108,7 @@ function event_addEnemyButton() {
     AddEnemyButton.onclick = function (evt) {
         //    visualButtonUpdate();
         //add enemy Game().addEnemy();
-        game1.getEnemiesInterface().addEnemy(new enemy_Peon({ x: 100, y: 100 }, [{ x: 500, y: 300 }, { x: 400, y: 500 }, { x: 100, y: 400 }, { x: 600, y: 500 }]));
+        game1.getEnemiesInterface().addEnemy(new enemy_Peon({ x: 100, y: 100 }, [{ x: 500, y: 300 }, { x: 400, y: 400 }, { x: 100, y: 400 }, { x: 600, y: 400 }]));
     };
 }
 function event_addTowerButton() {

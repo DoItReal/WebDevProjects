@@ -37,7 +37,7 @@ class _MainInterface implements mainInterface{
     ControlPanel: ControlPanel;
     pressedKeys: Map<Number,String>;
     clipboard; // to rework
-    mousePos: cord;
+    mousePos: cord;    // GLOBAL SCOPE
     sprites = new Map();
     constructor() {
         this.pressedKeys = new Map<Number,String>;
@@ -55,7 +55,7 @@ class _MainInterface implements mainInterface{
         this.removeKey = this.removeKey.bind(this);
 
     }
-    getMouse() {
+    getMouse() { // returns mouse pos in GLOBAL SCOPE
         return this.mousePos;
     }
     init() {
@@ -77,8 +77,6 @@ class _MainInterface implements mainInterface{
         this.Playground.init_events();
         this.Scoreboard.init_events();
     }
-
-
     addKey(key) {
         if (this.pressedKeys.has(key)) {
             return 0;
@@ -91,7 +89,6 @@ class _MainInterface implements mainInterface{
             this.pressedKeys.delete(key);
         }
     }
-
     handleKeyDown(e) {
         e.preventDefault();
         if (e.keyCode == '39') { //arrow right
@@ -116,7 +113,6 @@ class _MainInterface implements mainInterface{
             this.removeKey(e.keyCode);
         }
     }
-
     mouseMove(e) {
         e.preventDefault();
         let canv = this.getCanvasMouseOverlaping(e);
@@ -130,12 +126,17 @@ class _MainInterface implements mainInterface{
         if (this.Scoreboard.overlapping(e)) return this.Scoreboard;
         return null;
     }
-    getMousePos(canv, e) {
+    getMousePos(canv, e) { // get Relative mouse pos from GLOBAL SCOPE
         let rect = canv.getCanvas().getBoundingClientRect();
-        return {
-            x: e.clientX - rect.left,
-            y: e.clientY - rect.top
-        };
+        if (e != undefined)
+            return {
+                x: e.clientX - rect.left,
+                y: e.clientY - rect.top
+            };
+        else return {
+            x: this.mousePos.x - rect.left,
+            y: this.mousePos.y - rect.top
+        }
     }
     setMousePos(e) {
         this.mousePos = { x: e.clientX, y: e.clientY };

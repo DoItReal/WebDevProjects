@@ -117,10 +117,16 @@ class _MainInterface {
     }
     getMousePos(canv, e) {
         let rect = canv.getCanvas().getBoundingClientRect();
-        return {
-            x: e.clientX - rect.left,
-            y: e.clientY - rect.top
-        };
+        if (e != undefined)
+            return {
+                x: e.clientX - rect.left,
+                y: e.clientY - rect.top
+            };
+        else
+            return {
+                x: this.mousePos.x - rect.left,
+                y: this.mousePos.y - rect.top
+            };
     }
     setMousePos(e) {
         this.mousePos = { x: e.clientX, y: e.clientY };

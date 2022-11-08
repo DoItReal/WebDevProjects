@@ -96,7 +96,7 @@ class Game {
     visualisePreview() {
         if (MainInterface.clipboard != null && this.preview != null) {
             let obj = MainInterface.clipboard;
-            obj.cord = { x: this.preview.x, y: this.preview.y - obj.dim.h };
+            obj.cord = { x: this.preview.x, y: this.preview.y };
             obj.draw(true);
         }
     }
@@ -119,23 +119,35 @@ class Game {
             x: mousePos.x - rect.left,
             y: mousePos.y - rect.top
         };
+        //checking for overlaping enemies
         if (enemies && enemies.length > 0) {
             for (let i = 0; i < enemies.length; i++) {
-                if (circRectsOverlap(enemies[i].cord.x + enemies[i].dim.w / 2, enemies[i].cord.y + enemies[i].dim.h / 2, enemies[i].dim.w, enemies[i].dim.h, mousePosR.x, mousePosR.y, 1)) {
+                if (circRectsOverlap(enemies[i].cord.x - enemies[i].dim.w / 2, enemies[i].cord.y - enemies[i].dim.h / 2, enemies[i].dim.w, enemies[i].dim.h, mousePosR.x, mousePosR.y, 1)) {
                     obj = enemies[i];
+                    if (!obj.getHighlight()) {
+                        obj.setHighlight(true);
+                    }
                     obj.tooltip(mousePosR);
                     return;
                 }
+                if (enemies[i].getHighlight())
+                    enemies[i].setHighlight(false);
             }
         }
+        //checking for overlaping towers
         let towers = this.getTowersInterface().getTowers();
         if (towers && towers.length > 0) {
             for (let i = 0; i < towers.length; i++) {
-                if (circRectsOverlap(towers[i].cord.x + towers[i].dim.w / 2, towers[i].cord.y + towers[i].dim.h / 2, towers[i].dim.w, towers[i].dim.h, mousePosR.x, mousePosR.y, 1)) {
+                if (circRectsOverlap(towers[i].cord.x - towers[i].dim.w / 2, towers[i].cord.y - towers[i].dim.h / 2, towers[i].dim.w, towers[i].dim.h, mousePosR.x, mousePosR.y, 1)) {
                     obj = towers[i];
+                    if (!obj.getHighlight()) {
+                        obj.setHighlight(true);
+                    }
                     obj.tooltip(mousePosR);
                     return;
                 }
+                if (towers[i].getHighlight())
+                    towers[i].setHighlight(false);
             }
         }
     }
