@@ -1,18 +1,26 @@
 class Enemy {
     constructor() {
-        this.scale = 0.5;
+        this.scale = 0.4;
         this.highlight = false;
         this.scaleX = 1;
+        this.status = 'alive';
+        this.deadTime = 0;
+        this.deadCD = 1500; // [s]
         if (this.constructor === Enemy) {
             throw new Error("Abstract classes can't be instantiated.");
         }
         this.dim = { w: 0, h: 0 };
     }
     update() {
-        if (this.way && this.way.length > 0)
-            this.move();
-        else
-            this.draw('idle');
+        if (this.status != 'dead') {
+            if (this.way && this.way.length > 0)
+                this.move();
+            else
+                this.draw('idle');
+        }
+        else {
+            this.destroy();
+        }
     }
     move() {
         let speedR = this.calcSpeed(this.cord, this.way[0]);
@@ -50,7 +58,9 @@ class Enemy {
     }
     draw(str = 'idle') {
         let ctx = MainInterface.getPlayground().getContext();
-        this.sprites.get(str).draw(ctx, this.cord, this.scale, this.scaleX, 1); // to do logic for choose of the needed sprite
+        console.log(str);
+        this.healthBar.draw();
+        this.sprites.get(str).draw(ctx, this.cord, this.scale, this.scaleX, 1); // rotating the sprite if needed
         if (this.highlight) { // if MouseOn
             ctx.save();
             ctx.translate(this.cord.x, this.cord.y);
@@ -78,16 +88,24 @@ class Enemy {
         */
     }
     receiveDmg(dmg) {
-        let receivedDmg = dmg;
-        this.hp -= dmg;
+        if (this.status == 'alive') {
+            this.hp -= dmg;
+            var receivedDmg = dmg;
+        }
         if (this.hp <= 0)
             this.destroy();
         return receivedDmg;
     }
     destroy() {
-        console.log(this.name + " lvl:" + this.lvl + " KO");
-        game1.getEnemiesInterface().removeEnemy(this);
-        // TO DO
+        this.status = 'dead';
+        if (this.deadTime == 0) {
+            this.deadTime = Date.now();
+        }
+        else if (Date.now() - this.deadTime > this.deadCD) {
+            game1.getEnemiesInterface().removeEnemy(this);
+            return;
+        }
+        this.draw('die');
     }
     tooltip(mousePosR) {
         let ctx = MainInterface.getPlayground().getContext();
@@ -212,11 +230,13 @@ class enemy_Peon extends Enemy {
         this.way = way;
         this.name = "Peon";
         this.speed = 60;
-        this.hp = 10;
+        this.maxHP = 10;
+        this.hp = this.maxHP;
         this.dmg = 1;
         this.lvl = 1;
         this.sprites = MainInterface.getSprites("Peon");
-        this.scale = 0.4;
+        this.scale = 0.35;
+        this.healthBar = new HealthBarUnit(this);
     }
 }
 //Enemies Interface - Contains all enemies in game

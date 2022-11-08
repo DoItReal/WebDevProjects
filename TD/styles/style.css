@@ -23,12 +23,11 @@
     display:block;
     flex:1;
     position:static;
-    border:10px solid red;
+
 }
 #divGameControls {
     display: flex;
     flex-direction:row;
-    border: 10px solid green;
     flex: 5;
 }
 #divGameControls button{
