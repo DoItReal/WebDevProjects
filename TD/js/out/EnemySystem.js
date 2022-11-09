@@ -1,11 +1,10 @@
 class Enemy {
     constructor() {
         this.scale = 0.4;
-        this.highlight = false;
         this.scaleX = 1;
         this.status = 'alive';
         this.deadTime = 0;
-        this.deadCD = 1500; // [s]
+        this.deadCD = 1500; // [ms]
         if (this.constructor === Enemy) {
             throw new Error("Abstract classes can't be instantiated.");
         }
@@ -21,6 +20,25 @@ class Enemy {
         else {
             this.destroy();
         }
+    }
+    receiveDmg(dmg) {
+        if (this.status == 'alive') {
+            this.hp -= dmg;
+            var receivedDmg = dmg;
+        }
+        if (this.hp <= 0)
+            this.destroy();
+        return receivedDmg;
+    }
+    mouseOver(mousePosR) {
+        this.highlight(); // drawing highlight effect
+        this.tooltip(mousePosR); // drawing tooltip
+    }
+    mouseClick(e) {
+        // TO DO
+    }
+    getName() {
+        return this.name;
     }
     move() {
         let speedR = this.calcSpeed(this.cord, this.way[0]);
@@ -50,51 +68,22 @@ class Enemy {
         //  let tan = dy / dx;
         return { speedX: game1.calcDistanceToMove(sin * this.speed), speedY: game1.calcDistanceToMove(cos * this.speed) };
     }
-    getHighlight() {
-        return this.highlight;
-    }
-    setHighlight(value) {
-        this.highlight = value;
-    }
     draw(str = 'idle') {
         let ctx = MainInterface.getPlayground().getContext();
-        console.log(str);
-        this.healthBar.draw();
-        this.sprites.get(str).draw(ctx, this.cord, this.scale, this.scaleX, 1); // rotating the sprite if needed
-        if (this.highlight) { // if MouseOn
-            ctx.save();
-            ctx.translate(this.cord.x, this.cord.y);
-            ctx.globalAlpha = 0.2;
-            ctx.fillStyle = "lightgreen";
-            ctx.fillRect(-this.dim.w / 2, -this.dim.h / 2, this.dim.w, this.dim.h);
-            ctx.restore();
-        }
-        /*
+        this.sprites.get(str).draw(ctx, this.cord, this.scale, this.scaleX, 1); // drawing and rotating the sprite if needed
+        this.widgets(); //  DRAWING THE WIDGETS
+    }
+    highlight() {
+        let ctx = MainInterface.getPlayground().getContext();
         ctx.save();
         ctx.translate(this.cord.x, this.cord.y);
-        ctx.fillStyle = "red";
-        ctx.fillRect(0, 0, this.dim.w, this.dim.h);
-        ctx.fillStyle = "white";
-        ctx.fillRect(this.dim.w/5.33, this.dim.h/4, this.dim.w/4, this.dim.h/4);
-        ctx.fillRect(this.dim.w / 1.6, this.dim.h / 4, this.dim.w / 4, this.dim.h / 4);
-        ctx.fillStyle = "blue";
-        ctx.fillRect(this.dim.w/4.2, this.dim.h/3.33, this.dim.w/6.66, this.dim.h/6.66);
-        ctx.fillRect(this.dim.w / 1.48, this.dim.h / 3.33, this.dim.w / 6.66, this.dim.h / 6.66);
-        ctx.fillStyle = "black";
-        ctx.fillRect(this.dim.w / 3.63, this.dim.h / 2.96, this.dim.w / 13.33, this.dim.h / 13.66);
-        ctx.fillRect(this.dim.w / 1.4, this.dim.h / 2.96, this.dim.w / 13.33, this.dim.h / 13.66);
-
+        ctx.globalAlpha = 0.2;
+        ctx.fillStyle = "lightgreen";
+        ctx.fillRect(-this.dim.w / 2, -this.dim.h / 2, this.dim.w, this.dim.h);
         ctx.restore();
-        */
     }
-    receiveDmg(dmg) {
-        if (this.status == 'alive') {
-            this.hp -= dmg;
-            var receivedDmg = dmg;
-        }
-        if (this.hp <= 0)
-            this.destroy();
-        return receivedDmg;
+    widgets() {
+        this.healthBar.draw();
     }
     destroy() {
         this.status = 'dead';
@@ -130,9 +119,6 @@ class Enemy {
         ctx.font = "20px Roboto";
         ctx.fillText(this.name + ' lvl ' + this.lvl, 10, 30);
         ctx.restore();
-    }
-    getName() {
-        return this.name;
     }
 }
 class enemy_PeonSprite {

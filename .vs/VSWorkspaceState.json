@@ -2,8 +2,9 @@
   "ExpandedNodes": [
     "",
     "\\TD",
-    "\\TD\\styles"
+    "\\TD\\styles",
+    "\\TD\\Typescript"
   ],
-  "SelectedNode": "\\TD\\styles\\style.css",
+  "SelectedNode": "\\TD\\Typescript\\PlayerInterface.ts",
   "PreviewInSolutionExplorer": false
 }

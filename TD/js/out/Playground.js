@@ -117,4 +117,10 @@ class Playground {
     }
 }
 _Playground_canvas = new WeakMap(), _Playground_ctx = new WeakMap();
+class Tile {
+    constructor() {
+    }
+}
+class Tiles {
+}
 //# sourceMappingURL=Playground.js.map

@@ -9,7 +9,6 @@ interface tower {
     range: number;          //range radius [px]
     ammunition(): Missle; //object Ammunition()
     atkCD: number;          // [frames] to next attack
-    highlight: boolean;
 
 }
 
@@ -25,7 +24,6 @@ class Tower implements tower{ //declares and implements the methods of all tower
     range: number;
     atkCD: number = 0;
     ammunition;
-    highlight: boolean = false;
     enemiesInterface: _Enemies = game1.getEnemiesInterface();
     constructor() {
         if (this.constructor === Tower) {
@@ -36,28 +34,6 @@ class Tower implements tower{ //declares and implements the methods of all tower
         this.dim = { w: 0, h: 0 };
     }
 
-    radar(): Enemy {
-        let enemies = this.enemiesInterface.getEnemies();
-        for (let i = 0; i < enemies.length; i++) {
-            if (this.collisionCheck(enemies[i]) && enemies[i].hp > 0) {
-                return enemies[i];
-            }
-        }
-    }
-    collisionCheck(enemy:Enemy) : boolean {
-        return circRectsOverlap(enemy.cord.x, enemy.cord.y, enemy.dim.w, enemy.dim.h, this.cord.x, this.cord.y, this.range);
-    }
-    attack() {
-        if (this.atkCD <= 0) {
-            this.shoot();
-            this.atkCD = this.speed;
-        } else this.reload();
-    }
-    shoot() {        
-        //this.ammunition.setTarget(this.target);
-        //game1.getMisslesInterface().addMissle(Object.assign({},this.ammunition)); // SHALLOW COPY
-        game1.getMisslesInterface().addMissle(this.ammunition(structuredClone(this.cord), this.target)); //DEEP COPY
-    }
     update() {
         this.draw(); // draw the texture of the tower
         if (!this.target || !this.collisionCheck(this.target) || this.target.hp <= 0) {
@@ -67,10 +43,12 @@ class Tower implements tower{ //declares and implements the methods of all tower
             this.attack();
         }else this.reload();
     }
-    reload() {
-        let fps = game1.fps.fps;
-        if (this.atkCD > 0) this.atkCD -= 1 / fps;
-        if (this.atkCD < 0) this.atkCD = 0;
+    mouseClick(e) {
+        // TO DO
+    }
+    mouseOver(mousePosR: cord) {
+        this.highlight();
+        this.tooltip(mousePosR);
     }
     draw(preview = false) { 
         let ctx = MainInterface.getPlayground().getContext();
@@ -84,14 +62,7 @@ class Tower implements tower{ //declares and implements the methods of all tower
             ctx.rect(-this.dim.w / 2 - 2, -this.dim.h / 2 - 2, this.dim.w + 4, this.dim.h + 4);
             ctx.stroke();
         }
-        if (this.highlight) {
-            ctx.strokeStyle = "green";
-            ctx.strokeRect(-this.dim.w / 2 - 2, -this.dim.h / 2 - 2, this.dim.w + 4, this.dim.h + 4);
-
-        }
-
-
-        
+       
         ctx.fillStyle = this.color || "blue";
         ctx.fillRect(-(this.dim.w / 2), -(this.dim.h / 2), this.dim.w, this.dim.h);
         ctx.fillStyle = this.color || "green";
@@ -102,13 +73,44 @@ class Tower implements tower{ //declares and implements the methods of all tower
 
         ctx.restore();
     }
-    getHighlight() {
-        return this.highlight;
+    private collisionCheck(enemy: Enemy): boolean {
+        return circRectsOverlap(enemy.cord.x, enemy.cord.y, enemy.dim.w, enemy.dim.h, this.cord.x, this.cord.y, this.range);
     }
-    setHighlight(value:boolean) :void{
-        this.highlight = value;
+    private radar(): Enemy {
+        let enemies = this.enemiesInterface.getEnemies();
+        for (let i = 0; i < enemies.length; i++) {
+            if (this.collisionCheck(enemies[i]) && enemies[i].hp > 0) {
+                return enemies[i];
+            }
+        }
     }
-    tooltip(mousePosR: cord) {
+    private attack() {
+        if (this.atkCD <= 0) {
+            this.shoot();
+            this.atkCD = this.speed;
+        } else this.reload();
+    }
+    private shoot() {
+        //this.ammunition.setTarget(this.target);
+        //game1.getMisslesInterface().addMissle(Object.assign({},this.ammunition)); // SHALLOW COPY
+        game1.getMisslesInterface().addMissle(this.ammunition(structuredClone(this.cord), this.target)); //DEEP COPY
+    }
+    private reload() {
+        let fps = game1.fps.fps;
+        if (this.atkCD > 0) this.atkCD -= 1 / fps;
+        if (this.atkCD < 0) this.atkCD = 0;
+    }
+    private highlight() {
+        let ctx = MainInterface.getPlayground().getContext();
+        ctx.save();
+
+        ctx.translate(this.cord.x, this.cord.y);
+        ctx.strokeStyle = "green";
+        ctx.strokeRect(-this.dim.w / 2 - 2, -this.dim.h / 2 - 2, this.dim.w + 4, this.dim.h + 4);
+
+        ctx.restore();
+    }
+    private tooltip(mousePosR:cord) {
         let ctx = MainInterface.getPlayground().getContext();
         let canvas = MainInterface.getPlayground().getCanvas();
         let rect = canvas.getBoundingClientRect();

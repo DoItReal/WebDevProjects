@@ -107,3 +107,19 @@ class Playground {
         this.#ctx.clearRect(0, 0, this.#canvas.width, this.#canvas.height);
     }
 }
+
+
+class Tile {
+
+    
+    left: Tile;
+    up: Tile;
+    right: Tile;
+    down: Tile;
+    constructor() {
+
+    }
+}
+class Tiles {
+
+}

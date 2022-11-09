@@ -1,5 +1,5 @@
 interface way extends Array<cord>{}
-interface enemy {
+interface unit {
     cord: cord;      // {x:number,y:number,w:number,h:number}
     dim: dim;        // dimmension width, height
     way: way;        // Array<cord>
@@ -10,12 +10,14 @@ interface enemy {
     dmg: number;     // [dmg/hit]
     aspeed: number;  //  [hits/s]
     lvl: number;    //
-    highlight: boolean;
     status: string;
+    scale: number;
+    scaleX: number;
+    healthBar: HealthBarUnit;
     deadTime: number;
 }
 
-class Enemy implements enemy{
+class Enemy implements unit{
     cord: cord;
     dim: dim;
     way: way;
@@ -28,7 +30,6 @@ class Enemy implements enemy{
     lvl: number;
     sprites;
     scale: number = 0.4;
-    highlight: boolean = false;
     scaleX: number = 1;
     healthBar: HealthBarUnit;
     status = 'alive';
@@ -49,8 +50,27 @@ class Enemy implements enemy{
             this.destroy();
         }
     }
+    receiveDmg(dmg: number): number {
 
-    move(): void {
+        if (this.status == 'alive') {
+            this.hp -= dmg;
+            var receivedDmg = dmg;
+        }
+        if (this.hp <= 0) this.destroy();
+        return receivedDmg;
+    }
+    mouseOver(mousePosR: cord) {
+        this.highlight();           // drawing highlight effect
+        this.tooltip(mousePosR);    // drawing tooltip
+    }
+    mouseClick(e) {
+        // TO DO
+    }
+    getName() {
+        return this.name;
+    }
+
+    private move(): void {
         let speedR = this.calcSpeed(this.cord, this.way[0]);
         if(this.cord.x != speedR.speedX + this.cord.x )
             this.cord.x += speedR.speedX;
@@ -65,7 +85,7 @@ class Enemy implements enemy{
         if (speedR.speedX != 0 && speedR.speedY != 0) this.draw('walk');
         else this.draw('idle');
     }
-    calcSpeed(cord1: cord, cord2: cord): {speedX:number,speedY:number} {
+    private calcSpeed(cord1: cord, cord2: cord): {speedX:number,speedY:number} {
         let dx = cord2.x - cord1.x;
         let dy = cord2.y - cord1.y;
         let c = Math.sqrt((Math.pow(dx, 2) + Math.pow(dy, 2)));
@@ -75,55 +95,28 @@ class Enemy implements enemy{
 
         return { speedX: game1.calcDistanceToMove(sin * this.speed), speedY: game1.calcDistanceToMove(cos * this.speed) };
     }
-    getHighlight() {
-        return this.highlight;
-    }
-    setHighlight(value) {
-        this.highlight = value;
-    }
-    draw(str: string = 'idle'): void {
+    private draw(str: string = 'idle'): void {
         let ctx = MainInterface.getPlayground().getContext();
-        console.log(str);
-        this.healthBar.draw();
-        this.sprites.get(str).draw(ctx, this.cord, this.scale, this.scaleX, 1); // rotating the sprite if needed
         
-
-        if (this.highlight) { // if MouseOn
-            ctx.save();
-            ctx.translate(this.cord.x, this.cord.y);
-            ctx.globalAlpha = 0.2;
-            ctx.fillStyle = "lightgreen";
-            ctx.fillRect(-this.dim.w / 2, -this.dim.h / 2, this.dim.w, this.dim.h);
-            ctx.restore();
-        }
-        /*
+        this.sprites.get(str).draw(ctx, this.cord, this.scale, this.scaleX, 1); // drawing and rotating the sprite if needed
+        
+        this.widgets(); //  DRAWING THE WIDGETS
+    }
+    private highlight() {
+        let ctx = MainInterface.getPlayground().getContext();
         ctx.save();
+
         ctx.translate(this.cord.x, this.cord.y);
-        ctx.fillStyle = "red";
-        ctx.fillRect(0, 0, this.dim.w, this.dim.h);
-        ctx.fillStyle = "white";
-        ctx.fillRect(this.dim.w/5.33, this.dim.h/4, this.dim.w/4, this.dim.h/4);
-        ctx.fillRect(this.dim.w / 1.6, this.dim.h / 4, this.dim.w / 4, this.dim.h / 4);
-        ctx.fillStyle = "blue";
-        ctx.fillRect(this.dim.w/4.2, this.dim.h/3.33, this.dim.w/6.66, this.dim.h/6.66);
-        ctx.fillRect(this.dim.w / 1.48, this.dim.h / 3.33, this.dim.w / 6.66, this.dim.h / 6.66);
-        ctx.fillStyle = "black";
-        ctx.fillRect(this.dim.w / 3.63, this.dim.h / 2.96, this.dim.w / 13.33, this.dim.h / 13.66);
-        ctx.fillRect(this.dim.w / 1.4, this.dim.h / 2.96, this.dim.w / 13.33, this.dim.h / 13.66);
+        ctx.globalAlpha = 0.2;
+        ctx.fillStyle = "lightgreen";
+        ctx.fillRect(-this.dim.w / 2, -this.dim.h / 2, this.dim.w, this.dim.h);
 
         ctx.restore();
-        */
     }
-    receiveDmg(dmg: number): number {
-        
-        if (this.status == 'alive') {
-            this.hp -= dmg;
-            var receivedDmg = dmg;
-        }
-        if (this.hp <= 0) this.destroy();
-        return receivedDmg;
+    private widgets() {
+        this.healthBar.draw();
     }
-    destroy(): void {
+    private destroy(): void {
         this.status = 'dead';
         if (this.deadTime == 0) {
             this.deadTime = Date.now();
@@ -134,15 +127,17 @@ class Enemy implements enemy{
         this.draw('die');
         
     }
-    tooltip(mousePosR:cord) {
+    private tooltip(mousePosR: cord) {
         let ctx = MainInterface.getPlayground().getContext();
         let canvas = MainInterface.getPlayground();
         let w = 120; //width of the tooltip
         let h = 50; //height of the tooltip
 
         ctx.save();
-        if (mousePosR.x + w > canvas.width) mousePosR.x = canvas.width - w;
-        if (mousePosR.y + h > canvas.height) mousePosR.y = canvas.height - h;
+        if (mousePosR.x + w > canvas.width)
+            mousePosR.x = canvas.width - w;
+        if (mousePosR.y + h > canvas.height)
+            mousePosR.y = canvas.height - h;
         ctx.translate(mousePosR.x, mousePosR.y);
         ctx.globalAlpha = 0.3;
         ctx.fillStyle = "lightblue";
@@ -156,13 +151,8 @@ class Enemy implements enemy{
         ctx.font = "20px Roboto";
         ctx.fillText(this.name + ' lvl ' + this.lvl, 10, 30);
 
-
         ctx.restore();
     }
-    getName() {
-        return this.name;
-    }
-   
 }
 interface unitSprite {
     URL: string;
@@ -295,7 +285,7 @@ class _Enemies {
         this.enemies.push(enemy);
  
     }
-    removeEnemy(ind: number | enemy) {
+    removeEnemy(ind: number | Enemy) {
         if (typeof ind === "number") {
             this.enemies.splice(ind, 1);
         } else { // typeof ind === enemy

@@ -68,11 +68,7 @@ class Game {
             this.misslesInterface.update();
             this.towersInterface.update();
             this.visualisePreview();
-            let tmp = MainInterface.getMouse();
-            if (MainInterface.getPlayground().overlapping({ clientX: tmp.x, clientY: tmp.y })) {
-                this.checkForOverlapingObjectsPlayground();
-            }
-            //  if (MainInterface.getPlayground() === document.activeElement) this.checkForOverlapingObjectsPlayground();
+            this.checkForOverlapingObjectsPlayground();
         }
         this.animationID = requestAnimationFrame(this.playNow);
     }
@@ -111,6 +107,10 @@ class Game {
             this.preview = null;
     }
     checkForOverlapingObjectsPlayground() {
+        let tmp = MainInterface.getMouse();
+        //  if (MainInterface.getPlayground() === document.activeElement) this.checkForOverlapingObjectsPlayground();
+        if (!MainInterface.getPlayground().overlapping({ clientX: tmp.x, clientY: tmp.y }))
+            return;
         let obj = null;
         let rect = MainInterface.getPlayground().getCanvas().getBoundingClientRect();
         let enemies = this.getEnemiesInterface().getEnemies();
@@ -123,15 +123,9 @@ class Game {
         if (enemies && enemies.length > 0) {
             for (let i = 0; i < enemies.length; i++) {
                 if (circRectsOverlap(enemies[i].cord.x - enemies[i].dim.w / 2, enemies[i].cord.y - enemies[i].dim.h / 2, enemies[i].dim.w, enemies[i].dim.h, mousePosR.x, mousePosR.y, 1)) {
-                    obj = enemies[i];
-                    if (!obj.getHighlight()) {
-                        obj.setHighlight(true);
-                    }
-                    obj.tooltip(mousePosR);
+                    enemies[i].mouseOver(mousePosR);
                     return;
                 }
-                if (enemies[i].getHighlight())
-                    enemies[i].setHighlight(false);
             }
         }
         //checking for overlaping towers
@@ -139,15 +133,9 @@ class Game {
         if (towers && towers.length > 0) {
             for (let i = 0; i < towers.length; i++) {
                 if (circRectsOverlap(towers[i].cord.x - towers[i].dim.w / 2, towers[i].cord.y - towers[i].dim.h / 2, towers[i].dim.w, towers[i].dim.h, mousePosR.x, mousePosR.y, 1)) {
-                    obj = towers[i];
-                    if (!obj.getHighlight()) {
-                        obj.setHighlight(true);
-                    }
-                    obj.tooltip(mousePosR);
+                    towers[i].mouseOver(mousePosR);
                     return;
                 }
-                if (towers[i].getHighlight())
-                    towers[i].setHighlight(false);
             }
         }
     }

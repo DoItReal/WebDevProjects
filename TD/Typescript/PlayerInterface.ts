@@ -3,6 +3,7 @@ interface player {
     dim: dim;
     speed: number;
     inventory: Inventory;
+    hp: number;
 }
 
 class Player implements player{ //TO DO it singleton and to extends (to do)USER
@@ -10,6 +11,7 @@ class Player implements player{ //TO DO it singleton and to extends (to do)USER
     dim: dim;
     speed: number;
     inventory: Inventory;
+    hp: number;
 
     constructor(cord:cord, speed:number) {
         this.cord = cord;

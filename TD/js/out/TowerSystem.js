@@ -3,7 +3,6 @@ class Tower {
         this.lvl = 1;
         this.target = null;
         this.atkCD = 0;
-        this.highlight = false;
         this.enemiesInterface = game1.getEnemiesInterface();
         if (this.constructor === Tower) {
             throw new Error("Abstract classes can't be instantiated.");
@@ -12,6 +11,48 @@ class Tower {
         this.cord = { x: 0, y: 0 };
         this.dim = { w: 0, h: 0 };
     }
+    update() {
+        this.draw(); // draw the texture of the tower
+        if (!this.target || !this.collisionCheck(this.target) || this.target.hp <= 0) {
+            this.target = this.radar();
+        }
+        if (this.target != null) {
+            this.attack();
+        }
+        else
+            this.reload();
+    }
+    mouseClick(e) {
+        // TO DO
+    }
+    mouseOver(mousePosR) {
+        this.highlight();
+        this.tooltip(mousePosR);
+    }
+    draw(preview = false) {
+        let ctx = MainInterface.getPlayground().getContext();
+        ctx.save();
+        ctx.beginPath();
+        ctx.translate(this.cord.x, this.cord.y);
+        if (preview) {
+            ctx.globalAlpha = 0.5;
+            ctx.strokeStyle = "green";
+            ctx.arc(0, 0, this.range, 0, 2 * Math.PI, false);
+            ctx.rect(-this.dim.w / 2 - 2, -this.dim.h / 2 - 2, this.dim.w + 4, this.dim.h + 4);
+            ctx.stroke();
+        }
+        ctx.fillStyle = this.color || "blue";
+        ctx.fillRect(-(this.dim.w / 2), -(this.dim.h / 2), this.dim.w, this.dim.h);
+        ctx.fillStyle = this.color || "green";
+        ctx.fillRect(-(this.dim.w / 2) + this.dim.w * 0.15, -(this.dim.h / 2) + this.dim.h * 0.15, this.dim.w * 0.7, this.dim.h * 0.7);
+        ctx.fillStyle = this.color || "red";
+        ctx.fillRect(-(this.dim.w / 2) + this.dim.w / 3, -(this.dim.h / 2) + this.dim.h / 3, this.dim.w / 3, this.dim.h / 3);
+        ctx.strokeStyle = this.color || "black";
+        ctx.restore();
+    }
+    collisionCheck(enemy) {
+        return circRectsOverlap(enemy.cord.x, enemy.cord.y, enemy.dim.w, enemy.dim.h, this.cord.x, this.cord.y, this.range);
+    }
     radar() {
         let enemies = this.enemiesInterface.getEnemies();
         for (let i = 0; i < enemies.length; i++) {
@@ -19,9 +60,6 @@ class Tower {
                 return enemies[i];
             }
         }
-    }
-    collisionCheck(enemy) {
-        return circRectsOverlap(enemy.cord.x, enemy.cord.y, enemy.dim.w, enemy.dim.h, this.cord.x, this.cord.y, this.range);
     }
     attack() {
         if (this.atkCD <= 0) {
@@ -36,17 +74,6 @@ class Tower {
         //game1.getMisslesInterface().addMissle(Object.assign({},this.ammunition)); // SHALLOW COPY
         game1.getMisslesInterface().addMissle(this.ammunition(structuredClone(this.cord), this.target)); //DEEP COPY
     }
-    update() {
-        this.draw(); // draw the texture of the tower
-        if (!this.target || !this.collisionCheck(this.target) || this.target.hp <= 0) {
-            this.target = this.radar();
-        }
-        if (this.target != null) {
-            this.attack();
-        }
-        else
-            this.reload();
-    }
     reload() {
         let fps = game1.fps.fps;
         if (this.atkCD > 0)
@@ -54,36 +81,13 @@ class Tower {
         if (this.atkCD < 0)
             this.atkCD = 0;
     }
-    draw(preview = false) {
+    highlight() {
         let ctx = MainInterface.getPlayground().getContext();
         ctx.save();
-        ctx.beginPath();
         ctx.translate(this.cord.x, this.cord.y);
-        if (preview) {
-            ctx.globalAlpha = 0.5;
-            ctx.strokeStyle = "green";
-            ctx.arc(0, 0, this.range, 0, 2 * Math.PI, false);
-            ctx.rect(-this.dim.w / 2 - 2, -this.dim.h / 2 - 2, this.dim.w + 4, this.dim.h + 4);
-            ctx.stroke();
-        }
-        if (this.highlight) {
-            ctx.strokeStyle = "green";
-            ctx.strokeRect(-this.dim.w / 2 - 2, -this.dim.h / 2 - 2, this.dim.w + 4, this.dim.h + 4);
-        }
-        ctx.fillStyle = this.color || "blue";
-        ctx.fillRect(-(this.dim.w / 2), -(this.dim.h / 2), this.dim.w, this.dim.h);
-        ctx.fillStyle = this.color || "green";
-        ctx.fillRect(-(this.dim.w / 2) + this.dim.w * 0.15, -(this.dim.h / 2) + this.dim.h * 0.15, this.dim.w * 0.7, this.dim.h * 0.7);
-        ctx.fillStyle = this.color || "red";
-        ctx.fillRect(-(this.dim.w / 2) + this.dim.w / 3, -(this.dim.h / 2) + this.dim.h / 3, this.dim.w / 3, this.dim.h / 3);
-        ctx.strokeStyle = this.color || "black";
+        ctx.strokeStyle = "green";
+        ctx.strokeRect(-this.dim.w / 2 - 2, -this.dim.h / 2 - 2, this.dim.w + 4, this.dim.h + 4);
         ctx.restore();
-    }
-    getHighlight() {
-        return this.highlight;
-    }
-    setHighlight(value) {
-        this.highlight = value;
     }
     tooltip(mousePosR) {
         let ctx = MainInterface.getPlayground().getContext();
