@@ -1,10 +1,11 @@
 // Missle Interface includes all Missle methods 
 class Missle {
-    constructor() {
+    constructor(tower) {
         if (this.constructor === Missle) {
             throw new Error("Abstract classes can't be instantiated.");
         }
         this.dim = { w: 0, h: 0 };
+        this.tower = tower;
     }
     setTarget(target) {
         this.target = target;
@@ -37,7 +38,7 @@ class Missle {
         return rectsOverlap(this.cord.x, this.cord.y, this.dim.w, this.dim.h, this.target.cord.x, this.target.cord.y, this.target.dim.w, this.target.dim.h);
     }
     hit() {
-        this.addDmg(this.target.receiveDmg(this.dmg)); // *** TO TEST IT! ***
+        this.addDmg(this.target.receiveDmg(this.dmg * this.tower.lvl, this.tower));
         this.destroy();
     }
     destroy() {
@@ -62,13 +63,13 @@ class Missle {
 }
 Missle.dmgDone = 0;
 class amm_stone extends Missle {
-    constructor(cord, target) {
-        super();
+    constructor(cord, target, tower) {
+        super(tower);
         this.cord = cord; //asigning starting cordinates at creation
         this.dim.w = 5;
         this.dim.h = 5;
         this.name = "Stone";
-        this.dmg = 1;
+        this.dmg = 2;
         this.speed = 80;
         this.target = target; //asigning target for seeking
         this.status = "alive";

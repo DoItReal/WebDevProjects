@@ -21,13 +21,15 @@ class Enemy {
             this.destroy();
         }
     }
-    receiveDmg(dmg) {
+    receiveDmg(dmg, tower) {
         if (this.status == 'alive') {
             this.hp -= dmg;
             var receivedDmg = dmg;
         }
-        if (this.hp <= 0)
+        if (this.hp <= 0) {
+            tower.gainBounty(this.calculateBounty());
             this.destroy();
+        }
         return receivedDmg;
     }
     mouseOver(mousePosR) {
@@ -39,6 +41,11 @@ class Enemy {
     }
     getName() {
         return this.name;
+    }
+    calculateBounty() {
+        let bountyEXP = this.baseBounty.exp + Math.pow(this.lvl, 2);
+        let bountyGold = this.baseBounty.gold + Math.pow(this.lvl, 2) * 0.3;
+        return { exp: bountyEXP, gold: bountyGold };
     }
     move() {
         let speedR = this.calcSpeed(this.cord, this.way[0]);
@@ -223,6 +230,7 @@ class enemy_Peon extends Enemy {
         this.sprites = MainInterface.getSprites("Peon");
         this.scale = 0.35;
         this.healthBar = new HealthBarUnit(this);
+        this.baseBounty = { exp: 10, gold: 1 };
     }
 }
 //Enemies Interface - Contains all enemies in game

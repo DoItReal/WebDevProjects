@@ -3,6 +3,7 @@ interface tower {
     dim: dim;               //dimensions width , height
     name: string;           //Name of the object
     lvl: number;            // LvL
+    exp: number;
     speed: number;          // hits/s 
     target: Enemy;         // Enemy();
     color: string;          //to implement interface
@@ -18,6 +19,7 @@ class Tower implements tower{ //declares and implements the methods of all tower
     dim: dim;
     name: string;
     lvl: number = 1;
+    exp: number = 0;
     speed: number;
     target: Enemy = null;
     color: string;
@@ -72,6 +74,27 @@ class Tower implements tower{ //declares and implements the methods of all tower
         ctx.strokeStyle = this.color || "black";
 
         ctx.restore();
+    }
+    gainBounty(bounty:{exp:number,gold:number }) {
+        this.gainExp(bounty.exp);
+        game1.player.gainGold(bounty.gold);
+    }
+    private gainExp(value:number) {
+            let toNextLVL = 9 + Math.pow(this.lvl, 3);
+        if (this.exp + value > toNextLVL) {
+            value -= toNextLVL - this.exp;
+            this.levelUP();
+            this.gainExp(value);
+        } else {
+            this.exp += value;
+        }     
+    }
+    private levelUP() {
+        this.exp = 0;
+        this.lvl += 1;
+    }
+    private getLvL() {
+        return this.lvl;
     }
     private collisionCheck(enemy: Enemy): boolean {
         return circRectsOverlap(enemy.cord.x, enemy.cord.y, enemy.dim.w, enemy.dim.h, this.cord.x, this.cord.y, this.range);
@@ -131,6 +154,8 @@ class Tower implements tower{ //declares and implements the methods of all tower
         ctx.fillStyle = "white";
         ctx.font = "20px Roboto";
         ctx.fillText(this.name + ' ' + this.lvl + ' lvl', 10, 30);
+        ctx.font = "16px Roboto";
+        ctx.fillText(this.lvl * this.ammunition(null,null).dmg + ' dmg/hit',10,45);
 
         ctx.restore();
     }
@@ -141,13 +166,12 @@ class tower_Slinger extends Tower {
     constructor() {
         super();
         this.name = "Slinger Tower";
-        this.lvl = 1;
         this.dim = { w: 40, h: 40 };
         this.speed = 1.2;
         this.target = null;
         this.color = null;
         this.range = 300;
-        this.ammunition = function (cord: cord, target: Enemy) { return new amm_stone(cord, target) };
+        this.ammunition = function (cord: cord, target: Enemy) { return new amm_stone(cord, target, this) };
     }
 
 }

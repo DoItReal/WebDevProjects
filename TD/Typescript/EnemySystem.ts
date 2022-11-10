@@ -15,6 +15,8 @@ interface unit {
     scaleX: number;
     healthBar: HealthBarUnit;
     deadTime: number;
+    baseBounty: { exp: number, gold: number };
+
 }
 
 class Enemy implements unit{
@@ -35,6 +37,7 @@ class Enemy implements unit{
     status = 'alive';
     deadTime: number = 0;
     deadCD: number = 1500; // [ms]
+    baseBounty: { exp: number, gold: number };
     constructor() {
         if (this.constructor === Enemy) {
             throw new Error("Abstract classes can't be instantiated.");
@@ -50,13 +53,16 @@ class Enemy implements unit{
             this.destroy();
         }
     }
-    receiveDmg(dmg: number): number {
+    receiveDmg(dmg: number,tower:Tower): number {
 
         if (this.status == 'alive') {
             this.hp -= dmg;
             var receivedDmg = dmg;
         }
-        if (this.hp <= 0) this.destroy();
+        if (this.hp <= 0) {
+            tower.gainBounty(this.calculateBounty());
+            this.destroy();
+        }
         return receivedDmg;
     }
     mouseOver(mousePosR: cord) {
@@ -69,7 +75,11 @@ class Enemy implements unit{
     getName() {
         return this.name;
     }
-
+    private calculateBounty() {
+        let bountyEXP = this.baseBounty.exp + Math.pow(this.lvl, 2);
+        let bountyGold = this.baseBounty.gold + Math.pow(this.lvl, 2) * 0.3;
+        return { exp: bountyEXP, gold: bountyGold };
+    }
     private move(): void {
         let speedR = this.calcSpeed(this.cord, this.way[0]);
         if(this.cord.x != speedR.speedX + this.cord.x )
@@ -270,6 +280,7 @@ class enemy_Peon extends Enemy{
         this.sprites = MainInterface.getSprites("Peon");
         this.scale = 0.35;
         this.healthBar = new HealthBarUnit(this);
+        this.baseBounty = { exp: 10, gold: 1 };
     }
    
        

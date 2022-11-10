@@ -41,6 +41,9 @@ class Player {
             moveDown();
         this.drawPlayer(this.cord.x, this.cord.y);
     }
+    gainGold(value) {
+        this.gold += value;
+    }
     drawPlayer(x, y) {
         let ctx = MainInterface.getPlayground().getContext();
         ctx.save();

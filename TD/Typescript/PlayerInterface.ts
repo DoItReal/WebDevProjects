@@ -4,6 +4,7 @@ interface player {
     speed: number;
     inventory: Inventory;
     hp: number;
+    gold: number;
 }
 
 class Player implements player{ //TO DO it singleton and to extends (to do)USER
@@ -12,6 +13,7 @@ class Player implements player{ //TO DO it singleton and to extends (to do)USER
     speed: number;
     inventory: Inventory;
     hp: number;
+    gold: number;
 
     constructor(cord:cord, speed:number) {
         this.cord = cord;
@@ -48,6 +50,9 @@ class Player implements player{ //TO DO it singleton and to extends (to do)USER
         if (MainInterface.pressedKeys.has(40)) moveDown();
         this.drawPlayer(this.cord.x, this.cord.y);
 
+    }
+    gainGold(value: number) {
+        this.gold += value;
     }
     drawPlayer(x, y) {
         let ctx = MainInterface.getPlayground().getContext();

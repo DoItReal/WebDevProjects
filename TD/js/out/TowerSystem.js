@@ -1,6 +1,7 @@
 class Tower {
     constructor() {
         this.lvl = 1;
+        this.exp = 0;
         this.target = null;
         this.atkCD = 0;
         this.enemiesInterface = game1.getEnemiesInterface();
@@ -49,6 +50,28 @@ class Tower {
         ctx.fillRect(-(this.dim.w / 2) + this.dim.w / 3, -(this.dim.h / 2) + this.dim.h / 3, this.dim.w / 3, this.dim.h / 3);
         ctx.strokeStyle = this.color || "black";
         ctx.restore();
+    }
+    gainBounty(bounty) {
+        this.gainExp(bounty.exp);
+        game1.player.gainGold(bounty.gold);
+    }
+    gainExp(value) {
+        let toNextLVL = 9 + Math.pow(this.lvl, 3);
+        if (this.exp + value > toNextLVL) {
+            value -= toNextLVL - this.exp;
+            this.levelUP();
+            this.gainExp(value);
+        }
+        else {
+            this.exp += value;
+        }
+    }
+    levelUP() {
+        this.exp = 0;
+        this.lvl += 1;
+    }
+    getLvL() {
+        return this.lvl;
     }
     collisionCheck(enemy) {
         return circRectsOverlap(enemy.cord.x, enemy.cord.y, enemy.dim.w, enemy.dim.h, this.cord.x, this.cord.y, this.range);
@@ -112,6 +135,8 @@ class Tower {
         ctx.fillStyle = "white";
         ctx.font = "20px Roboto";
         ctx.fillText(this.name + ' ' + this.lvl + ' lvl', 10, 30);
+        ctx.font = "16px Roboto";
+        ctx.fillText(this.lvl * this.ammunition(null, null).dmg + ' dmg/hit', 10, 45);
         ctx.restore();
     }
 }
@@ -119,13 +144,12 @@ class tower_Slinger extends Tower {
     constructor() {
         super();
         this.name = "Slinger Tower";
-        this.lvl = 1;
         this.dim = { w: 40, h: 40 };
         this.speed = 1.2;
         this.target = null;
         this.color = null;
         this.range = 300;
-        this.ammunition = function (cord, target) { return new amm_stone(cord, target); };
+        this.ammunition = function (cord, target) { return new amm_stone(cord, target, this); };
     }
 }
 class _Towers {
