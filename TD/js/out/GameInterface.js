@@ -65,8 +65,8 @@ class Game {
             //   this.player.move();
             //position the enemies
             this.enemyInterface.update();
-            this.misslesInterface.update();
             this.towersInterface.update();
+            this.misslesInterface.update();
             this.visualisePreview();
             this.checkForOverlapingObjectsPlayground();
         }

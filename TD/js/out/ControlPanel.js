@@ -113,7 +113,7 @@ function event_addEnemyButton() {
 }
 function event_addTowerButton() {
     AddTowerButton.onclick = function (evt) {
-        MainInterface.setClipboard(new tower_Slinger());
+        MainInterface.setClipboard(new tower_Slinger(MainInterface.getMouse()));
         // game1.getTowersInterface().addTower(new tower_Slinger({ x: 400, y: 300}));
     };
     //   visualButtonUpdate();

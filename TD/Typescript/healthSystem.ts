@@ -38,7 +38,7 @@ class HealthBarUnit extends HealthBar{
                 this.greenBar.width, this.greenBar.height,      //w,h of the image to draw
                 0, 0,                                       //x,y location on canvas to draw
                 this.dim.w * hpFactor, this.dim.h);         //w,h dimensions to draw  
-        } else {
+        } else{
             ctx.drawImage(this.redBar,                      //image to draw
                 0, 0,                                       //x,y cordinates of the image to draw
                 this.redBar.width, this.redBar.height,      //w,h of the image to draw

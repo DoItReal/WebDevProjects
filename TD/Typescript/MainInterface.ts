@@ -37,7 +37,7 @@ class _MainInterface implements mainInterface{
     ControlPanel: ControlPanel;
     pressedKeys: Map<Number,String>;
     clipboard; // to rework
-    mousePos: cord;    // GLOBAL SCOPE
+    private mousePos: cord;    // GLOBAL SCOPE
     sprites = new Map();
     constructor() {
         this.pressedKeys = new Map<Number,String>;

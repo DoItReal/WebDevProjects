@@ -27,17 +27,18 @@ class Tower implements tower{ //declares and implements the methods of all tower
     atkCD: number = 0;
     ammunition;
     enemiesInterface: _Enemies = game1.getEnemiesInterface();
-    constructor() {
+    sprite: TowerAnimation;
+    constructor(cord:cord) {
         if (this.constructor === Tower) {
             throw new Error("Abstract classes can't be instantiated.");
         }
         this.set = false;
-        this.cord = { x: 0, y: 0 };
-        this.dim = { w: 0, h: 0 };
+        this.cord = cord;
     }
 
     update() {
         this.draw(); // draw the texture of the tower
+       
         if (!this.target || !this.collisionCheck(this.target) || this.target.hp <= 0) {
             this.target = this.radar();
         }
@@ -56,24 +57,18 @@ class Tower implements tower{ //declares and implements the methods of all tower
         let ctx = MainInterface.getPlayground().getContext();
         ctx.save();
         ctx.beginPath();
-        ctx.translate(this.cord.x, this.cord.y);
+        ctx.translate(this.cord.x-this.dim.w/2, this.cord.y-this.dim.h/2);
         if (preview) {
             ctx.globalAlpha = 0.5;
             ctx.strokeStyle = "green";
-            ctx.arc(0, 0, this.range, 0, 2 * Math.PI, false);
-            ctx.rect(-this.dim.w / 2 - 2, -this.dim.h / 2 - 2, this.dim.w + 4, this.dim.h + 4);
+            ctx.strokeRect(0, 0, this.dim.w + 4, this.dim.h + 4);
+            ctx.arc(0+this.dim.w/2, 0+this.dim.h/2, this.range, 0, 2 * Math.PI, false);
+            
             ctx.stroke();
         }
-       
-        ctx.fillStyle = this.color || "blue";
-        ctx.fillRect(-(this.dim.w / 2), -(this.dim.h / 2), this.dim.w, this.dim.h);
-        ctx.fillStyle = this.color || "green";
-        ctx.fillRect(-(this.dim.w / 2) + this.dim.w*0.15, -(this.dim.h / 2) + this.dim.h*0.15, this.dim.w*0.7, this.dim.h*0.7);
-        ctx.fillStyle = this.color || "red";
-        ctx.fillRect(-(this.dim.w / 2) + this.dim.w/3, -(this.dim.h / 2) + this.dim.h/3, this.dim.w/3, this.dim.h/3);
-        ctx.strokeStyle = this.color || "black";
-
         ctx.restore();
+        this.sprite.update(); 
+        this.ammunition.animate();
     }
     gainBounty(bounty:{exp:number,gold:number }) {
         this.gainExp(bounty.exp);
@@ -114,9 +109,14 @@ class Tower implements tower{ //declares and implements the methods of all tower
         } else this.reload();
     }
     private shoot() {
-        //this.ammunition.setTarget(this.target);
-        //game1.getMisslesInterface().addMissle(Object.assign({},this.ammunition)); // SHALLOW COPY
-        game1.getMisslesInterface().addMissle(this.ammunition(structuredClone(this.cord), this.target)); //DEEP COPY
+        this.ammunition.setCord(structuredClone(this.cord));    // to be removed later
+        this.ammunition.setTarget(this.target);                 //seting the target for the missle
+        this.ammunition.fire();                                 //firing the missle 
+        this.ammunition = this.getNewAmmo();                    // and reloading with new one
+       
+    }
+    getNewAmmo() {
+        // It have to be implemented in child class
     }
     private reload() {
         let fps = game1.fps.fps;
@@ -134,6 +134,7 @@ class Tower implements tower{ //declares and implements the methods of all tower
         ctx.restore();
     }
     private tooltip(mousePosR:cord) {
+
         let ctx = MainInterface.getPlayground().getContext();
         let canvas = MainInterface.getPlayground().getCanvas();
         let rect = canvas.getBoundingClientRect();
@@ -155,25 +156,123 @@ class Tower implements tower{ //declares and implements the methods of all tower
         ctx.font = "20px Roboto";
         ctx.fillText(this.name + ' ' + this.lvl + ' lvl', 10, 30);
         ctx.font = "16px Roboto";
-        ctx.fillText(this.lvl * this.ammunition(null,null).dmg + ' dmg/hit',10,45);
+        ctx.fillText(this.lvl * this.ammunition.dmg + ' dmg/hit',10,45);
 
         ctx.restore();
     }
 }
 
-class tower_Slinger extends Tower {
+interface elementAnimation {
+    URL: string;
+}
+
+class TowerAnimation {
+    elements: Map<string, HTMLImageElement > = new Map();
+    tower: Tower;
+    anim: { flag: boolean, value: number } = { flag: false, value: 0 }; // false => increment
+  
+    constructor(tower: Tower) {
+        this.load_assets();
+        this.tower = tower;
+    }
+    load_assets() {
+        var tmp = new elements_IronTower(); //here to place input
+        tmp.elements.forEach((value, key) => {
+            let tmpImage = new Image();
+            tmpImage.src = value.URL;
+            this.elements.set(key, tmpImage );
+        });
+    }
+    update() {
+        this.animate();
+    }
+    draw(k: number) {
+        let height = this.elements.get('tower').height;
+        let heightFront = this.elements.get('front').height;
+        let heightBehind = this.elements.get('behind').height;
+        let heightAmmo = this.elements.get('ammo').height;
+        let ctx = MainInterface.getPlayground().getContext();
+        ctx.save();
+        ctx.translate(this.tower.cord.x - this.tower.dim.w / 2, this.tower.cord.y - this.tower.dim.h / 2);
+        let kX = this.tower.dim.w / this.elements.get('tower').width;
+        let kY = this.tower.dim.h / this.elements.get('tower').height;
+        ctx.scale(kX,kY);
+        //draw behind
+        let element = this.elements.get('behind');
+        ctx.drawImage(element, 0, k+((height - heightBehind) /2.8));
+        //draw tower
+        element = this.elements.get('tower');
+        ctx.drawImage(element, 0, 0);
+        //draw front
+        element = this.elements.get('front');
+        ctx.drawImage(element, 0,k+( (height - heightFront)/1.8));
+        
+        //draw ammo
+        /*
+        element = this.elements.get('ammo');
+        if (this.tower.atkCD == 0) {
+            ctx.drawImage(element, 55, this.anim.value + k + ((height - heightAmmo) / 3));
+        } else {
+            ctx.globalAlpha = 1-(this.tower.atkCD / this.tower.speed);
+            ctx.drawImage(element, 55, this.anim.value + k + ((height - heightAmmo) / 3));
+        }
+        */
+        ctx.restore();
+        
+    }
+    private animate() {
+        let k = this.tower.atkCD / this.tower.speed;
+        if (k > 0) {
+            k *= -50;  //position reloading
+        } else {
+            k += this.anim.value / 3; // position idle
+        }
+        if (this.anim.flag && this.anim.value < 5) {
+            this.anim.value += 0.1;
+        } else if (!this.anim.flag && this.anim.value > 0) {
+            this.anim.value -= 0.1;
+        } else {
+            this.anim.flag = !this.anim.flag;
+        }
+        this.draw(k);
+    }
+}
+class elements_IronTower {
+     elements: Map<string, elementAnimation> = new Map();
 
     constructor() {
-        super();
+        this.elements.set("tower", {
+            URL: "textures/content/towers/iron1_tower.png"
+        });
+        this.elements.set("front", {
+            URL: "textures/content/towers/iron1_front.png"
+        });
+        this.elements.set("behind", {
+            URL: "textures/content/towers/iron1_behind.png"
+        });
+        this.elements.set("ammo", {
+            URL: "textures/content/towers/iron_1.png"
+        });
+    }
+   
+}
+
+class tower_Slinger extends Tower {
+
+    constructor(cord:cord) {
+        super(cord);
         this.name = "Slinger Tower";
-        this.dim = { w: 40, h: 40 };
-        this.speed = 1.2;
+        this.dim = { w: 80, h: 80 };
+        this.speed = 1,5;
         this.target = null;
         this.color = null;
         this.range = 300;
-        this.ammunition = function (cord: cord, target: Enemy) { return new amm_stone(cord, target, this) };
+        this.sprite = new TowerAnimation(this);
+        this.ammunition = this.getNewAmmo();
     }
-
+    getNewAmmo(): Missle {
+        return new amm_stone(structuredClone(this.cord), null, this);
+    }
 }
 class _Towers {
     towers: Array<Tower>;
@@ -200,6 +299,7 @@ class _Towers {
             }
         }
     }
+    
     update() {
         if (this.towers !== null && this.towers.length > 0) {
             this.towers.forEach(e => e.update());

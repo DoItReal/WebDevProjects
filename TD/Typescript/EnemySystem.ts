@@ -61,7 +61,9 @@ class Enemy implements unit{
         }
         if (this.hp <= 0) {
             tower.gainBounty(this.calculateBounty());
+            this.hp = 0;
             this.destroy();
+
         }
         return receivedDmg;
     }
