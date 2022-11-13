@@ -8,7 +8,7 @@ class MissleSystem {
 }
 
 */
-type status = "alive" | "death" | "idle" | "fired";
+type status = "alive" | "death" | "idle" | "fired" | "destroyed";
 interface cord {
     x: number;
     y: number;
@@ -41,6 +41,7 @@ class Missle implements tAmmunition{
     status: status;
     color: string;
     tower: Tower;
+    destructionCD: { cd: number, begin: number } = {cd: 25,begin:null}; //cd: [ms] , begin: Date.now() - initiating destruction
     static dmgDone: number = 0;
     constructor(tower:Tower) {
         if (this.constructor === Missle) {
@@ -70,13 +71,30 @@ class Missle implements tAmmunition{
         }
     }
     move(): void {
-        let fps = game1.fps.fps;
-        if (this.cord.x < this.target.cord.x) this.cord.x += this.speed / fps;
-        else if (this.cord.x > this.target.cord.x) this.cord.x -= this.speed / fps;
+        if (this.status == 'fired') {
+            let fps = game1.fps.fps;
+            if (this.cord.x < this.target.cord.x) {
+                if (this.cord.x + (this.speed / fps) > this.target.cord.x) this.cord.x = this.target.cord.x;
+                else this.cord.x += this.speed / fps;
 
-        if (this.cord.y < this.target.cord.y) this.cord.y += this.speed / fps;
-        else if (this.cord.y > this.target.cord.y) this.cord.y -= this.speed / fps;
+            }
+            else if (this.cord.x > this.target.cord.x) {
+                if (this.cord.x - (this.speed / fps) < this.target.cord.x) this.cord.x = this.target.cord.x;
+                else this.cord.x -= this.speed / fps;
 
+            }
+
+            if (this.cord.y < this.target.cord.y) {
+                if (this.cord.y + (this.speed / fps) > this.target.cord.y) this.cord.y = this.target.cord.y;
+                else this.cord.y += this.speed / fps;
+
+            }
+            else if (this.cord.y > this.target.cord.y) {
+                if (this.cord.y - (this.speed / fps) < this.target.cord.y) this.cord.y = this.target.cord.y;
+                else this.cord.y -= this.speed / fps;
+
+            }
+        }
         this.animate();
     }
     animate() {
@@ -86,16 +104,18 @@ class Missle implements tAmmunition{
         return rectsOverlap(this.cord.x, this.cord.y, this.dim.w, this.dim.h, this.target.cord.x, this.target.cord.y, this.target.dim.w, this.target.dim.h);
     }
     fire() {
-        this.status = "fired";                                    //seting status from 'idle' to 'fired'
-        this.cord.y -= 50;
-        game1.getMisslesInterface().addMissle(this); //Shooting the missle 
+        if (this.status == 'idle') {
+            this.status = "fired";                                    //seting status from 'idle' to 'fired'
+            this.cord.y -= 50;
+            game1.getMisslesInterface().addMissle(this); //Shooting the missle 
+        }
     }
     hit(): void { //increment Missle.dmgDone with dmg taken from the target// - destroys the missle
          this.addDmg(this.target.receiveDmg(this.dmg*this.tower.lvl,this.tower));
         this.destroy();
     }
     destroy(): void { //destroys the missle and draws destroy animation
-        this.status = "death";
+        this.status = "destroyed";
         this.destroy_texture();
     }
     draw() {
@@ -112,7 +132,7 @@ class MissleSprite extends Missle {
     constructor(tower:Tower) {
         super(tower);
     }
-    draw(k:number = 0) {
+    draw(k: number = 0) {
         let ctx = MainInterface.getPlayground().getContext();
         ctx.save();
         ctx.beginPath();
@@ -124,13 +144,15 @@ class MissleSprite extends Missle {
                 x: this.tower.cord.x - this.dim.w/2 , y: k+  this.tower.cord.y - this.tower.dim.h / 4
             };
         }
-            ctx.translate(this.cord.x, this.cord.y);
+
+        ctx.translate(this.cord.x, this.cord.y);
         ctx.scale(kX, kY);
+
         if (this.status === 'idle') {
-            if (this.tower.atkCD == 0) {
+            if (this.tower.atkCD == 0) {                                        //ready to fire 
                 ctx.drawImage(this.elements.get('ammo'), 0, 0);
             } else {
-                ctx.globalAlpha = 1 - (this.tower.atkCD / this.tower.speed);
+                ctx.globalAlpha = 1 - (this.tower.atkCD / this.tower.speed);        //reloading
                 ctx.drawImage(this.elements.get('ammo'), 0, 0);
             }
         } else {
@@ -138,11 +160,9 @@ class MissleSprite extends Missle {
         }
 
         ctx.restore();
-        console.log(k);
 
     }
     animate() {
-        console.log(this.status);
         if (this.status === 'idle') {
             let k = this.tower.atkCD / this.tower.speed;
             if (k > 0) {
@@ -158,9 +178,44 @@ class MissleSprite extends Missle {
                 this.missleAnimate.flag = !this.missleAnimate.flag;
             }
             this.draw(k);
-
+            
         } else this.draw();
 
+    }
+    destroy_texture() {
+        let kX = this.elements.get('ammo').width / this.tower.dim.w;
+        game1.getMisslesInterface().addAnimation(this.elements.get('ammo1'),kX, { x: this.cord.x, y: this.cord.y }, this.destructionCD.cd, null);
+        game1.getMisslesInterface().addAnimation(this.elements.get('ammo2'),kX, { x: this.cord.x, y: this.cord.y }, this.destructionCD.cd, null);
+        game1.getMisslesInterface().addAnimation(this.elements.get('ammo3'),kX, { x: this.cord.x, y: this.cord.y }, this.destructionCD.cd, null);
+        game1.getMisslesInterface().addAnimation(this.elements.get('ammo4'),kX, { x: this.cord.x, y: this.cord.y }, this.destructionCD.cd, null);
+        /*
+        if (this.destructionCD.begin == null) this.destructionCD.begin = Date.now();
+        let ctx = MainInterface.getPlayground().getContext();
+        ctx.save();
+        ctx.beginPath();
+        let kX = this.elements.get('ammo').width / this.tower.dim.w;
+        let kY = this.elements.get('ammo').height / this.tower.dim.h;
+        ctx.scale(kX, kY);
+        ctx.translate(this.cord.x, this.cord.y);
+        while (Date.now() - this.destructionCD.begin < this.destructionCD.cd) {
+            console.log
+        }
+        if ((Date.now() - this.destructionCD.begin) < 0.25 * this.destructionCD.cd) {
+            ctx.drawImage(this.elements.get('ammo1'), 0, 0);
+            console.log(Date.now() - this.destructionCD.begin);
+        }
+        else if ((Date.now() - this.destructionCD.begin) < 0.50 * this.destructionCD.cd) {
+            ctx.drawImage(this.elements.get('ammo2'), 0, 0);
+            console.log(2);
+        }
+        else if ((Date.now() - this.destructionCD.begin) < 0.75 * this.destructionCD.cd) {
+            ctx.drawImage(this.elements.get('ammo3'), 0, 0);
+        }
+        else if ((Date.now() - this.destructionCD.begin) < this.destructionCD.cd) {
+            ctx.drawImage(this.elements.get('ammo4'), 0, 0);
+        }
+        ctx.restore();
+        */
     }
 }
 class amm_stone extends MissleSprite{
@@ -172,7 +227,6 @@ class amm_stone extends MissleSprite{
     speed : number;
     target : Enemy;
     status: status;
-    color: string;
     tower: Tower;
     constructor(cord: cord, target: Enemy, tower:Tower) {
         super(tower);
@@ -184,7 +238,6 @@ class amm_stone extends MissleSprite{
         this.speed = 150;
         this.target = target; //asigning target for seeking
         this.status = "idle";
-        this.color = "lightgray";
         this.load_assets();
     }
    
@@ -203,11 +256,25 @@ class ammo_Iron_sprite {
         this.elements.set("ammo", {
             URL: "textures/content/towers/iron_1.png"
         });
+        this.elements.set("ammo1", {
+            URL: "textures/content/towers/iron_2.png"
+        });
+        this.elements.set("ammo2", {
+            URL: "textures/content/towers/iron_3.png"
+        });
+        this.elements.set("ammo3", {
+            URL: "textures/content/towers/iron_4.png"
+        });
+        this.elements.set("ammo4", {
+            URL: "textures/content/towers/iron_5.png"
+        });
+
     }
 }
 
 // _Missles Interface - includes all active missles and responds for their operations 
 class _Missles {
+    animations: Array<{img:HTMLImageElement,scale:number,cord:cord,time:number, begin:number}> = [];
     missles: Array<Missle>;
     static addMissle: (missle: Missle) => void;
     constructor() {
@@ -216,15 +283,35 @@ class _Missles {
     addMissle(missle: Missle) {
         this.missles.push(missle);
     }
+    addAnimation(element: HTMLImageElement,scale:number,cord:cord, time:number, begin:number = null) {
+        this.animations.push({ img: element, scale: scale, cord: cord, time: time, begin: begin });
+    }
     update() {
         if (this.missles !== null && this.missles.length > 0) {
             for (let i = 0; i < this.missles.length; i++) {
-                if (this.missles[i].status != "death" ) this.missles[i].update();
+                if (this.missles[i].status != "destroyed" ) this.missles[i].update();
                 else {
                     this.removeMissle(i);
                     i -= 1;
                 }
             }
+        }
+        if (this.animations !== null && this.animations.length > 0) {
+            this.anim();
+        }
+    }
+    anim() {
+        if (this.animations[0].begin == null) this.animations[0].begin = Date.now();
+        if (Date.now() - this.animations[0].begin < this.animations[0].time) {
+            let ctx = MainInterface.getPlayground().getContext();                              //draw
+            ctx.save();
+            ctx.translate(this.animations[0].cord.x, this.animations[0].cord.y);
+            ctx.scale(this.animations[0].scale, this.animations[0].scale);
+            ctx.drawImage(this.animations[0].img, 0, 0);
+            ctx.restore();
+        } else {
+            this.animations.splice(0, 1);
+            if (this.animations !== null && this.animations.length > 0) this.anim();
         }
     }
     removeMissle(ind: number): void {
