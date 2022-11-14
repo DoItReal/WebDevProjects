@@ -234,6 +234,102 @@ class enemy_Peon extends Enemy {
         this.baseBounty = { exp: 10, gold: 1 };
     }
 }
+class enemy_WarriorSprite {
+    constructor() {
+        this.sprites = new Map();
+        this.images = new Map();
+        this.sprites.set("attack", {
+            URL: "textures/content/enemy/Warrior/attack.png",
+            Width: 343,
+            Height: 348,
+            NB_Postures: 1,
+            NB_FramesPerPosture: 20
+        });
+        this.sprites.set("walk", {
+            URL: "textures/content/enemy/Warrior/walk.png",
+            Width: 343,
+            Height: 348,
+            NB_Postures: 1,
+            NB_FramesPerPosture: 20
+        });
+        this.sprites.set("run", {
+            URL: "textures/content/enemy/Warrior/run.png",
+            Width: 343,
+            Height: 348,
+            NB_Postures: 1,
+            NB_FramesPerPosture: 20
+        });
+        this.sprites.set("idle", {
+            URL: "textures/content/enemy/Warrior/idle.png",
+            Width: 343,
+            Height: 348,
+            NB_Postures: 1,
+            NB_FramesPerPosture: 20
+        });
+        this.sprites.set("die", {
+            URL: "textures/content/enemy/Warrior/die.png",
+            Width: 343,
+            Height: 348,
+            NB_Postures: 1,
+            NB_FramesPerPosture: 20
+        });
+        this.sprites.set("hurt", {
+            URL: "textures/content/enemy/Warrior/hurt.png",
+            Width: 343,
+            Height: 348,
+            NB_Postures: 1,
+            NB_FramesPerPosture: 20
+        });
+        this.sprites.set("jump", {
+            URL: "textures/content/enemy/Warrior/jump.png",
+            Width: 343,
+            Height: 348,
+            NB_Postures: 1,
+            NB_FramesPerPosture: 20
+        });
+    }
+    loadAssets() {
+        this.sprites.forEach((value, key) => {
+            var spritesheet = new Image();
+            spritesheet.src = value.URL;
+            // Called when the spritesheet has been loaded
+            spritesheet.onload = () => {
+                for (var i = 0; i < value.NB_Postures; i++) {
+                    var sprite = new Sprite();
+                    sprite.extractSprites(spritesheet, value.NB_Postures, (i + 1), value.NB_FramesPerPosture, { w: value.Width, h: value.Height });
+                    sprite.setNbImagesPerSecond(20);
+                    this.images.set(key, sprite);
+                }
+                // call the callback function passed as a parameter, 
+                // we're done with loading assets and building the sprites
+                //  callback();
+            };
+        });
+    }
+    getSprites() {
+        this.loadAssets();
+        return this.images;
+    }
+}
+class enemy_Warrior extends Enemy {
+    constructor(cord, way) {
+        super();
+        this.cord = cord;
+        this.dim.w = 80;
+        this.dim.h = 80;
+        this.way = way;
+        this.name = "Warrior";
+        this.speed = 70;
+        this.maxHP = 25;
+        this.hp = this.maxHP;
+        this.dmg = 2;
+        this.lvl = 1;
+        this.sprites = MainInterface.getSprites("Warrior");
+        this.scale = 0.35;
+        this.healthBar = new HealthBarUnit(this);
+        this.baseBounty = { exp: 13, gold: 2 };
+    }
+}
 //Enemies Interface - Contains all enemies in game
 class _Enemies {
     constructor() {

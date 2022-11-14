@@ -19,6 +19,7 @@ class Tower implements tower{ //declares and implements the methods of all tower
     dim: dim;
     name: string;
     lvl: number = 1;
+    maxLvL = 3;
     exp: number = 0;
     speed: number;
     target: Enemy = null;
@@ -28,6 +29,7 @@ class Tower implements tower{ //declares and implements the methods of all tower
     ammunition;
     enemiesInterface: _Enemies = game1.getEnemiesInterface();
     sprite: TowerAnimation;
+    assets;
     constructor(cord:cord) {
         if (this.constructor === Tower) {
             throw new Error("Abstract classes can't be instantiated.");
@@ -75,7 +77,8 @@ class Tower implements tower{ //declares and implements the methods of all tower
         game1.player.gainGold(bounty.gold);
     }
     private gainExp(value:number) {
-            let toNextLVL = 9 + Math.pow(this.lvl, 3);
+        if (this.lvl >= this.maxLvL) return;
+        let toNextLVL = 9 + Math.pow(this.lvl, 3);
         if (this.exp + value > toNextLVL) {
             value -= toNextLVL - this.exp;
             this.levelUP();
@@ -87,6 +90,7 @@ class Tower implements tower{ //declares and implements the methods of all tower
     private levelUP() {
         this.exp = 0;
         this.lvl += 1;
+        this.sprite = new TowerAnimation(this, this.assets.get(String('lvl_'+this.lvl)));
     }
     private getLvL() {
         return this.lvl;
@@ -170,14 +174,14 @@ class TowerAnimation {
     elements: Map<string, HTMLImageElement > = new Map();
     tower: Tower;
     anim: { flag: boolean, value: number } = { flag: false, value: 0 }; // false => increment
-  
-    constructor(tower: Tower) {
-        this.load_assets();
+    assets;
+    constructor(tower: Tower, assets) {      
         this.tower = tower;
+        this.assets = assets; // sprites
+        this.load_assets();
     }
     load_assets() {
-        var tmp = new elements_IronTower(); //here to place input
-        tmp.elements.forEach((value, key) => {
+        this.assets.elements.forEach((value, key) => {
             let tmpImage = new Image();
             tmpImage.src = value.URL;
             this.elements.set(key, tmpImage );
@@ -190,7 +194,6 @@ class TowerAnimation {
         let height = this.elements.get('tower').height;
         let heightFront = this.elements.get('front').height;
         let heightBehind = this.elements.get('behind').height;
-        let heightAmmo = this.elements.get('ammo').height;
         let ctx = MainInterface.getPlayground().getContext();
         ctx.save();
         ctx.translate(this.tower.cord.x - this.tower.dim.w / 2, this.tower.cord.y - this.tower.dim.h / 2);
@@ -250,15 +253,44 @@ class elements_IronTower {
         this.elements.set("behind", {
             URL: "textures/content/towers/iron1_behind.png"
         });
-        this.elements.set("ammo", {
-            URL: "textures/content/towers/iron_1.png"
-        });
     }
    
 }
+class elements_IronTower2 {
+    elements: Map<string, elementAnimation> = new Map();
 
-class tower_Slinger extends Tower {
+    constructor() {
+        this.elements.set("tower", {
+            URL: "textures/content/towers/iron2_tower.png"
+        });
+        this.elements.set("front", {
+            URL: "textures/content/towers/iron2_front.png"
+        });
+        this.elements.set("behind", {
+            URL: "textures/content/towers/iron2_behind.png"
+        });
+    }
 
+}
+class elements_IronTower3 {
+    elements: Map<string, elementAnimation> = new Map();
+
+    constructor() {
+        this.elements.set("tower", {
+            URL: "textures/content/towers/iron3_tower.png"
+        });
+        this.elements.set("front", {
+            URL: "textures/content/towers/iron2_front.png"
+        });
+        this.elements.set("behind", {
+            URL: "textures/content/towers/iron2_behind.png"
+        });
+    }
+
+}
+
+class tower_Iron extends Tower {
+    assets = new Map();
     constructor(cord:cord) {
         super(cord);
         this.name = "Slinger Tower";
@@ -267,7 +299,10 @@ class tower_Slinger extends Tower {
         this.target = null;
         this.color = null;
         this.range = 300;
-        this.sprite = new TowerAnimation(this);
+        this.assets.set('lvl_1', new elements_IronTower);
+        this.assets.set('lvl_2', new elements_IronTower2);
+        this.assets.set('lvl_3', new elements_IronTower3); 
+        this.sprite = new TowerAnimation(this, this.assets.get('lvl_1'));
         this.ammunition = this.getNewAmmo();
     }
     getNewAmmo(): Missle {

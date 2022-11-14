@@ -164,10 +164,14 @@ class _MainInterface implements mainInterface{
     load() {
         let peonSprite = new enemy_PeonSprite();
         this.sprites.set('enemy_peon', peonSprite.getSprites());
+        let warriorSprite = new enemy_WarriorSprite();
+        this.sprites.set('enemy_warrior', warriorSprite.getSprites());
     }
     getSprites(obj:string) {
-        if (obj == "Peon") {
-            return this.sprites.get('enemy_peon');
+        switch (obj) {
+            case "Peon": return this.sprites.get('enemy_peon');
+            case "Warrior": return this.sprites.get('enemy_warrior');
+            default: return;
         }
     }
    

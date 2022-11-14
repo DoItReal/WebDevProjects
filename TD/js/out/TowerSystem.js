@@ -1,6 +1,7 @@
 class Tower {
     constructor(cord) {
         this.lvl = 1;
+        this.maxLvL = 3;
         this.exp = 0;
         this.target = null;
         this.atkCD = 0;
@@ -50,6 +51,8 @@ class Tower {
         game1.player.gainGold(bounty.gold);
     }
     gainExp(value) {
+        if (this.lvl >= this.maxLvL)
+            return;
         let toNextLVL = 9 + Math.pow(this.lvl, 3);
         if (this.exp + value > toNextLVL) {
             value -= toNextLVL - this.exp;
@@ -63,6 +66,7 @@ class Tower {
     levelUP() {
         this.exp = 0;
         this.lvl += 1;
+        this.sprite = new TowerAnimation(this, this.assets.get(String('lvl_' + this.lvl)));
     }
     getLvL() {
         return this.lvl;
@@ -139,15 +143,15 @@ class Tower {
     }
 }
 class TowerAnimation {
-    constructor(tower) {
+    constructor(tower, assets) {
         this.elements = new Map();
         this.anim = { flag: false, value: 0 }; // false => increment
-        this.load_assets();
         this.tower = tower;
+        this.assets = assets; // sprites
+        this.load_assets();
     }
     load_assets() {
-        var tmp = new elements_IronTower(); //here to place input
-        tmp.elements.forEach((value, key) => {
+        this.assets.elements.forEach((value, key) => {
             let tmpImage = new Image();
             tmpImage.src = value.URL;
             this.elements.set(key, tmpImage);
@@ -160,7 +164,6 @@ class TowerAnimation {
         let height = this.elements.get('tower').height;
         let heightFront = this.elements.get('front').height;
         let heightBehind = this.elements.get('behind').height;
-        let heightAmmo = this.elements.get('ammo').height;
         let ctx = MainInterface.getPlayground().getContext();
         ctx.save();
         ctx.translate(this.tower.cord.x - this.tower.dim.w / 2, this.tower.cord.y - this.tower.dim.h / 2);
@@ -220,21 +223,51 @@ class elements_IronTower {
         this.elements.set("behind", {
             URL: "textures/content/towers/iron1_behind.png"
         });
-        this.elements.set("ammo", {
-            URL: "textures/content/towers/iron_1.png"
+    }
+}
+class elements_IronTower2 {
+    constructor() {
+        this.elements = new Map();
+        this.elements.set("tower", {
+            URL: "textures/content/towers/iron2_tower.png"
+        });
+        this.elements.set("front", {
+            URL: "textures/content/towers/iron2_front.png"
+        });
+        this.elements.set("behind", {
+            URL: "textures/content/towers/iron2_behind.png"
         });
     }
 }
-class tower_Slinger extends Tower {
+class elements_IronTower3 {
+    constructor() {
+        this.elements = new Map();
+        this.elements.set("tower", {
+            URL: "textures/content/towers/iron3_tower.png"
+        });
+        this.elements.set("front", {
+            URL: "textures/content/towers/iron2_front.png"
+        });
+        this.elements.set("behind", {
+            URL: "textures/content/towers/iron2_behind.png"
+        });
+    }
+}
+class tower_Iron extends Tower {
     constructor(cord) {
         super(cord);
+        this.assets = new Map();
         this.name = "Slinger Tower";
         this.dim = { w: 80, h: 80 };
         this.speed = 1, 5;
         this.target = null;
         this.color = null;
         this.range = 300;
-        this.sprite = new TowerAnimation(this);
+        this.assets.set('lvl_1', new elements_IronTower);
+        this.assets.set('lvl_2', new elements_IronTower2);
+        this.assets.set('lvl_3', new elements_IronTower3);
+        this.sprite = new TowerAnimation(this, this.assets.get('lvl_1'));
+        console.log(this.sprite);
         this.ammunition = this.getNewAmmo();
     }
     getNewAmmo() {

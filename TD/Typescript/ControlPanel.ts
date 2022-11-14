@@ -20,7 +20,7 @@ class ControlPanel {
 
 var PlayerSpeedSlider, PlayerSpeedOutput;
 var StartStopButton, PauseResumeButton;
-var AddEnemyButton, AddTowerButton;
+var AddEnemyPeon, AddEnemyWarrior, AddTowerButton;
 
 function init_controlPanel() {
     define_controlPanel();
@@ -42,7 +42,8 @@ function define_controlPanel() {
     PauseResumeButton = document.querySelector("#pauseResumeButton");
 
     //PauseResume button definition
-    AddEnemyButton = document.querySelector("#addEnemyButton");
+    AddEnemyPeon = document.querySelector("#addEnemyPeon");
+    AddEnemyWarrior = document.querySelector("#addEnemyWarrior");
 
     //PauseResume button definition
     AddTowerButton = document.querySelector("#addTowerButton");
@@ -109,20 +110,23 @@ function event_pauseResumeButton() {
 }
 function event_addEnemyButton() {
     //   visualButtonUpdate();
-    //event onclick AddEnemyButton
-    AddEnemyButton.onclick = function (evt) {
+    //event onclick AddEnemyPeon
+    AddEnemyPeon.onclick = function (evt) {
         //    visualButtonUpdate();
         //add enemy Game().addEnemy();
         game1.getEnemiesInterface().addEnemy(new enemy_Peon({ x: 100, y: 100 }, [{ x: 500, y: 300 }, { x: 400, y: 400 }, { x: 100, y: 400 }, { x: 600, y: 400 }]));
     }
+    AddEnemyWarrior.onclick = function (evt) {
+        game1.getEnemiesInterface().addEnemy(new enemy_Warrior({ x: 100, y: 100 }, [{ x: 500, y: 300 }, { x: 400, y: 400 }, { x: 100, y: 400 }, { x: 600, y: 400 }]));
+    }
 }
 function event_addTowerButton() {
     AddTowerButton.onclick = function (evt) {
-        MainInterface.setClipboard(new tower_Slinger(MainInterface.getMouse()));
-       // game1.getTowersInterface().addTower(new tower_Slinger({ x: 400, y: 300}));
+        MainInterface.setClipboard(new tower_Iron(MainInterface.getMouse()));
+       // game1.getTowersInterface().addTower(new tower_Iron({ x: 400, y: 300}));
     }
     //   visualButtonUpdate();
-    //event onclick AddEnemyButton
+    //event onclick AddEnemyPeon
     //  
     //    visualButtonUpdate();
     //add enemy Game().addTower();
