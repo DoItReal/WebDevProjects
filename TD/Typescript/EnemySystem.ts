@@ -53,6 +53,10 @@ class Enemy implements unit{
             this.destroy();
         }
     }
+    setCord(cord: cord) {
+        this.cord.x = cord.x;
+        this.cord.y = cord.y;
+    }
     receiveDmg(dmg: number,tower:Tower): number {
 
         if (this.status == 'alive') {
@@ -83,18 +87,23 @@ class Enemy implements unit{
         return { exp: bountyEXP, gold: bountyGold };
     }
     private move(): void {
+
         let speedR = this.calcSpeed(this.cord, this.way[0]);
-        if(this.cord.x != speedR.speedX + this.cord.x )
-            this.cord.x += speedR.speedX;
+        if (this.cord.x != speedR.speedX + this.cord.x)
+            
+        this.cord.x += speedR.speedX;
         if(this.cord.y != speedR.speedY + this.cord.y)
             this.cord.y += speedR.speedY;
-        if (Math.round(this.way[0].x) == Math.round(this.cord.x) && Math.round(this.way[0].y) == Math.round(this.cord.y)) this.way.splice(0, 1);
+        if ((Math.round(this.way[0].x) == Math.round(this.cord.x) && Math.round(this.way[0].y)) == Math.round(this.cord.y)) {
+            this.way.splice(0, 1);
+            console.log('splice');
+        }
         if (speedR.speedX > 0) {
             this.scaleX = 1;
         } else if (speedR.speedX < 0) {
             this.scaleX = -1;
         } 
-        if (speedR.speedX != 0 && speedR.speedY != 0) this.draw('walk');
+        if (speedR.speedX != 0 || speedR.speedY != 0) this.draw('walk');
         else this.draw('idle');
     }
     private calcSpeed(cord1: cord, cord2: cord): {speedX:number,speedY:number} {
@@ -104,7 +113,9 @@ class Enemy implements unit{
         let sin = dx / c;
         let cos = dy / c;
       //  let tan = dy / dx;
-
+        if (!sin && !cos) {
+            return { speedX: 0, speedY: 0 };
+        }
         return { speedX: game1.calcDistanceToMove(sin * this.speed), speedY: game1.calcDistanceToMove(cos * this.speed) };
     }
     private draw(str: string = 'idle'): void {

@@ -1,8 +1,5 @@
 class Tower {
     constructor(cord) {
-        this.lvl = 1;
-        this.maxLvL = 3;
-        this.exp = 0;
         this.target = null;
         this.atkCD = 0;
         this.enemiesInterface = game1.getEnemiesInterface();
@@ -11,8 +8,10 @@ class Tower {
         }
         this.set = false;
         this.cord = cord;
+        this.experience = new Experience();
     }
     update() {
+        this.sprite = new TowerAnimation(this, this.assets.get(String('lvl_' + this.experience.getLevel()))); // to rework it 
         this.draw(); // draw the texture of the tower
         if (!this.target || !this.collisionCheck(this.target) || this.target.hp <= 0) {
             this.target = this.radar();
@@ -43,33 +42,15 @@ class Tower {
             ctx.stroke();
         }
         ctx.restore();
-        this.sprite.update();
-        this.ammunition.animate();
+        this.sprite.update(); // draws the sprite
+        this.ammunition.animate(); // draws the idle ammunition
     }
     gainBounty(bounty) {
-        this.gainExp(bounty.exp);
+        this.experience.addExp(bounty.exp);
         game1.player.gainGold(bounty.gold);
     }
-    gainExp(value) {
-        if (this.lvl >= this.maxLvL)
-            return;
-        let toNextLVL = 9 + Math.pow(this.lvl, 3);
-        if (this.exp + value > toNextLVL) {
-            value -= toNextLVL - this.exp;
-            this.levelUP();
-            this.gainExp(value);
-        }
-        else {
-            this.exp += value;
-        }
-    }
-    levelUP() {
-        this.exp = 0;
-        this.lvl += 1;
-        this.sprite = new TowerAnimation(this, this.assets.get(String('lvl_' + this.lvl)));
-    }
     getLvL() {
-        return this.lvl;
+        return this.experience.getLevel();
     }
     collisionCheck(enemy) {
         return circRectsOverlap(enemy.cord.x, enemy.cord.y, enemy.dim.w, enemy.dim.h, this.cord.x, this.cord.y, this.range);
@@ -136,9 +117,9 @@ class Tower {
         ctx.globalAlpha = 1;
         ctx.fillStyle = "white";
         ctx.font = "20px Roboto";
-        ctx.fillText(this.name + ' ' + this.lvl + ' lvl', 10, 30);
+        ctx.fillText(this.name + ' ' + this.experience.getLevel() + ' lvl', 10, 30);
         ctx.font = "16px Roboto";
-        ctx.fillText(this.lvl * this.ammunition.dmg + ' dmg/hit', 10, 45);
+        ctx.fillText(this.experience.getLevel() * this.ammunition.dmg + ' dmg/hit', 10, 45);
         ctx.restore();
     }
 }
@@ -232,10 +213,10 @@ class elements_IronTower2 {
             URL: "textures/content/towers/iron2_tower.png"
         });
         this.elements.set("front", {
-            URL: "textures/content/towers/iron2_front.png"
+            URL: "textures/content/towers/iron1_front.png"
         });
         this.elements.set("behind", {
-            URL: "textures/content/towers/iron2_behind.png"
+            URL: "textures/content/towers/iron1_behind.png"
         });
     }
 }
@@ -257,17 +238,16 @@ class tower_Iron extends Tower {
     constructor(cord) {
         super(cord);
         this.assets = new Map();
-        this.name = "Slinger Tower";
+        this.name = "Iron Tower";
         this.dim = { w: 80, h: 80 };
         this.speed = 1, 5;
         this.target = null;
         this.color = null;
         this.range = 300;
-        this.assets.set('lvl_1', new elements_IronTower);
+        this.assets.set('lvl_1', new elements_IronTower); // to do 
         this.assets.set('lvl_2', new elements_IronTower2);
         this.assets.set('lvl_3', new elements_IronTower3);
         this.sprite = new TowerAnimation(this, this.assets.get('lvl_1'));
-        console.log(this.sprite);
         this.ammunition = this.getNewAmmo();
     }
     getNewAmmo() {

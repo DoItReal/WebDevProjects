@@ -111,7 +111,7 @@ class Missle implements tAmmunition{
         }
     }
     hit(): void { //increment Missle.dmgDone with dmg taken from the target// - destroys the missle
-         this.addDmg(this.target.receiveDmg(this.dmg*this.tower.lvl,this.tower));
+         this.addDmg(this.target.receiveDmg(this.dmg*this.tower.experience.getLevel(),this.tower));
         this.destroy();
     }
     destroy(): void { //destroys the missle and draws destroy animation
@@ -289,10 +289,17 @@ class _Missles {
     update() {
         if (this.missles !== null && this.missles.length > 0) {
             for (let i = 0; i < this.missles.length; i++) {
-                if (this.missles[i].status != "destroyed" ) this.missles[i].update();
-                else {
+                if (this.missles[i].status == "destroyed") {
                     this.removeMissle(i);
                     i -= 1;
+                }
+                else if (this.missles[i].target.status == 'dead') {
+                    this.missles[i].destroy();
+                    this.removeMissle(i);
+                    i -= 1;
+                }
+                else {
+                    this.missles[i].update();
                 }
             }
         }

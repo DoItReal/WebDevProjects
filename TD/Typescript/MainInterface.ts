@@ -39,8 +39,10 @@ class _MainInterface implements mainInterface{
     clipboard; // to rework
     private mousePos: cord;    // GLOBAL SCOPE
     sprites = new Map();
+    timer: Timer;
     constructor() {
-        this.pressedKeys = new Map<Number,String>;
+        this.pressedKeys = new Map<Number, String>;
+        this.timer = new Timer();
         this.Playground = new Playground();
         this.Scoreboard = new Scoreboard();
         this.ControlPanel = new ControlPanel();
@@ -65,6 +67,9 @@ class _MainInterface implements mainInterface{
         this.load();
         this.update();
         
+    }
+    getTimerDist() {
+        return this.timer.getDist();
     }
     init_events() {
         //event getMousePos

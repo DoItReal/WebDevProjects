@@ -5,33 +5,40 @@ function getRandomInt(max) {
 function getRandomBoolean() {
     return Math.random() < 0.5;
 }
-function visualButtonUpdate() {
-    if (game1.play) { //game running
-        StartStopButton.value = "Stop";
-        StartStopButton.innerHTML = "Stop";
-        StartStopButton.style = "background: red;";
-        PauseResumeButton.disabled = false;
-        if (!game1.pause) {
-            PauseResumeButton.value = "Pause";
-            PauseResumeButton.innerHTML = "Pause";
-            PauseResumeButton.style = "background: gray;";
+class Timer {
+    constructor() {
+        this.dist = 0;
+        this.startTime = null;
+        this.pauseTime = null;
+        this.timerOn = false;
+    }
+    on() {
+        this.timerOn = true;
+    }
+    off() {
+        this.timerOn = false;
+    }
+    setTimer() {
+        if (this.startTime == null) {
+            this.startTime = Date.now();
         }
         else {
-            PauseResumeButton.value = "Resume";
-            PauseResumeButton.innerHTML = "Resume";
-            PauseResumeButton.style = "background: lightgreen";
+            return (Date.now() - this.startTime);
         }
+        return (Date.now() - this.startTime);
     }
-    else { //game not running
-        StartStopButton.value = "Start";
-        StartStopButton.innerHTML = "Start";
-        StartStopButton.style = "background: green;";
-        //disable PauseResumeButton if game is not initialized
-        PauseResumeButton.disabled = true;
-        PauseResumeButton.value = "Pause";
-        PauseResumeButton.innerHTML = "Pause";
-        PauseResumeButton.style = "background: gray;";
+    timerReset() {
+        this.startTime = null;
+    }
+    update() {
+        if (this.timerOn) {
+            this.dist = this.setTimer();
+        }
+        else
+            this.dist = 0;
+    }
+    getDist() {
+        return this.dist;
     }
 }
-//TO BE MOVED in CANVAS SCOREBOARD
 //# sourceMappingURL=tools.js.map

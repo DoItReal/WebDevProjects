@@ -25,6 +25,7 @@ class _MainInterface {
     constructor() {
         this.sprites = new Map();
         this.pressedKeys = new Map;
+        this.timer = new Timer();
         this.Playground = new Playground();
         this.Scoreboard = new Scoreboard();
         this.ControlPanel = new ControlPanel();
@@ -47,6 +48,9 @@ class _MainInterface {
         this.ControlPanel.init();
         this.load();
         this.update();
+    }
+    getTimerDist() {
+        return this.timer.getDist();
     }
     init_events() {
         //event getMousePos

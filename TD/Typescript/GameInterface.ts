@@ -5,6 +5,7 @@ class Game {
     play:boolean = false;
     pause:boolean = false;
     fps: FPS = new FPS();
+    timer: Timer = new Timer();
     misslesInterface: _Missles;
     towersInterface: _Towers;
     enemyInterface: _Enemies;
@@ -47,21 +48,23 @@ class Game {
     startGame() {
         this.play = true;
         this.animationID = requestAnimationFrame(this.playNow);
-        MainInterface.getScoreboard().getTimer().on();
+        MainInterface.timer.on();
     }
     stopGame() {
         this.play = false;
         this.player.cord = { x:100, y:100};
-        MainInterface.getScoreboard().getTimer().timerReset();
+        MainInterface.timer.timerReset();
         this.animationID = cancelAnimationFrame(this.animationID);
         this.pause = false;
-        MainInterface.getScoreboard().getTimer().off();
+        MainInterface.timer.off();
     }
     playNow() {
         this.fps.update(performance.now());
+        
         //clear Playground
         if (!this.pause) {
             MainInterface.update();
+            MainInterface.timer.update();
             if (!this.play) {
                 cancelAnimationFrame(this.animationID);
                 return 'Game Over';

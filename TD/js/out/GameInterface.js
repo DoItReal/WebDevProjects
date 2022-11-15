@@ -18,6 +18,7 @@ class Game {
         this.play = false;
         this.pause = false;
         this.fps = new FPS();
+        this.timer = new Timer();
         this.player = new Player({ x: 100, y: 100 }, this.defaultSpeed);
         this.playNow = this.playNow.bind(this);
         this.misslesInterface = new _Missles();
@@ -42,21 +43,22 @@ class Game {
     startGame() {
         this.play = true;
         this.animationID = requestAnimationFrame(this.playNow);
-        MainInterface.getScoreboard().getTimer().on();
+        MainInterface.timer.on();
     }
     stopGame() {
         this.play = false;
         this.player.cord = { x: 100, y: 100 };
-        MainInterface.getScoreboard().getTimer().timerReset();
+        MainInterface.timer.timerReset();
         this.animationID = cancelAnimationFrame(this.animationID);
         this.pause = false;
-        MainInterface.getScoreboard().getTimer().off();
+        MainInterface.timer.off();
     }
     playNow() {
         this.fps.update(performance.now());
         //clear Playground
         if (!this.pause) {
             MainInterface.update();
+            MainInterface.timer.update();
             if (!this.play) {
                 cancelAnimationFrame(this.animationID);
                 return 'Game Over';

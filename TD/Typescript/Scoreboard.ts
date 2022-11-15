@@ -34,25 +34,21 @@ class Canvas implements canv {
 class Scoreboard extends Canvas{
     canvas: HTMLCanvasElement;
     ctx: CanvasRenderingContext2D;
-    timer: Timer;
-    
+    timer: {cord: cord };
     constructor() {
         super();
-        this.timer = new Timer({x:300,y:10});
+        this.timer = {cord: { x: 300, y: 10 } };
         this.mouseMove = this.mouseMove.bind(this);
         this.mouseDown = this.mouseDown.bind(this);
-    }
-    getTimer() {
-        return this.timer;
     }
     init() {
         this.canvas = document.querySelector('#Scoreboard');
         this.ctx = this.canvas.getContext('2d');
     }
     init_events() {
-        //prevent opening context menu on right click;
+             //prevent opening context menu on right click;
         this.canvas.addEventListener('contextmenu', function (e) { e.preventDefault(); }, false);
-        //event listener on 'mousedown' Scoreboard
+             //event listener on 'mousedown' Scoreboard
         this.canvas.addEventListener('mousedown', this.mouseDown, false);
     }
     mouseMove(mousePosRelative) {
@@ -71,7 +67,65 @@ class Scoreboard extends Canvas{
         this.enemyCounter(10, 10);
 
         //import timer
-        this.timer.update();
+        this.drawTimer();
+    }
+    drawTimer() {
+        let dist = MainInterface.getTimerDist();
+        this.ctx.save();
+        this.ctx.beginPath();
+        let x = this.timer.cord.x;
+        let y = this.timer.cord.y;
+        this.ctx.translate(x,y);
+        this.ctx.strokeStyle = 'white';
+        this.ctx.lineWidth = 2;
+        this.ctx.rect(0, 0, 200, 60);
+        this.ctx.rect(5, 5, 190, 50);
+        this.ctx.stroke();
+        this.ctx.beginPath();
+
+
+        //minutes not working TO DO
+        let minutes = Math.floor(((dist / 100000) % 60));
+        let minutesStr = '';
+        if (minutes > 10) {
+            minutesStr = String(minutes);
+        } else if (minutes == 0) {
+            minutesStr = '00';
+        } else minutesStr = '0' + minutes;
+        let seconds = Math.floor((dist / 1000) % 60);
+        let secondsStr = '';
+        if (seconds < 10) {
+            secondsStr = '0' + seconds;
+        } else secondsStr = String(seconds);
+
+        let milliseconds = Math.floor((dist / 10 % 100));
+        let millisecondsStr = '';
+        if (milliseconds < 10) {
+            millisecondsStr = '0' + milliseconds;
+        } else {
+            millisecondsStr = String(milliseconds);
+        }
+
+        this.ctx.lineWidth = 1;
+        this.ctx.strokeStyle = "red";
+        this.ctx.fillStyle = "lime";
+        //fill minutes + ':'
+        this.ctx.font = "35px Arial";
+        this.ctx.fillText(minutesStr + ':', 40, 40);
+        this.ctx.strokeText(minutesStr + ':', 40, 40);
+
+
+        //fill seconds
+        this.ctx.font = "30px Arial";
+        this.ctx.fillText(secondsStr + ':', 90, 40);
+        this.ctx.strokeText(secondsStr + ':', 90, 40);
+
+        //fill millisceonds
+        this.ctx.font = "25px Arial";
+        this.ctx.fillText(millisecondsStr, 135, 40);
+        this.ctx.strokeText(millisecondsStr, 135, 40);
+
+        this.ctx.restore();
     }
     background(): void {
         this.ctx.save();
@@ -116,97 +170,4 @@ class Scoreboard extends Canvas{
         let mousePos = MainInterface.getMousePos(this, e);
         console.log('Button: ' + button + ' pressed at x: ' + mousePos.x + ' y: ' + mousePos.y);
     }
-}
-class Timer {
-    cord: cord;
-    startTime: number;
-    pauseTime: number;
-    timerOn: boolean;
-    ctx: CanvasRenderingContext2D;
-    constructor(cord:cord) {
-        this.cord = cord;
-        this.startTime = null
-        this.pauseTime = null;
-        this.timerOn = false;
-    }
-    on() {
-        this.timerOn = true;
-    }
-    off() {
-        this.timerOn = false;
-    }
-    setTimer() : number{
-        if (this.startTime == null) {
-            this.startTime = Date.now();
-        } else {
-            return (Date.now() - this.startTime);
-        }
-        return (Date.now() - this.startTime);
-    }
-
-    timerReset() {
-        this.startTime = null;
-    }
-    update() {
-        if (this.timerOn) {
-            this.draw(this.setTimer());
-        } else this.draw(0);
-    }
-    draw(dist) {
-        this.ctx = MainInterface.getScoreboard().getContext();
-        this.ctx.save();
-        this.ctx.beginPath();
-        this.ctx.translate(this.cord.x, this.cord.y);
-        this.ctx.strokeStyle = 'white';
-        this.ctx.lineWidth = 2;
-        this.ctx.rect(0, 0, 200, 60);
-        this.ctx.rect(5, 5, 190, 50);
-        this.ctx.stroke();
-        this.ctx.beginPath();
-
-      
-        //minutes not working TO DO
-        let minutes = Math.floor(((dist / 100000) % 60));
-        let minutesStr = '';
-        if (minutes > 10) {
-            minutesStr = String(minutes);
-        } else if (minutes == 0) {
-            minutesStr = '00';
-        } else minutesStr = '0' + minutes;
-        let seconds = Math.floor((dist / 1000) % 60);
-        let secondsStr = '';
-        if (seconds < 10) {
-            secondsStr = '0' + seconds;
-        } else secondsStr = String(seconds);
-
-        let milliseconds = Math.floor((dist / 10 % 100));
-        let millisecondsStr = '';
-        if (milliseconds < 10) {
-            millisecondsStr = '0' + milliseconds;
-        } else {
-            millisecondsStr = String(milliseconds);
-        }
-
-        this.ctx.lineWidth = 1;
-        this.ctx.strokeStyle = "red";
-        this.ctx.fillStyle = "lime";
-        //fill minutes + ':'
-        this.ctx.font = "35px Arial";
-        this.ctx.fillText(minutesStr + ':', 40, 40);
-        this.ctx.strokeText(minutesStr + ':', 40, 40);
-
-
-        //fill seconds
-        this.ctx.font = "30px Arial";
-        this.ctx.fillText(secondsStr + ':', 90, 40);
-        this.ctx.strokeText(secondsStr + ':', 90, 40);
-
-        //fill millisceonds
-        this.ctx.font = "25px Arial";
-        this.ctx.fillText(millisecondsStr, 135, 40);
-        this.ctx.strokeText(millisecondsStr, 135, 40);
-
-        this.ctx.restore();
-    }
-
 }

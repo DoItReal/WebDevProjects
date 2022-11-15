@@ -12,10 +12,11 @@ var divControlPanel; //to remove it when the ControlPanel class is ready
 var game1: Game;
 
 function init() {
+    
     MainInterface.init();
     MainInterface.init_events();
-
     game1 = new Game();
+    
 
     init_inventory();
     init_controlPanel();

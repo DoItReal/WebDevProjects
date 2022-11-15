@@ -26,7 +26,7 @@ class ControlPanel {
 _ControlPanel_container = new WeakMap();
 var PlayerSpeedSlider, PlayerSpeedOutput;
 var StartStopButton, PauseResumeButton;
-var AddEnemyPeon, AddEnemyWarrior, AddTowerButton;
+var AddEnemyPeon, AddEnemyWarrior, AddTowerButton, Wave1Button;
 function init_controlPanel() {
     define_controlPanel();
     initialize_events_controlPanel();
@@ -45,6 +45,7 @@ function define_controlPanel() {
     //PauseResume button definition
     AddEnemyPeon = document.querySelector("#addEnemyPeon");
     AddEnemyWarrior = document.querySelector("#addEnemyWarrior");
+    Wave1Button = document.querySelector("#addWave1");
     //PauseResume button definition
     AddTowerButton = document.querySelector("#addTowerButton");
 }
@@ -93,12 +94,12 @@ function event_pauseResumeButton() {
     PauseResumeButton.onclick = function () {
         game1.pause = !game1.pause;
         if (!game1.pause) { //game running
-            MainInterface.getScoreboard().startTime += Date.now() - MainInterface.getScoreboard().pauseTime;
-            MainInterface.getScoreboard().pauseTime = null;
+            MainInterface.timer.startTime += Date.now() - MainInterface.timer.pauseTime;
+            MainInterface.timer.pauseTime = null;
             visualButtonUpdate();
         }
         else { //game paused
-            MainInterface.getScoreboard().pauseTime = Date.now();
+            MainInterface.timer.pauseTime = Date.now();
             visualButtonUpdate();
         }
     };
@@ -114,6 +115,11 @@ function event_addEnemyButton() {
     AddEnemyWarrior.onclick = function (evt) {
         game1.getEnemiesInterface().addEnemy(new enemy_Warrior({ x: 100, y: 100 }, [{ x: 500, y: 300 }, { x: 400, y: 400 }, { x: 100, y: 400 }, { x: 600, y: 400 }]));
     };
+    Wave1Button.onclick = function (evt) {
+        let waveGen = new WavesGenerator();
+        let wave = waveGen.level_1();
+        wave.init_wave();
+    };
 }
 function event_addTowerButton() {
     AddTowerButton.onclick = function (evt) {
@@ -125,5 +131,33 @@ function event_addTowerButton() {
     //  
     //    visualButtonUpdate();
     //add enemy Game().addTower();
+}
+function visualButtonUpdate() {
+    if (game1.play) { //game running
+        StartStopButton.value = "Stop";
+        StartStopButton.innerHTML = "Stop";
+        StartStopButton.style = "background: red;";
+        PauseResumeButton.disabled = false;
+        if (!game1.pause) {
+            PauseResumeButton.value = "Pause";
+            PauseResumeButton.innerHTML = "Pause";
+            PauseResumeButton.style = "background: gray;";
+        }
+        else {
+            PauseResumeButton.value = "Resume";
+            PauseResumeButton.innerHTML = "Resume";
+            PauseResumeButton.style = "background: lightgreen";
+        }
+    }
+    else { //game not running
+        StartStopButton.value = "Start";
+        StartStopButton.innerHTML = "Start";
+        StartStopButton.style = "background: green;";
+        //disable PauseResumeButton if game is not initialized
+        PauseResumeButton.disabled = true;
+        PauseResumeButton.value = "Pause";
+        PauseResumeButton.innerHTML = "Pause";
+        PauseResumeButton.style = "background: gray;";
+    }
 }
 //# sourceMappingURL=ControlPanel.js.map
