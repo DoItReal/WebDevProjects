@@ -96,7 +96,6 @@ class Enemy implements unit{
             this.cord.y += speedR.speedY;
         if ((Math.round(this.way[0].x) == Math.round(this.cord.x) && Math.round(this.way[0].y)) == Math.round(this.cord.y)) {
             this.way.splice(0, 1);
-            console.log('splice');
         }
         if (speedR.speedX > 0) {
             this.scaleX = 1;

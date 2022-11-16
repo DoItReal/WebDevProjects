@@ -27,7 +27,6 @@ class Wave {
 		setTimeout(()=>{ this.spawnUnits() }, this.head.delay*1000);
 	}
 	spawnUnits(node: wave_node = this.getHead()) {
-		console.log(this.getHead());
 		if (node != null) {
 			game1.getEnemiesInterface().addEnemy(node.unit);
 			node = node.next;

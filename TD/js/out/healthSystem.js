@@ -19,7 +19,6 @@ class HealthBarUnit extends HealthBar {
     draw() {
         let ctx = MainInterface.getPlayground().getContext();
         ctx.save();
-        //  ctx.drawImage(this.emptyBar, 0, 0);
         let hpFactor = this.obj.hp / this.obj.maxHP;
         ctx.translate(this.obj.cord.x - this.dim.w / 2, this.obj.cord.y - (this.dim.h * 2 + this.obj.dim.h * this.obj.scale));
         if (this.obj.hp == this.obj.maxHP) {

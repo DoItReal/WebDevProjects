@@ -103,7 +103,9 @@ class Game {
     visualisePreview() {
         if (MainInterface.clipboard != null && this.preview != null) {
             let obj = MainInterface.clipboard;
-            obj.cord = { x: this.preview.x, y: this.preview.y};
+            obj.cord.x = this.preview.x;        // this way we are chaning the values of the already existing object keeping the references to it 
+            obj.cord.y = this.preview.y;
+          //  obj.cord = { x: this.preview.x, y: this.preview.y};   // creates new object 
             obj.draw(true);
         }
     }

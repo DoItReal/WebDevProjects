@@ -33,14 +33,16 @@ class Tower implements tower{ //declares and implements the methods of all tower
         }
         this.set = false;
         this.cord = cord;
-        this.experience = new Experience();
+        this.experience = new Experience(this.cord);
     }
 
     update() {
+
         this.sprite = new TowerAnimation(this, this.assets.get(String('lvl_' + this.experience.getLevel()))); // to rework it 
         this.draw(); // draw the texture of the tower
-       
-        if (!this.target || !this.collisionCheck(this.target) || this.target.hp <= 0) {
+        this.experience.update(); // draw the exp bar
+
+        if (!this.target || !this.collisionCheck(this.target) || this.target.hp <= 0) { // if No Target || target not reachable || target hp <= 0 ==> seek new target
             this.target = this.radar();
         }
         if (this.target != null) {
