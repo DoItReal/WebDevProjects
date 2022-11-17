@@ -34,6 +34,8 @@ class Wave {
 				setTimeout(()=> { this.spawnUnits(node) }, node.delay*1000);
 		}
 	}
+
+	//public methods
 	setWay(way: way) {
 		this.way = way;
 	}
@@ -67,10 +69,37 @@ class Wave {
 			this.getTail().next = new wave_node(unit, this.delay);
 		else this.head = new wave_node(unit, this.delay);
 	}
+	draw() {
+		let ctx = MainInterface.getPlayground().getContext();
+		ctx.save();
+		ctx.beginPath();
+		ctx.lineWidth = 5;
+		ctx.strokeStyle = "lightgreen";
+		ctx.globalAlpha = 0.3;
+		if (this.way) {
+			for (let i = 0; i < this.way.length - 1; i++) {
+				drawArrow(this.way[i], this.way[i + 1]);
+            }
+		}
+		function drawArrow(from:cord,to:cord) {
+			let headlen = 20; // length of head in pixels
+			let dx = to.x - from.x;
+			let dy = to.y - from.y;
+			let angle = Math.atan2(dy, dx);
+			ctx.moveTo(from.x, from.y);
+			ctx.lineTo(to.x, to.y);
+			ctx.moveTo(to.x, to.y);
+			ctx.lineTo(to.x - headlen * Math.cos(angle - Math.PI / 6), to.y - headlen * Math.sin(angle - Math.PI / 6));
+			ctx.moveTo(to.x, to.y);
+			ctx.lineTo(to.x - headlen * Math.cos(angle + Math.PI / 6), to.y - headlen * Math.sin(angle + Math.PI / 6));
+        }
+		ctx.stroke();
+		ctx.restore();
+    }
 	//to implement better functionality of the LINKED LIST if needed  // * not needed at the moment *
 }
 
-var testWay = [{ x: 100, y:100}, { x: 100, y: 400 }, { x: 400, y: 400 }, { x: 400, y: 100 }, { x: 700, y: 100 }, { x: 700, y: 500 }, { x: 100, y: 500 }];
+var testWay = [{ x: 100, y:50}, { x: 100, y: 350 }, { x: 700, y: 350 }, { x: 700, y: 50 }, { x: 1400, y: 50 }, { x: 1400, y: 500 }, { x: 0, y: 500 }];
 class WavesGenerator {
 	private wave: Wave;
 	constructor(){

@@ -10,6 +10,7 @@ class Game {
     towersInterface: _Towers;
     enemyInterface: _Enemies;
     player: Player;
+    currentWave: Wave = null;
     /*          Constructor()
      *          
      *          For creating Game instance we need: 
@@ -73,14 +74,19 @@ class Game {
             //   this.player.move();
 
             //position the enemies
+            if (this.currentWave != null) this.currentWave.draw();
             this.enemyInterface.update();     
             this.towersInterface.update();
             this.misslesInterface.update();
             this.visualisePreview();
+            
             this.checkForOverlapingObjectsPlayground();
         }
         this.animationID = requestAnimationFrame(this.playNow);
 
+    }
+    setWave(wave:Wave) {
+        this.currentWave = wave;
     }
     hitCheck() { // TO DO
 

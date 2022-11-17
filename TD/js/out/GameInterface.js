@@ -19,6 +19,7 @@ class Game {
         this.pause = false;
         this.fps = new FPS();
         this.timer = new Timer();
+        this.currentWave = null;
         this.player = new Player({ x: 100, y: 100 }, this.defaultSpeed);
         this.playNow = this.playNow.bind(this);
         this.misslesInterface = new _Missles();
@@ -66,6 +67,8 @@ class Game {
             //position the player
             //   this.player.move();
             //position the enemies
+            if (this.currentWave != null)
+                this.currentWave.draw();
             this.enemyInterface.update();
             this.towersInterface.update();
             this.misslesInterface.update();
@@ -73,6 +76,9 @@ class Game {
             this.checkForOverlapingObjectsPlayground();
         }
         this.animationID = requestAnimationFrame(this.playNow);
+    }
+    setWave(wave) {
+        this.currentWave = wave;
     }
     hitCheck() {
         /***********************************************************

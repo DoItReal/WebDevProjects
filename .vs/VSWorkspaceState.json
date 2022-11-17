@@ -3,10 +3,9 @@
     "",
     "\\TD",
     "\\TD\\js",
-    "\\TD\\js\\out",
     "\\TD\\styles",
     "\\TD\\Typescript"
   ],
-  "SelectedNode": "\\TD\\js\\out\\WavesSystem.js",
+  "SelectedNode": "\\TD\\Typescript\\GameInterface.ts",
   "PreviewInSolutionExplorer": false
 }

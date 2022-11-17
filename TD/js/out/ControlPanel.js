@@ -118,6 +118,7 @@ function event_addEnemyButton() {
     Wave1Button.onclick = function (evt) {
         let waveGen = new WavesGenerator();
         let wave = waveGen.level_1();
+        game1.setWave(wave);
         wave.init_wave();
     };
 }
