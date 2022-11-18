@@ -99,26 +99,78 @@ class Wave {
 	//to implement better functionality of the LINKED LIST if needed  // * not needed at the moment *
 }
 
-var testWay = [{ x: 100, y:50}, { x: 100, y: 350 }, { x: 700, y: 350 }, { x: 700, y: 50 }, { x: 1400, y: 50 }, { x: 1400, y: 500 }, { x: 0, y: 500 }];
-class WavesGenerator {
-	private wave: Wave;
-	constructor(){
-		this.wave = new Wave();
+class WayGenerator {
+	way: Array<way> = [];
+
+	constructor() {
+	}
+
+	private lastWay() {
+		if (this.way && this.way.length > 0)
+			return this.way[this.way.length - 1];
 	}
 	level_1() {
-		this.wave.setDelay(2);
-		this.wave.setWay(testWay);
-		let numbers_1 = 10;
-		for (let i = 0; i < numbers_1; i++) {
-			this.wave.addUnit(new enemy_Peon({ x: 0, y: 0 }, []));
-		}
-		let numbers_2 = 5;
-		for (let i = 0; i < numbers_2; i++) {
-			this.wave.addUnit(new enemy_Warrior({ x: 0, y: 0 }, []));
-		}
-		return this.wave;
+		let tmp = [{ x: 100, y: 50 }, { x: 100, y: 350 }, { x: 700, y: 350 }, { x: 700, y: 50 }, { x: 1400, y: 50 }, { x: 1400, y: 500 }, { x: 0, y: 500 }];
+		this.way.push(tmp);
+		return this.lastWay();
 	}
+	level_2(){
+		let tmp = [{ x: 100, y: 50 }, { x: 150, y: 500 }, { x: 500, y: 450 }, { x: 550, y: 50 }, { x: 900, y: 100 }, { x: 950, y: 450 }, { x: 1350, y: 400 }];
+		this.way.push(tmp);
+		return this.lastWay();
+}
+
+}
+
+class WavesGenerator {
+	private waves:Array<Wave> = [];
+	private wayGen: WayGenerator = new WayGenerator();
+	constructor(){
+	}
+	level_1() {
+		let wave = new Wave();
+		wave.setWay(this.wayGen.level_1());
+		wave.setDelay(2);
+		let groupA = 10;
+		for (let i = 0; i < groupA; i++) {
+			wave.addUnit(new enemy_Peon({ x: 0, y: 0 }, []));
+		}
+		wave.setDelay(4);
+		let groupB = 5;
+		for (let i = 0; i < groupB; i++) {
+			wave.addUnit(new enemy_Warrior({ x: 0, y: 0 }, []));
+		}
+		wave.setDelay(1);
+		let groupC = 8;
+		for (let i = 0; i < groupC; i++) {
+			wave.addUnit(new enemy_Peon({x:0,y:0},[]))
+        }
+		this.waves.push(wave);
+		return wave;
+	}
+	level_2() {
+		let wave = new Wave();
+		wave.setWay(this.wayGen.level_2());
+		wave.setDelay(1);
+		let groupA = 6;
+		for (let i = 0; i < groupA; i++) {
+			wave.addUnit(new enemy_Peon({ x: 0, y: 0 }, []));
+		}
+		wave.setDelay(2);
+		let groupB = 3;
+		for (let i = 0; i < groupB; i++) {
+			wave.addUnit(new enemy_Warrior({ x: 0, y: 0 }, []));
+		}
+		wave.setDelay(1.2);
+		let groupC = 8;
+		for (let i = 0; i < groupC; i++) {
+			wave.addUnit(new enemy_Peon({ x: 0, y: 0 }, []))
+		}
+		this.waves.push(wave);
+		return wave;
+    }
 	getWave() {
-		return this.wave; // returning the last created wave
+		if(this.waves && this.waves.length > 0)
+		return this.waves[this.waves.length-1]; // returning the last created wave
 	}
 	}

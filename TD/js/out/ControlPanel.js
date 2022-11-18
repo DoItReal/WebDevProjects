@@ -26,7 +26,7 @@ class ControlPanel {
 _ControlPanel_container = new WeakMap();
 var PlayerSpeedSlider, PlayerSpeedOutput;
 var StartStopButton, PauseResumeButton;
-var AddEnemyPeon, AddEnemyWarrior, AddTowerButton, Wave1Button;
+var AddEnemyPeon, AddEnemyWarrior, AddTowerButton, Wave1Button, Wave2Button;
 function init_controlPanel() {
     define_controlPanel();
     initialize_events_controlPanel();
@@ -46,6 +46,7 @@ function define_controlPanel() {
     AddEnemyPeon = document.querySelector("#addEnemyPeon");
     AddEnemyWarrior = document.querySelector("#addEnemyWarrior");
     Wave1Button = document.querySelector("#addWave1");
+    Wave2Button = document.querySelector("#addWave2");
     //PauseResume button definition
     AddTowerButton = document.querySelector("#addTowerButton");
 }
@@ -118,6 +119,12 @@ function event_addEnemyButton() {
     Wave1Button.onclick = function (evt) {
         let waveGen = new WavesGenerator();
         let wave = waveGen.level_1();
+        game1.setWave(wave);
+        wave.init_wave();
+    };
+    Wave2Button.onclick = function (evt) {
+        let waveGen = new WavesGenerator();
+        let wave = waveGen.level_2();
         game1.setWave(wave);
         wave.init_wave();
     };

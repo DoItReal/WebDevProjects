@@ -97,8 +97,9 @@ class ExperienceBar {
             k*(this.dim.w),this.dim.h);     // w,h - dimensions to drarw
 
         //add text 
-        this.ctx.font = "14px Roboto";
-        this.ctx.fillText(exp + "/" + maxExp, this.dim.w / 4,this.dim.h);
+        this.ctx.font = "15px Roboto";
+        this.ctx.fillStyle = 'yellow';
+        this.ctx.fillText(exp + "/" + maxExp, this.dim.w / 4, this.dim.h);
         this.ctx.restore();
 
     }

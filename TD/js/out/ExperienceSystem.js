@@ -85,7 +85,8 @@ class ExperienceBar {
         2, 2, // x,y - location of canvas to draw
         k * (this.dim.w), this.dim.h); // w,h - dimensions to drarw
         //add text 
-        this.ctx.font = "14px Roboto";
+        this.ctx.font = "15px Roboto";
+        this.ctx.fillStyle = 'yellow';
         this.ctx.fillText(exp + "/" + maxExp, this.dim.w / 4, this.dim.h);
         this.ctx.restore();
     }
