@@ -3,6 +3,8 @@ class Player {
         this.cord = cord;
         this.speed = speed; //speed of player pixels/s /int
         this.inventory = new Inventory(); //Inventory of player /array of $items
+        this.hp = 10;
+        this.gold = 0;
         this.move = this.move.bind(this);
     }
     move() {

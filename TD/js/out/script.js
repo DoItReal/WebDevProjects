@@ -5,9 +5,9 @@ var divControlPanel; //to remove it when the ControlPanel class is ready
 //declaring variable for new $Game() OBJECT // TO DO REWORK creating the object when starting the game with $divStartStopButton
 var game1;
 function init() {
+    game1 = new Game();
     MainInterface.init();
     MainInterface.init_events();
-    game1 = new Game();
     init_inventory();
     init_controlPanel();
     game1.init();

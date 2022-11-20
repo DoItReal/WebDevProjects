@@ -27,7 +27,6 @@ class Canvas {
 class Scoreboard extends Canvas {
     constructor() {
         super();
-        this.timer = { cord: { x: 300, y: 10 } };
         this.mouseMove = this.mouseMove.bind(this);
         this.mouseDown = this.mouseDown.bind(this);
     }
@@ -52,26 +51,89 @@ class Scoreboard extends Canvas {
         this.clear();
         //import background
         this.background();
+        //import Player Info
+        this.drawPlayerInfo();
         //import enemy counter - TO REWORK
-        this.enemyCounter(10, 10);
+        this.enemyCounter(this.canvas.width / 4, 10);
         //import timer
         this.drawTimer();
+    }
+    drawPlayerInfo() {
+        this.drawIcon(this.canvas.height / 10, this.canvas.height / 10);
+        this.drawHP(this.canvas.height * 1.1, this.canvas.height / 8);
+        this.drawGold(this.canvas.height * 1.1, this.canvas.height / 2);
+    }
+    drawIcon(x, y) {
+        this.ctx.save();
+        this.ctx.translate(x, y);
+        let tmp = new Image();
+        tmp.src = "textures/content/player/man-mage-icon.png";
+        this.ctx.strokeStyle = "white";
+        this.ctx.lineWidth = 2;
+        this.ctx.strokeRect(0, 0, this.canvas.height * 0.8, this.canvas.height * 0.8);
+        this.ctx.drawImage(tmp, 1, 1, this.canvas.height * 0.8 - 2, this.canvas.height * 0.8 - 2);
+        this.ctx.restore();
+    }
+    drawHP(x, y) {
+        let hp = game1.player.hp; // to do 
+        let maxHp = 10; // to do !!! Needed rework of the hp system for the player
+        let w = 100;
+        let h = this.canvas.height / 8;
+        this.ctx.save();
+        this.ctx.translate(x, y);
+        this.ctx.fillStyle = "lightgray";
+        this.ctx.fillRect(0, 0, w, h);
+        this.ctx.fillStyle = "red";
+        this.ctx.fillRect(1, 1, w * hp / maxHp - 2, h - 2);
+        this.ctx.font = "20px Roboto";
+        this.ctx.fillText(hp + "/" + maxHp + " HP", w + 5, h, 50);
+        this.ctx.restore();
+    }
+    drawGold(x, y) {
+        let gold = game1.player.gold; // to do
+        this.ctx.save();
+        this.ctx.translate(x, y);
+        this.ctx.fillStyle = "gold";
+        this.ctx.font = "22px Roboto";
+        this.ctx.fillText(Math.floor(gold) + " GOLD", 0, 0, 50);
+        this.ctx.restore();
     }
     drawTimer() {
         let dist = MainInterface.getTimerDist();
         this.ctx.save();
         this.ctx.beginPath();
-        let x = this.timer.cord.x;
-        let y = this.timer.cord.y;
+        let w = 200;
+        let h = 60;
+        let x = this.canvas.width / 2 - w / 2;
+        let y = (this.canvas.height - h) / 2;
         this.ctx.translate(x, y);
         this.ctx.strokeStyle = 'white';
         this.ctx.lineWidth = 2;
-        this.ctx.rect(0, 0, 200, 60);
-        this.ctx.rect(5, 5, 190, 50);
+        this.ctx.rect(0, 0, w, h);
+        this.ctx.rect(5, 5, w - 10, h - 10);
         this.ctx.stroke();
         this.ctx.beginPath();
+        let str = this.timeToString(dist);
+        this.ctx.lineWidth = 1;
+        this.ctx.strokeStyle = "red";
+        this.ctx.fillStyle = "lime";
+        //fill minutes + ':'
+        this.ctx.font = "35px Arial";
+        this.ctx.fillText(str.minutesStr + ':', 40, 40);
+        this.ctx.strokeText(str.minutesStr + ':', 40, 40);
+        //fill seconds
+        this.ctx.font = "30px Arial";
+        this.ctx.fillText(str.secondsStr + ':', 90, 40);
+        this.ctx.strokeText(str.secondsStr + ':', 90, 40);
+        //fill millisceonds
+        this.ctx.font = "25px Arial";
+        this.ctx.fillText(str.millisecondsStr, 135, 40);
+        this.ctx.strokeText(str.millisecondsStr, 135, 40);
+        this.ctx.restore();
+    }
+    timeToString(time) {
         //minutes not working TO DO
-        let minutes = Math.floor(((dist / 100000) % 60));
+        let minutes = Math.floor(((time / 100000) % 60));
         let minutesStr = '';
         if (minutes > 10) {
             minutesStr = String(minutes);
@@ -81,14 +143,14 @@ class Scoreboard extends Canvas {
         }
         else
             minutesStr = '0' + minutes;
-        let seconds = Math.floor((dist / 1000) % 60);
+        let seconds = Math.floor((time / 1000) % 60);
         let secondsStr = '';
         if (seconds < 10) {
             secondsStr = '0' + seconds;
         }
         else
             secondsStr = String(seconds);
-        let milliseconds = Math.floor((dist / 10 % 100));
+        let milliseconds = Math.floor((time / 10 % 100));
         let millisecondsStr = '';
         if (milliseconds < 10) {
             millisecondsStr = '0' + milliseconds;
@@ -96,22 +158,7 @@ class Scoreboard extends Canvas {
         else {
             millisecondsStr = String(milliseconds);
         }
-        this.ctx.lineWidth = 1;
-        this.ctx.strokeStyle = "red";
-        this.ctx.fillStyle = "lime";
-        //fill minutes + ':'
-        this.ctx.font = "35px Arial";
-        this.ctx.fillText(minutesStr + ':', 40, 40);
-        this.ctx.strokeText(minutesStr + ':', 40, 40);
-        //fill seconds
-        this.ctx.font = "30px Arial";
-        this.ctx.fillText(secondsStr + ':', 90, 40);
-        this.ctx.strokeText(secondsStr + ':', 90, 40);
-        //fill millisceonds
-        this.ctx.font = "25px Arial";
-        this.ctx.fillText(millisecondsStr, 135, 40);
-        this.ctx.strokeText(millisecondsStr, 135, 40);
-        this.ctx.restore();
+        return { minutesStr, secondsStr, millisecondsStr };
     }
     background() {
         this.ctx.save();

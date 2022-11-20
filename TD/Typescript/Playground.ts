@@ -46,14 +46,14 @@ class Playground {
         }
         return 0;
     }
-    mouseMove(mousePosRelative) {
+    mouseMove(mousePosRelative) { // event on mouse move in Playground
         if (MainInterface.clipboard != null && game1.play && !game1.pause) { //if there is item in the clipboard 
             game1.updatePreview(mousePosRelative.x, mousePosRelative.y);
         } else if (MainInterface.clipboard == null && game1.play && !game1.pause) { //if there is no item in the clipboard
 
         }
     }
-    mouseDown(e) {
+    mouseDown(e) {                  //event on mouse click in Playground
         e.preventDefault();
         let button = e.button;
         let mousePos = MainInterface.getMousePos(this, e);
