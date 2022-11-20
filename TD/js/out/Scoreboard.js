@@ -54,9 +54,37 @@ class Scoreboard extends Canvas {
         //import Player Info
         this.drawPlayerInfo();
         //import enemy counter - TO REWORK
-        this.enemyCounter(this.canvas.width / 4, 10);
+        this.enemyCounter(this.canvas.width / 3, 10);
         //import timer
         this.drawTimer();
+        //import WaveWidget
+        this.waveWidget();
+    }
+    waveWidget() {
+        let wave = game1.getCurrentWave();
+        if (wave != null) {
+            this.drawWaveWidget(wave.getSize());
+            console.log(wave.getSize());
+        }
+        else
+            this.drawWaveWidget();
+    }
+    drawWaveWidget(size = 0) {
+        let w = 120;
+        let h = 60;
+        let x = this.canvas.width / 6;
+        let y = (this.canvas.height - h) / 2;
+        this.ctx.save();
+        this.ctx.translate(x, y);
+        this.ctx.fillStyle = "lightgray";
+        this.ctx.fillRect(0, 0, w, h);
+        this.ctx.strokeStyle = "darkslategray";
+        this.ctx.strokeRect(0, 0, w, h);
+        this.ctx.font = "15px Roboto";
+        this.ctx.fillStyle = "black";
+        this.ctx.fillText("Current Wave", 10, 15);
+        this.ctx.fillText("Size: " + size, 10, 35);
+        this.ctx.restore();
     }
     drawPlayerInfo() {
         this.drawIcon(this.canvas.height / 10, this.canvas.height / 10);
@@ -172,16 +200,16 @@ class Scoreboard extends Canvas {
         this.ctx.translate(x, y);
         this.ctx.strokeStyle = "white";
         this.ctx.lineWidth = 1;
-        this.ctx.rect(0, 15, 200, 50);
-        this.ctx.rect(5, 20, 190, 40);
+        this.ctx.rect(0, 15, 100, 50);
+        this.ctx.rect(5, 20, 90, 40);
         this.ctx.stroke();
         this.ctx.beginPath();
         this.ctx.strokeStyle = 'gray';
         this.ctx.lineWidth = 4;
         this.ctx.fillStyle = "white";
-        this.ctx.font = "25px Monaco";
-        this.ctx.strokeText("Enemies: ", 50, 10);
-        this.ctx.fillText("Enemies:", 50, 10);
+        this.ctx.font = "23px Monaco";
+        this.ctx.strokeText("Enemies: ", 10, 10);
+        this.ctx.fillText("Enemies:", 10, 10);
         this.ctx.strokeStyle = 'yellow';
         this.ctx.lineWidth = 4;
         this.ctx.fillStyle = 'red';
@@ -190,8 +218,8 @@ class Scoreboard extends Canvas {
         if (game1)
             enemies = game1.getEnemiesInterface().getEnemiesCount();
         this.ctx.font = "25px Arial";
-        this.ctx.strokeText(String(enemies), 100, 50);
-        this.ctx.fillText(String(enemies), 100, 50);
+        this.ctx.strokeText(String(enemies), 50, 50);
+        this.ctx.fillText(String(enemies), 50, 50);
         this.ctx.restore();
     }
     mouseDown(e) {

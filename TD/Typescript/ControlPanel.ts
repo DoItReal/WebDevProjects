@@ -18,7 +18,6 @@ class ControlPanel {
     }
 }
 
-var PlayerSpeedSlider, PlayerSpeedOutput;
 var StartStopButton, PauseResumeButton;
 var AddEnemyPeon, AddEnemyWarrior, AddTowerButton, Wave1Button, Wave2Button;
 
@@ -30,10 +29,6 @@ function init_controlPanel() {
 function define_controlPanel() {
     //Container definition
     divControlPanel = document.querySelector('#divControlPanelContainer');
-
-    //Player speed objects definition
-    PlayerSpeedSlider = document.querySelector('#playerSpeedSlider');
-    PlayerSpeedOutput = document.querySelector('#playerSpeedOutput');
 
     //StartStop button definition
     StartStopButton = document.querySelector("#startStopButton");
@@ -53,8 +48,6 @@ function define_controlPanel() {
 
 //initializing control panel events
 function initialize_events_controlPanel() {
-    event_playerSpeedSlider();
-
     event_startStopButton();
     event_pauseResumeButton();
     event_addEnemyButton();
@@ -62,17 +55,6 @@ function initialize_events_controlPanel() {
 }
 
 //event listeners control panel
-function event_playerSpeedSlider() {
-    PlayerSpeedOutput.value = PlayerSpeedSlider.value;
-    game1.player.speed = Number(PlayerSpeedSlider.value);
-    PlayerSpeedSlider.oninput = function (evt) {
-        //visual update Player speed output
-        PlayerSpeedOutput.value = evt.target.value;
-        //  playerSpeedSlider.value = evt.target.value;
-        //functional update Player speed
-        game1.player.speed = Number(evt.target.value);
-    }
-}
 
 
 function event_startStopButton() {

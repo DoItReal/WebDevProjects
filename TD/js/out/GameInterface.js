@@ -12,7 +12,6 @@ class Game {
      *
      */
     constructor() {
-        this.defaultSpeed = 150;
         this.preview = null;
         this.animationID = null;
         this.play = false;
@@ -20,7 +19,7 @@ class Game {
         this.fps = new FPS();
         this.timer = new Timer();
         this.currentWave = null;
-        this.player = new Player({ x: 100, y: 100 }, this.defaultSpeed);
+        this.player = new Player();
         this.playNow = this.playNow.bind(this);
         this.misslesInterface = new _Missles();
         this.towersInterface = new _Towers();
@@ -28,6 +27,8 @@ class Game {
         //TO DO fetch the inventory from DB
         this.player.inventory.fill_inventory();
     }
+    //public methods
+    //getters
     getMisslesInterface() {
         return this.misslesInterface;
     }
@@ -37,7 +38,19 @@ class Game {
     getEnemiesInterface() {
         return this.enemyInterface;
     }
-    get getGame() { return this; }
+    getCurrentWave() {
+        return this.currentWave;
+    }
+    //setters
+    setWave(wave) {
+        if (this.currentWave == null || this.currentWave.getActive() === false) { //if no Wave or the current Wave finished
+            this.currentWave = wave;
+        }
+        else {
+            console.log("Error: Already have active current wave");
+        }
+    }
+    //***
     init() {
         this.fps.init();
     }
@@ -48,7 +61,6 @@ class Game {
     }
     stopGame() {
         this.play = false;
-        this.player.cord = { x: 100, y: 100 };
         MainInterface.timer.timerReset();
         this.animationID = cancelAnimationFrame(this.animationID);
         this.pause = false;
@@ -64,11 +76,11 @@ class Game {
                 cancelAnimationFrame(this.animationID);
                 return 'Game Over';
             }
-            //position the player
-            //   this.player.move();
             //position the enemies
-            if (this.currentWave != null)
-                this.currentWave.draw();
+            if (this.currentWave !== null && this.currentWave.getActive() === true)
+                this.currentWave.draw(); // drawing only if there are still units to spawn
+            else
+                this.currentWave = null;
             this.enemyInterface.update();
             this.towersInterface.update();
             this.misslesInterface.update();
@@ -76,35 +88,6 @@ class Game {
             this.checkForOverlapingObjectsPlayground();
         }
         this.animationID = requestAnimationFrame(this.playNow);
-    }
-    setWave(wave) {
-        this.currentWave = wave;
-    }
-    hitCheck() {
-        /***********************************************************
-         *   ___________________________________________________   *
-         *  |  ###############################################  |  *
-         *  |  ### Here goes the logic for collision check ###  |  *
-         *  |  ###############################################  |  *
-         *  |___________________________________________________|  *
-         ***********************************************************/
-        //check for player<--->enemy collision
-        let enemies = this.getEnemiesInterface().getEnemies();
-        if (enemies.length) {
-            for (let i = 0; i < enemies.length; i++) {
-                if (rectsOverlap(this.player.cord.x, this.player.cord.y, 80, 80, enemies[i].cord.x, enemies[i].cord.y, 40, 40) == true)
-                    console.log('Collision');
-            }
-        }
-    }
-    visualisePreview() {
-        if (MainInterface.clipboard != null && this.preview != null) {
-            let obj = MainInterface.clipboard;
-            obj.cord.x = this.preview.x; // this way we are chaning the values of the already existing object keeping the references to it 
-            obj.cord.y = this.preview.y;
-            //  obj.cord = { x: this.preview.x, y: this.preview.y};   // creates new object 
-            obj.draw(true);
-        }
     }
     updatePreview(getX, getY) {
         if (MainInterface.clipboard != null) {
@@ -116,9 +99,26 @@ class Game {
         else
             this.preview = null;
     }
+    // We want the object to move at speed pixels/s (there are 60 frames in a second)
+    // If we are really running at 60 frames/s, the delay between frames should be 1/60
+    // = 16.66 ms, so the number of pixels to move = (speed * del)/1000. If the delay is twice
+    // longer, the formula works : let's move the rectangle twice longer!
+    calcDistanceToMove(speed) {
+        //console.log("#delta = " + delta + " speed = " + speed);
+        return (speed * this.fps.delta) / 1000;
+    }
+    //private methods
+    visualisePreview() {
+        if (MainInterface.clipboard != null && this.preview != null) {
+            let obj = MainInterface.clipboard;
+            obj.cord.x = this.preview.x; // this way we are chaning the values of the already existing object keeping the references to it 
+            obj.cord.y = this.preview.y;
+            //  obj.cord = { x: this.preview.x, y: this.preview.y};   // creates new object 
+            obj.draw(true);
+        }
+    }
     checkForOverlapingObjectsPlayground() {
         let tmp = MainInterface.getMouse();
-        //  if (MainInterface.getPlayground() === document.activeElement) this.checkForOverlapingObjectsPlayground();
         if (!MainInterface.getPlayground().overlapping({ clientX: tmp.x, clientY: tmp.y }))
             return;
         let obj = null;
@@ -148,14 +148,6 @@ class Game {
                 }
             }
         }
-    }
-    // We want the object to move at speed pixels/s (there are 60 frames in a second)
-    // If we are really running at 60 frames/s, the delay between frames should be 1/60
-    // = 16.66 ms, so the number of pixels to move = (speed * del)/1000. If the delay is twice
-    // longer, the formula works : let's move the rectangle twice longer!
-    calcDistanceToMove(speed) {
-        //console.log("#delta = " + delta + " speed = " + speed);
-        return (speed * this.fps.delta) / 1000;
     }
 }
 //# sourceMappingURL=GameInterface.js.map

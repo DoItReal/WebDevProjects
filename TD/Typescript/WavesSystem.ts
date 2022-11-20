@@ -10,12 +10,16 @@ class wave_node {
 }
 
 class Wave {
+	//public
+	active: boolean | null = null;
+	//private
 	private head: wave_node;
 	private size: number = 0;
 	private delay: number;
-	private way: way; 
+	private way: way;
 	private timer: Timer = new Timer();
-	constructor(node:wave_node=null) {
+
+	constructor(node: wave_node = null) {
 		this.head = node;
 		if (this.head !== null) {
 			this.size += 1;
@@ -23,53 +27,26 @@ class Wave {
 		this.delay = 1;
 		this.way = [{ x: 0, y: 0 }];
 	}
-	init_wave() {
-		setTimeout(()=>{ this.spawnUnits() }, this.head.delay*1000);
-	}
-	spawnUnits(node: wave_node = this.getHead()) {
-		if (node != null) {
-			game1.getEnemiesInterface().addEnemy(node.unit);
-			node = node.next;
-			if (node != null)
-				setTimeout(()=> { this.spawnUnits(node) }, node.delay*1000);
-		}
-	}
 
 	//public methods
-	setWay(way: way) {
-		this.way = way;
-	}
-	setDelay(value: number) {
-		this.delay = value;
-	}
-	setHead(node:wave_node) {
-		this.head = node;
-		this.head.next = null;
-		if (this.head != null) this.size = 1;
-		else this.size = 0;
-	}
-	getHead() {
-		if (this.head) return this.head;
-		else return null;
-	}
-	getTail():wave_node {
-		let current = this.head;
-		while (current && current.next != null) {
-			current = current.next;
+
+	init_wave() {
+		if (this.active === null) {
+			this.active = true;
+			setTimeout(() => { this.spawnUnits() }, this.head.delay * 1000);
+		} else {
+			console.log('Error Wave:init_wave() - Already active(true) || finished(false): ' + this.active);
 		}
-		return current;
-	}
-	getSize() {
-		return this.size;
 	}
 	addUnit(unit: Enemy) {
-		unit.setCord({x:this.way[0].x,y:this.way[0].y});
+		unit.setCord({ x: this.way[0].x, y: this.way[0].y });
 		unit.way = structuredClone(this.way);
 		if (this.getTail() != null)
 			this.getTail().next = new wave_node(unit, this.delay);
 		else this.head = new wave_node(unit, this.delay);
+		this.size += 1;
 	}
-	draw() {
+	draw() { // visualising the wave path
 		let ctx = MainInterface.getPlayground().getContext();
 		ctx.save();
 		ctx.beginPath();
@@ -79,9 +56,9 @@ class Wave {
 		if (this.way) {
 			for (let i = 0; i < this.way.length - 1; i++) {
 				drawArrow(this.way[i], this.way[i + 1]);
-            }
+			}
 		}
-		function drawArrow(from:cord,to:cord) {
+		function drawArrow(from: cord, to: cord) {
 			let headlen = 20; // length of head in pixels
 			let dx = to.x - from.x;
 			let dy = to.y - from.y;
@@ -92,10 +69,58 @@ class Wave {
 			ctx.lineTo(to.x - headlen * Math.cos(angle - Math.PI / 6), to.y - headlen * Math.sin(angle - Math.PI / 6));
 			ctx.moveTo(to.x, to.y);
 			ctx.lineTo(to.x - headlen * Math.cos(angle + Math.PI / 6), to.y - headlen * Math.sin(angle + Math.PI / 6));
-        }
+		}
 		ctx.stroke();
 		ctx.restore();
-    }
+	}
+
+	//setters 
+	setWay(way: way) {
+		this.way = way;
+	}
+	setDelay(value: number) {
+		this.delay = value;
+	}
+	setHead(node: wave_node) {
+		this.head = node;
+		this.head.next = null;
+		if (this.head != null) this.size = 1;
+		else this.size = 0;
+	}
+
+	//getters
+	getHead(): wave_node {
+		if (this.head) return this.head;
+		else return null;
+	}
+	getTail(): wave_node {
+		let current = this.head;
+		while (current && current.next != null) {
+			current = current.next;
+		}
+		return current;
+	}
+	getSize(): number {
+		return this.size;
+	}
+	getActive(): boolean {
+		return this.active;
+	}
+
+		//private methods 
+
+	private spawnUnits(node: wave_node = this.getHead()) {
+		if (node != null) {
+			game1.getEnemiesInterface().addEnemy(node.unit);
+			node = node.next;
+			if (node != null) {
+				setTimeout(() => { this.spawnUnits(node) }, node.delay * 1000);
+			} else {
+				this.active = false;
+			}
+		}
+	}
+
 	//to implement better functionality of the LINKED LIST if needed  // * not needed at the moment *
 }
 

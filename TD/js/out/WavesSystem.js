@@ -7,6 +7,8 @@ class wave_node {
 }
 class Wave {
     constructor(node = null) {
+        //public
+        this.active = null;
         this.size = 0;
         this.timer = new Timer();
         this.head = node;
@@ -16,47 +18,15 @@ class Wave {
         this.delay = 1;
         this.way = [{ x: 0, y: 0 }];
     }
-    init_wave() {
-        setTimeout(() => { this.spawnUnits(); }, this.head.delay * 1000);
-    }
-    spawnUnits(node = this.getHead()) {
-        if (node != null) {
-            game1.getEnemiesInterface().addEnemy(node.unit);
-            node = node.next;
-            if (node != null)
-                setTimeout(() => { this.spawnUnits(node); }, node.delay * 1000);
-        }
-    }
     //public methods
-    setWay(way) {
-        this.way = way;
-    }
-    setDelay(value) {
-        this.delay = value;
-    }
-    setHead(node) {
-        this.head = node;
-        this.head.next = null;
-        if (this.head != null)
-            this.size = 1;
-        else
-            this.size = 0;
-    }
-    getHead() {
-        if (this.head)
-            return this.head;
-        else
-            return null;
-    }
-    getTail() {
-        let current = this.head;
-        while (current && current.next != null) {
-            current = current.next;
+    init_wave() {
+        if (this.active === null) {
+            this.active = true;
+            setTimeout(() => { this.spawnUnits(); }, this.head.delay * 1000);
         }
-        return current;
-    }
-    getSize() {
-        return this.size;
+        else {
+            console.log('Error Wave:init_wave() - Already active(true) || finished(false): ' + this.active);
+        }
     }
     addUnit(unit) {
         unit.setCord({ x: this.way[0].x, y: this.way[0].y });
@@ -65,6 +35,7 @@ class Wave {
             this.getTail().next = new wave_node(unit, this.delay);
         else
             this.head = new wave_node(unit, this.delay);
+        this.size += 1;
     }
     draw() {
         let ctx = MainInterface.getPlayground().getContext();
@@ -92,6 +63,54 @@ class Wave {
         }
         ctx.stroke();
         ctx.restore();
+    }
+    //setters 
+    setWay(way) {
+        this.way = way;
+    }
+    setDelay(value) {
+        this.delay = value;
+    }
+    setHead(node) {
+        this.head = node;
+        this.head.next = null;
+        if (this.head != null)
+            this.size = 1;
+        else
+            this.size = 0;
+    }
+    //getters
+    getHead() {
+        if (this.head)
+            return this.head;
+        else
+            return null;
+    }
+    getTail() {
+        let current = this.head;
+        while (current && current.next != null) {
+            current = current.next;
+        }
+        return current;
+    }
+    getSize() {
+        return this.size;
+    }
+    getActive() {
+        return this.active;
+    }
+    //private methods 
+    spawnUnits(node = this.getHead()) {
+        if (node != null) {
+            game1.getEnemiesInterface().addEnemy(node.unit);
+            node = node.next;
+            if (node != null) {
+                setTimeout(() => { this.spawnUnits(node); }, node.delay * 1000);
+            }
+            else {
+                this.active = false;
+            }
+        }
     }
 }
 class WayGenerator {
