@@ -104,13 +104,11 @@ function event_addEnemyButton() {
         let waveGen = new WavesGenerator();
         let wave = waveGen.level_1();
         game1.setWave(wave);
-        wave.init_wave();
     };
     Wave2Button.onclick = function (evt) {
         let waveGen = new WavesGenerator();
         let wave = waveGen.level_2();
         game1.setWave(wave);
-        wave.init_wave();
     };
 }
 function event_addTowerButton() {

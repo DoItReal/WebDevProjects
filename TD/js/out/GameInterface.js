@@ -45,6 +45,7 @@ class Game {
     setWave(wave) {
         if (this.currentWave == null || this.currentWave.getActive() === false) { //if no Wave or the current Wave finished
             this.currentWave = wave;
+            this.currentWave.init_wave();
         }
         else {
             console.log("Error: Already have active current wave");

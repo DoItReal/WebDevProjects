@@ -27,32 +27,44 @@ class Canvas {
 class Scoreboard extends Canvas {
     constructor() {
         super();
+        this.widgets = [];
         this.mouseMove = this.mouseMove.bind(this);
         this.mouseDown = this.mouseDown.bind(this);
     }
+    //public method
     init() {
         this.canvas = document.querySelector('#Scoreboard');
         this.ctx = this.canvas.getContext('2d');
+        this.init_events();
+        let tmp = new PlayerInfo(this.canvas, this.ctx, game1.player);
+        tmp.init();
+        this.widgets.push(tmp);
     }
+    update() {
+        this.draw();
+        this.widgets.forEach(e => { e.update(); });
+    }
+    mouseMove(mousePosRelative) {
+        //  console.log("x: " + mousePos.x + ' // y: ' + mousePos.y);
+    }
+    mouseDown(e) {
+        e.preventDefault();
+        let button = e.button;
+        let mousePos = MainInterface.getMousePos(this, e);
+        console.log('Button: ' + button + ' pressed at x: ' + mousePos.x + ' y: ' + mousePos.y);
+    }
+    //private methods
     init_events() {
         //prevent opening context menu on right click;
         this.canvas.addEventListener('contextmenu', function (e) { e.preventDefault(); }, false);
         //event listener on 'mousedown' Scoreboard
         this.canvas.addEventListener('mousedown', this.mouseDown, false);
     }
-    mouseMove(mousePosRelative) {
-        //  console.log("x: " + mousePos.x + ' // y: ' + mousePos.y);
-    }
-    update() {
-        this.draw();
-    }
     draw() {
         //clear canvas
         this.clear();
         //import background
         this.background();
-        //import Player Info
-        this.drawPlayerInfo();
         //import enemy counter - TO REWORK
         this.enemyCounter(this.canvas.width / 3, 10);
         //import timer
@@ -64,7 +76,6 @@ class Scoreboard extends Canvas {
         let wave = game1.getCurrentWave();
         if (wave != null) {
             this.drawWaveWidget(wave.getSize());
-            console.log(wave.getSize());
         }
         else
             this.drawWaveWidget();
@@ -72,7 +83,7 @@ class Scoreboard extends Canvas {
     drawWaveWidget(size = 0) {
         let w = 120;
         let h = 60;
-        let x = this.canvas.width / 6;
+        let x = this.canvas.width / 2 + w;
         let y = (this.canvas.height - h) / 2;
         this.ctx.save();
         this.ctx.translate(x, y);
@@ -84,46 +95,6 @@ class Scoreboard extends Canvas {
         this.ctx.fillStyle = "black";
         this.ctx.fillText("Current Wave", 10, 15);
         this.ctx.fillText("Size: " + size, 10, 35);
-        this.ctx.restore();
-    }
-    drawPlayerInfo() {
-        this.drawIcon(this.canvas.height / 10, this.canvas.height / 10);
-        this.drawHP(this.canvas.height * 1.1, this.canvas.height / 8);
-        this.drawGold(this.canvas.height * 1.1, this.canvas.height / 2);
-    }
-    drawIcon(x, y) {
-        this.ctx.save();
-        this.ctx.translate(x, y);
-        let tmp = new Image();
-        tmp.src = "textures/content/player/man-mage-icon.png";
-        this.ctx.strokeStyle = "white";
-        this.ctx.lineWidth = 2;
-        this.ctx.strokeRect(0, 0, this.canvas.height * 0.8, this.canvas.height * 0.8);
-        this.ctx.drawImage(tmp, 1, 1, this.canvas.height * 0.8 - 2, this.canvas.height * 0.8 - 2);
-        this.ctx.restore();
-    }
-    drawHP(x, y) {
-        let hp = game1.player.hp; // to do 
-        let maxHp = 10; // to do !!! Needed rework of the hp system for the player
-        let w = 100;
-        let h = this.canvas.height / 8;
-        this.ctx.save();
-        this.ctx.translate(x, y);
-        this.ctx.fillStyle = "lightgray";
-        this.ctx.fillRect(0, 0, w, h);
-        this.ctx.fillStyle = "red";
-        this.ctx.fillRect(1, 1, w * hp / maxHp - 2, h - 2);
-        this.ctx.font = "20px Roboto";
-        this.ctx.fillText(hp + "/" + maxHp + " HP", w + 5, h, 50);
-        this.ctx.restore();
-    }
-    drawGold(x, y) {
-        let gold = game1.player.gold; // to do
-        this.ctx.save();
-        this.ctx.translate(x, y);
-        this.ctx.fillStyle = "gold";
-        this.ctx.font = "22px Roboto";
-        this.ctx.fillText(Math.floor(gold) + " GOLD", 0, 0, 50);
         this.ctx.restore();
     }
     drawTimer() {
@@ -222,11 +193,75 @@ class Scoreboard extends Canvas {
         this.ctx.fillText(String(enemies), 50, 50);
         this.ctx.restore();
     }
-    mouseDown(e) {
-        e.preventDefault();
-        let button = e.button;
-        let mousePos = MainInterface.getMousePos(this, e);
-        console.log('Button: ' + button + ' pressed at x: ' + mousePos.x + ' y: ' + mousePos.y);
+}
+class PlayerInfo {
+    constructor(canvas, ctx, player) {
+        this.icon = new Image();
+        this.canvas = canvas;
+        this.ctx = ctx;
+        this.player = player;
+        this.width = 250;
+        this.height = this.canvas.height * 0.9;
+    }
+    //public methods
+    init() {
+        this.icon.src = this.player.getIcon();
+        this.icon.onload = () => this.update();
+    }
+    update() {
+        this.drawPlayerInfo();
+    }
+    getIcon() {
+        return this.icon;
+    }
+    //private methods
+    drawPlayerInfo() {
+        this.border();
+        this.drawIcon(this.canvas.height / 10, this.canvas.height / 10);
+        this.drawHP(this.canvas.height * 1.1, this.canvas.height / 8);
+        this.drawGold(this.canvas.height * 1.1, this.canvas.height / 2);
+    }
+    border() {
+        this.ctx.save();
+        this.ctx.strokeStyle = "darkslategray";
+        this.ctx.lineWidth = 1;
+        this.ctx.strokeRect((this.canvas.height - this.height) / 2, (this.canvas.height - this.height) / 2, this.width, this.height);
+        this.ctx.restore();
+    }
+    drawIcon(x, y) {
+        let w = this.canvas.height * 0.8 - 2;
+        let h = this.canvas.height * 0.8 - 2;
+        this.ctx.save();
+        this.ctx.translate(x, y);
+        this.ctx.strokeStyle = "white";
+        this.ctx.lineWidth = 2;
+        this.ctx.strokeRect(0, 0, this.canvas.height * 0.8, this.canvas.height * 0.8);
+        this.ctx.drawImage(this.icon, 1, 1, w, h);
+        this.ctx.restore();
+    }
+    drawHP(x, y) {
+        let hp = game1.player.hp; // to do 
+        let maxHp = 10; // to do !!! Needed rework of the hp system for the player
+        let w = 100;
+        let h = this.canvas.height / 8;
+        this.ctx.save();
+        this.ctx.translate(x, y);
+        this.ctx.fillStyle = "lightgray";
+        this.ctx.fillRect(0, 0, w, h);
+        this.ctx.fillStyle = "red";
+        this.ctx.fillRect(1, 1, w * hp / maxHp - 2, h - 2);
+        this.ctx.font = "20px Roboto";
+        this.ctx.fillText(hp + "/" + maxHp + " HP", w + 5, h, 50);
+        this.ctx.restore();
+    }
+    drawGold(x, y) {
+        let gold = game1.player.gold; // to do
+        this.ctx.save();
+        this.ctx.translate(x, y);
+        this.ctx.fillStyle = "gold";
+        this.ctx.font = "22px Roboto";
+        this.ctx.fillText(Math.floor(gold) + " GOLD", 0, 0, 50);
+        this.ctx.restore();
     }
 }
 //# sourceMappingURL=Scoreboard.js.map

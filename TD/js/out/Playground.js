@@ -1,13 +1,13 @@
+var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (receiver, state, kind, f) {
+    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
+    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
+    return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
+};
 var __classPrivateFieldSet = (this && this.__classPrivateFieldSet) || function (receiver, state, value, kind, f) {
     if (kind === "m") throw new TypeError("Private method is not writable");
     if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a setter");
     if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot write private member to an object whose class did not declare it");
     return (kind === "a" ? f.call(receiver, value) : f ? f.value = value : state.set(receiver, value)), value;
-};
-var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (receiver, state, kind, f) {
-    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
-    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
-    return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
 };
 var _Playground_canvas, _Playground_ctx;
 class Playground {
@@ -21,19 +21,32 @@ class Playground {
         this.png_background = null;
         this.getContext = this.getContext.bind(this);
     }
+    //public methods
+    //getters
+    getCanvas() {
+        return __classPrivateFieldGet(this, _Playground_canvas, "f");
+    }
+    getContext() {
+        return __classPrivateFieldGet(this, _Playground_ctx, "f");
+    }
     init() {
         __classPrivateFieldSet(this, _Playground_canvas, document.querySelector('#Playground'), "f");
         __classPrivateFieldSet(this, _Playground_ctx, __classPrivateFieldGet(this, _Playground_canvas, "f").getContext('2d'), "f");
         this.init_events();
         try {
             this.png_background = new Image();
-            this.png_background.src = 'textures/content/terrain/floor/Floor4.png';
+            this.png_background.src = 'textures/content/terrain/floor/Floor1.png';
         }
         catch (e) {
             console.log('Failed to load textures');
         }
         ;
     }
+    update() {
+        this.clear();
+        this.background();
+    }
+    //private methods
     init_events() {
         //event listener on 'keydown'
         __classPrivateFieldGet(this, _Playground_canvas, "f").addEventListener('keydown', MainInterface.handleKeyDown, false);
@@ -47,6 +60,7 @@ class Playground {
         //event listener on 'mousedown' Playground
         __classPrivateFieldGet(this, _Playground_canvas, "f").addEventListener('mousedown', this.mouseDown, false);
     }
+    //events
     overlapping(e) {
         let rect = __classPrivateFieldGet(this, _Playground_canvas, "f").getBoundingClientRect();
         if (circRectsOverlap(rect.left, rect.top, rect.width, rect.height, e.clientX, e.clientY, 1)) {
@@ -84,19 +98,10 @@ class Playground {
     blurFocus() {
         __classPrivateFieldGet(this, _Playground_canvas, "f").blur();
     }
-    getCanvas() {
-        return __classPrivateFieldGet(this, _Playground_canvas, "f");
-    }
-    getContext() {
-        return __classPrivateFieldGet(this, _Playground_ctx, "f");
-    }
-    update() {
-        this.clear();
-        //   this.background();
-    }
     backgroundTile(x, y, w, h, angle) {
         __classPrivateFieldGet(this, _Playground_ctx, "f").save();
         __classPrivateFieldGet(this, _Playground_ctx, "f").translate(x, y);
+        __classPrivateFieldGet(this, _Playground_ctx, "f").globalAlpha = 0.4;
         __classPrivateFieldGet(this, _Playground_ctx, "f").rotate(angle);
         __classPrivateFieldGet(this, _Playground_ctx, "f").drawImage(this.png_background, 0, 0, w, h);
         __classPrivateFieldGet(this, _Playground_ctx, "f").restore();

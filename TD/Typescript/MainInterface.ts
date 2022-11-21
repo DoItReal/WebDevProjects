@@ -57,31 +57,32 @@ class _MainInterface implements mainInterface{
         this.removeKey = this.removeKey.bind(this);
 
     }
+        //public methods
+    //getters
     getMouse() { // returns mouse pos in GLOBAL SCOPE
         return this.mousePos;
-    }
-    init() {
-        this.Playground.init();
-        this.Scoreboard.init();
-        this.ControlPanel.init();
-        this.load();
-        this.update();
-        
     }
     getTimerDist() {
         return this.timer.getDist();
     }
-    init_events() {
-        //event getMousePos
-        document.addEventListener('mouseenter', this.setMousePos, false);
-        document.addEventListener('mousemove', this.setMousePos, false);
-
-        //event listener on 'mousemove'
-        document.addEventListener('mousemove', this.mouseMove, false);
-
-        this.Playground.init_events();
-        this.Scoreboard.init_events();
+    getPlayground() {
+        return this.Playground;
     }
+    getScoreboard() {
+        return this.Scoreboard;
+    }
+    getControlPanel() {
+        return this.ControlPanel;
+    }
+    getSprites(obj: string) {
+        switch (obj) {
+            case "Peon": return this.sprites.get('enemy_peon');
+            case "Warrior": return this.sprites.get('enemy_warrior');
+            default: return;
+        }
+    }
+
+    //setters
     addKey(key) {
         if (this.pressedKeys.has(key)) {
             return 0;
@@ -94,6 +95,36 @@ class _MainInterface implements mainInterface{
             this.pressedKeys.delete(key);
         }
     }
+    setMousePos(e) {
+        this.mousePos = { x: e.clientX, y: e.clientY };
+    }
+    setClipboard(obj) {
+        this.clipboard = obj;
+    }
+    //***
+    init() {
+        this.Playground.init();
+        this.Scoreboard.init();
+        this.ControlPanel.init();
+        this.load();
+        this.update();
+        
+    } 
+    update() {
+        this.Playground.update();
+        this.Scoreboard.update();
+        this.ControlPanel.update();
+    }
+    init_events() {
+        //event getMousePos
+        document.addEventListener('mouseenter', this.setMousePos, false); //getting the mousepos every time the mouse is moved or entering in the main document
+        document.addEventListener('mousemove', this.setMousePos, false);
+
+        //event listener on 'mousemove'
+        document.addEventListener('mousemove', this.mouseMove, false);
+    }
+
+    //events methods
     handleKeyDown(e) {
         e.preventDefault();
         if (e.keyCode == '39') { //arrow right
@@ -143,41 +174,17 @@ class _MainInterface implements mainInterface{
             y: this.mousePos.y - rect.top
         }
     }
-    setMousePos(e) {
-        this.mousePos = { x: e.clientX, y: e.clientY };
-    }
-    update() {
-        this.Playground.update();
-        this.Scoreboard.update();
-        this.ControlPanel.update();
-    }
-    getPlayground() {
-        return this.Playground;
-    }
-    getScoreboard() {
-        return this.Scoreboard;
-    }
-    getControlPanel() {
-        return this.ControlPanel;
-    }
-    setClipboard(obj) {
-        this.clipboard = obj;
-    }
+  
     clearClipboard() {
         this.clipboard = null;
     }
-    load() {
+         //private methods
+    private load() {
         let peonSprite = new enemy_PeonSprite();
         this.sprites.set('enemy_peon', peonSprite.getSprites());
         let warriorSprite = new enemy_WarriorSprite();
         this.sprites.set('enemy_warrior', warriorSprite.getSprites());
     }
-    getSprites(obj:string) {
-        switch (obj) {
-            case "Peon": return this.sprites.get('enemy_peon');
-            case "Warrior": return this.sprites.get('enemy_warrior');
-            default: return;
-        }
-    }
+   
    
 }

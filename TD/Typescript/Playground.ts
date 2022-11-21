@@ -10,19 +10,36 @@ class Playground {
         this.png_background = null;
         this.getContext = this.getContext.bind(this);
     }
+
+
+        //public methods
+    //getters
+    getCanvas() {
+        return this.#canvas;
+    }
+    getContext() {
+        return this.#ctx;
+    }
+
     init() {
         this.#canvas = document.querySelector('#Playground');
         this.#ctx = this.#canvas.getContext('2d');
         this.init_events();
         try {
             this.png_background = new Image();
-            this.png_background.src = 'textures/content/terrain/floor/Floor4.png'
+            this.png_background.src = 'textures/content/terrain/floor/Floor1.png'
         } catch (e) {
             console.log('Failed to load textures');
         };
 
     }
-    init_events() {
+    update() {
+        this.clear();
+        this.background();
+    }
+
+        //private methods
+    private init_events() {
         //event listener on 'keydown'
         this.#canvas.addEventListener('keydown', MainInterface.handleKeyDown, false);
         this.#canvas.addEventListener('keyup', MainInterface.handleKeyUp, false);
@@ -39,6 +56,8 @@ class Playground {
         //event listener on 'mousedown' Playground
         this.#canvas.addEventListener('mousedown', this.mouseDown, false);
     }
+
+    //events
     overlapping(e) {
         let rect = this.#canvas.getBoundingClientRect();
         if (circRectsOverlap(rect.left, rect.top, rect.width, rect.height, e.clientX, e.clientY, 1)) {
@@ -74,25 +93,17 @@ class Playground {
     blurFocus() {
         this.#canvas.blur();
     }
-    getCanvas() {
-        return this.#canvas;
-    }
-    getContext() {
-        return this.#ctx;
-    }
-    update() {
-        this.clear();
-     //   this.background();
-    }
-    backgroundTile(x, y, w, h, angle) {
+
+    private backgroundTile(x, y, w, h, angle) {
         this.#ctx.save();
         this.#ctx.translate(x, y);
+        this.#ctx.globalAlpha = 0.4;
         this.#ctx.rotate(angle);
         this.#ctx.drawImage(this.png_background, 0, 0, w, h);
 
         this.#ctx.restore();
     }
-    background() {
+    private background() {
         let tileWidth = 50;
         let tileHeight = 50;
         let angle = Math.PI; //Math.PI - straight, Math.PI/2 - 90 degr;

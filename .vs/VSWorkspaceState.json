@@ -4,8 +4,10 @@
     "\\TD",
     "\\TD\\js",
     "\\TD\\styles",
+    "\\TD\\textures",
+    "\\TD\\textures\\content",
     "\\TD\\Typescript"
   ],
-  "SelectedNode": "\\TD\\Typescript\\PlayerInterface.ts",
+  "SelectedNode": "\\TD\\Typescript\\Scoreboard.ts",
   "PreviewInSolutionExplorer": false
 }
