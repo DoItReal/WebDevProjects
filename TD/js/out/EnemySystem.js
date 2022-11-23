@@ -9,6 +9,7 @@ class Enemy {
             throw new Error("Abstract classes can't be instantiated.");
         }
         this.dim = { w: 0, h: 0 };
+        this.cord = { x: 0, y: 0 };
     }
     update() {
         if (this.status != 'dead') {
@@ -20,10 +21,18 @@ class Enemy {
         else {
             this.destroy();
         }
+        this.checkForBase();
     }
     setCord(cord) {
         this.cord.x = cord.x;
         this.cord.y = cord.y;
+    }
+    checkForBase() {
+        let base = game1.getPlayer().getBase();
+        if (this.status === 'alive' && rectsOverlap(this.cord.x, this.cord.y, this.dim.w, this.dim.h, base.getCord().x, base.getCord().y, base.getDim().w / 2, base.getDim().h / 2)) {
+            game1.getPlayer().getBase().receiveDmg(this.dmg);
+            this.destroy();
+        }
     }
     receiveDmg(dmg, tower) {
         if (this.status == 'alive') {
@@ -224,9 +233,8 @@ class enemy_PeonSprite {
     }
 }
 class enemy_Peon extends Enemy {
-    constructor(cord, way) {
+    constructor(way) {
         super();
-        this.cord = cord;
         this.dim.w = 60;
         this.dim.h = 60;
         this.way = way;
@@ -320,9 +328,8 @@ class enemy_WarriorSprite {
     }
 }
 class enemy_Warrior extends Enemy {
-    constructor(cord, way) {
+    constructor(way) {
         super();
-        this.cord = cord;
         this.dim.w = 80;
         this.dim.h = 80;
         this.way = way;

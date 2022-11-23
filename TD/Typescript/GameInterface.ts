@@ -10,6 +10,7 @@ class Game {
     enemyInterface: _Enemies;
     player: Player;
     currentWave: Wave = null;
+    currentLevel: Level = null;
     /*          Constructor()
      *          
      *          For creating Game instance we need: 
@@ -46,8 +47,17 @@ class Game {
     getCurrentWave() {
         return this.currentWave;
     }
-
+    getPlayer() {
+        return this.player;
+    }
+    getLevel() {
+        return this.currentLevel;
+    }
     //setters
+    setLevel(level: Level) {
+        this.currentLevel = level;
+        this.currentLevel.init();
+    }
     setWave(wave: Wave) {
         if (this.currentWave == null || this.currentWave.getActive() === false) { //if no Wave or the current Wave finished
             this.currentWave = wave;
@@ -85,17 +95,25 @@ class Game {
                 return 'Game Over';
             }
             //position the enemies
-            if (this.currentWave !== null && this.currentWave.getActive() === true) this.currentWave.draw(); // drawing only if there are still units to spawn
+            if (this.currentWave !== null && (this.currentWave.getActive() || this.currentWave.checkAlive())) this.currentWave.draw(); // drawing only if there are still units to spawn
             else this.currentWave = null;
-            this.enemyInterface.update();     
-            this.towersInterface.update();
-            this.misslesInterface.update();
-            this.visualisePreview();
-            
-            this.checkForOverlapingObjectsPlayground();
+
+            if (this.currentLevel != null) {
+                this.player.update();
+                this.enemyInterface.update();
+                this.towersInterface.update();
+                this.misslesInterface.update();
+                this.visualisePreview();
+
+                this.checkForOverlapingObjectsPlayground();
+            }
         }
 
         this.animationID = requestAnimationFrame(this.playNow);
+    }
+    GameOver() {
+        this.stopGame();
+        alert('Game Over');
     }
     updatePreview(getX, getY) {
         if (MainInterface.clipboard != null) {

@@ -1,32 +1,3 @@
-/*
-// Woman object and sprites
-// sprite index corresponding to posture
-var WOMAN_DIR_RIGHT = 6;
-var WOMAN_DIR_LEFT = 2;
-class woman {
-    x: 100,
-    y: 200,
-    width: 48,
-    speed: 100, // pixels/s this time !
-   // direction: WOMAN_DIR_RIGHT
-}
-
-function updateWomanPosition(delta, canvas) {
-
-    // check collision on left or right
-    if (((woman.x + woman.width) > canvas.width) || (woman.x < 0)) {
-        // inverse speed
-        woman.speed = -woman.speed;
-    }
-
-    /* // change sprite direction
-    if (woman.speed >= 0) {
-        woman.direction = WOMAN_DIR_RIGHT;
-    } else {
-        woman.direction = WOMAN_DIR_LEFT;
-    }
-    woman.x += game1.calcDistanceToMove(woman.speed);
-}*/
 /*---------------------------------------*/
 /* SPRITE UTILITY FUNCTIONS              */
 /*---------------------------------------*/

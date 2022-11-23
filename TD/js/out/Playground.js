@@ -32,6 +32,8 @@ class Playground {
     init() {
         __classPrivateFieldSet(this, _Playground_canvas, document.querySelector('#Playground'), "f");
         __classPrivateFieldSet(this, _Playground_ctx, __classPrivateFieldGet(this, _Playground_canvas, "f").getContext('2d'), "f");
+        __classPrivateFieldGet(this, _Playground_canvas, "f").width = window.innerWidth;
+        __classPrivateFieldGet(this, _Playground_canvas, "f").height = window.innerHeight * 0.75;
         this.init_events();
         try {
             this.png_background = new Image();
@@ -107,6 +109,10 @@ class Playground {
         __classPrivateFieldGet(this, _Playground_ctx, "f").restore();
     }
     background() {
+        if (!this.png_background.complete) { // waiting for the image to be loaded if not loaded yet
+            this.png_background.onload = () => this.background();
+            return;
+        }
         let tileWidth = 50;
         let tileHeight = 50;
         let angle = Math.PI; //Math.PI - straight, Math.PI/2 - 90 degr;

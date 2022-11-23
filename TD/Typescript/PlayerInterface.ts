@@ -4,6 +4,7 @@ class Player{ //TO DO it singleton and to extends (to do)USER
     inventory: Inventory;
     hp: number;
     gold: number;
+    base: Base;
 
     constructor() {
         this.inventory = new Inventory(); //Inventory of player /array of $items
@@ -11,6 +12,7 @@ class Player{ //TO DO it singleton and to extends (to do)USER
         this.iconSrc = "textures/content/player/man-mage-icon.png";
         this.hp = 10;
         this.gold = 0;
+        this.base = new Castle_lvl_1();
     }
 
         //public methods
@@ -21,9 +23,16 @@ class Player{ //TO DO it singleton and to extends (to do)USER
     getName(): string {
         return this.name;
     }
+    getBase(): Base {
+        return this.base;
+    }
 
+    update() {
+        this.base.draw();
+    }
 
     gainGold(value: number) {
         this.gold += value;
     }
+    
 }

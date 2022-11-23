@@ -19,6 +19,7 @@ class Game {
         this.fps = new FPS();
         this.timer = new Timer();
         this.currentWave = null;
+        this.currentLevel = null;
         this.player = new Player();
         this.playNow = this.playNow.bind(this);
         this.misslesInterface = new _Missles();
@@ -41,7 +42,17 @@ class Game {
     getCurrentWave() {
         return this.currentWave;
     }
+    getPlayer() {
+        return this.player;
+    }
+    getLevel() {
+        return this.currentLevel;
+    }
     //setters
+    setLevel(level) {
+        this.currentLevel = level;
+        this.currentLevel.init();
+    }
     setWave(wave) {
         if (this.currentWave == null || this.currentWave.getActive() === false) { //if no Wave or the current Wave finished
             this.currentWave = wave;
@@ -78,17 +89,24 @@ class Game {
                 return 'Game Over';
             }
             //position the enemies
-            if (this.currentWave !== null && this.currentWave.getActive() === true)
+            if (this.currentWave !== null && (this.currentWave.getActive() || this.currentWave.checkAlive()))
                 this.currentWave.draw(); // drawing only if there are still units to spawn
             else
                 this.currentWave = null;
-            this.enemyInterface.update();
-            this.towersInterface.update();
-            this.misslesInterface.update();
-            this.visualisePreview();
-            this.checkForOverlapingObjectsPlayground();
+            if (this.currentLevel != null) {
+                this.player.update();
+                this.enemyInterface.update();
+                this.towersInterface.update();
+                this.misslesInterface.update();
+                this.visualisePreview();
+                this.checkForOverlapingObjectsPlayground();
+            }
         }
         this.animationID = requestAnimationFrame(this.playNow);
+    }
+    GameOver() {
+        this.stopGame();
+        alert('Game Over');
     }
     updatePreview(getX, getY) {
         if (MainInterface.clipboard != null) {

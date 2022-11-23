@@ -24,6 +24,8 @@ class Playground {
     init() {
         this.#canvas = document.querySelector('#Playground');
         this.#ctx = this.#canvas.getContext('2d');
+        this.#canvas.width = window.innerWidth;
+        this.#canvas.height = window.innerHeight * 0.75;
         this.init_events();
         try {
             this.png_background = new Image();
@@ -31,7 +33,6 @@ class Playground {
         } catch (e) {
             console.log('Failed to load textures');
         };
-
     }
     update() {
         this.clear();
@@ -104,6 +105,10 @@ class Playground {
         this.#ctx.restore();
     }
     private background() {
+        if (!this.png_background.complete) {    // waiting for the image to be loaded if not loaded yet
+            this.png_background.onload = () => this.background();
+            return;
+        }
         let tileWidth = 50;
         let tileHeight = 50;
         let angle = Math.PI; //Math.PI - straight, Math.PI/2 - 90 degr;

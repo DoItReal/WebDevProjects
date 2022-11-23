@@ -34,6 +34,8 @@ class Scoreboard extends Canvas {
     //public method
     init() {
         this.canvas = document.querySelector('#Scoreboard');
+        this.canvas.width = window.innerWidth;
+        this.canvas.height = window.innerHeight * 0.1;
         this.ctx = this.canvas.getContext('2d');
         this.init_events();
         let tmp = new PlayerInfo(this.canvas, this.ctx, game1.player);
@@ -240,8 +242,8 @@ class PlayerInfo {
         this.ctx.restore();
     }
     drawHP(x, y) {
-        let hp = game1.player.hp; // to do 
-        let maxHp = 10; // to do !!! Needed rework of the hp system for the player
+        let hp = game1.getPlayer().getBase().getHP(); // to do 
+        let maxHp = game1.getPlayer().getBase().getMaxHP(); // to do !!! Needed rework of the hp system for the player
         let w = 100;
         let h = this.canvas.height / 8;
         this.ctx.save();

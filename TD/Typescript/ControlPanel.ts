@@ -19,7 +19,7 @@ class ControlPanel {
 }
 
 var StartStopButton, PauseResumeButton;
-var AddEnemyPeon, AddEnemyWarrior, AddTowerButton, Wave1Button, Wave2Button;
+var AddTowerButton, Wave1Button, Wave2Button;
 
 function init_controlPanel() {
     define_controlPanel();
@@ -36,9 +36,7 @@ function define_controlPanel() {
     //PauseResume button definition
     PauseResumeButton = document.querySelector("#pauseResumeButton");
 
-    //PauseResume button definition
-    AddEnemyPeon = document.querySelector("#addEnemyPeon");
-    AddEnemyWarrior = document.querySelector("#addEnemyWarrior");
+    //Wave button definition
     Wave1Button = document.querySelector("#addWave1");
     Wave2Button = document.querySelector("#addWave2");
 
@@ -94,24 +92,11 @@ function event_pauseResumeButton() {
 }
 function event_addEnemyButton() {
     //   visualButtonUpdate();
-    //event onclick AddEnemyPeon
-    AddEnemyPeon.onclick = function (evt) {
-        //    visualButtonUpdate();
-        //add enemy Game().addEnemy();
-        game1.getEnemiesInterface().addEnemy(new enemy_Peon({ x: 100, y: 100 }, [{ x: 500, y: 300 }, { x: 400, y: 400 }, { x: 100, y: 400 }, { x: 600, y: 400 }]));
-    }
-    AddEnemyWarrior.onclick = function (evt) {
-        game1.getEnemiesInterface().addEnemy(new enemy_Warrior({ x: 100, y: 100 }, [{ x: 500, y: 300 }, { x: 400, y: 400 }, { x: 100, y: 400 }, { x: 600, y: 400 }]));
-    }
     Wave1Button.onclick = function (evt) {
-        let waveGen = new WavesGenerator();
-        let wave = waveGen.level_1();
-        game1.setWave(wave);
+        game1.setLevel(new Level_1());
     }
     Wave2Button.onclick = function (evt) {
-        let waveGen = new WavesGenerator();
-        let wave = waveGen.level_2();
-        game1.setWave(wave);
+        game1.setLevel(new Level_2());
     }
 }
 function event_addTowerButton() {
