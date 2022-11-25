@@ -30,6 +30,9 @@ class Game {
     }
     //public methods
     //getters
+    getFPS() {
+        return this.fps.getFPS();
+    }
     getMisslesInterface() {
         return this.misslesInterface;
     }
@@ -106,7 +109,7 @@ class Game {
     }
     GameOver() {
         this.stopGame();
-        alert('Game Over');
+        console.log('Game Over');
     }
     updatePreview(getX, getY) {
         if (MainInterface.clipboard != null) {

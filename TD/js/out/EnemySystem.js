@@ -1,10 +1,9 @@
 class Enemy {
     constructor() {
+        this.activeSprite = []; // keeps the active Sprite and the time it is being executed
         this.scale = 0.4;
         this.scaleX = 1;
         this.status = 'alive';
-        this.deadTime = 0;
-        this.deadCD = 1500; // [ms]
         if (this.constructor === Enemy) {
             throw new Error("Abstract classes can't be instantiated.");
         }
@@ -12,16 +11,23 @@ class Enemy {
         this.cord = { x: 0, y: 0 };
     }
     update() {
-        if (this.status != 'dead') {
-            if (this.way && this.way.length > 0)
+        let fps = game1.getFPS();
+        if (this.status === 'dead')
+            this.destroy(); //??
+        if (this.activeSprite.length > 0 && this.activeSprite[0].time > 0) {
+            this.activeSprite[0].time -= 1 / fps;
+        }
+        else if (this.status != 'dead' && this.way && this.way.length > 0) {
+            if (!this.checkForBase()) {
                 this.move();
-            else
-                this.draw('idle');
+            }
         }
-        else {
-            this.destroy();
+        else if (this.status != 'dead') {
+            this.setSprite('idle');
         }
-        this.checkForBase();
+        this.draw();
+        if (this.activeSprite.length > 0 && this.activeSprite[0].time <= 0 && this.activeSprite[0].sprite !== 'die')
+            this.activeSprite.splice(0, 1);
     }
     setCord(cord) {
         this.cord.x = cord.x;
@@ -31,8 +37,12 @@ class Enemy {
         let base = game1.getPlayer().getBase();
         if (this.status === 'alive' && rectsOverlap(this.cord.x, this.cord.y, this.dim.w, this.dim.h, base.getCord().x, base.getCord().y, base.getDim().w / 2, base.getDim().h / 2)) {
             game1.getPlayer().getBase().receiveDmg(this.dmg);
+            this.setSprite('attack');
+            this.setSprite('die');
             this.destroy();
+            return true;
         }
+        return false;
     }
     receiveDmg(dmg, tower) {
         if (this.status == 'alive') {
@@ -42,6 +52,7 @@ class Enemy {
         if (this.hp <= 0) {
             tower.gainBounty(this.calculateBounty());
             this.hp = 0;
+            this.setSprite('die');
             this.destroy();
         }
         return receivedDmg;
@@ -55,6 +66,24 @@ class Enemy {
     }
     getName() {
         return this.name;
+    }
+    setSprite(str) {
+        let tmp = { sprite: str, time: 0 };
+        switch (str) {
+            case 'attack': {
+                tmp.time = 1;
+                break;
+            }
+            case 'die': {
+                tmp.time = 1;
+                break;
+            }
+            case 'jump': {
+                tmp.time = 1;
+                break;
+            }
+        }
+        this.activeSprite.push(tmp);
     }
     calculateBounty() {
         let bountyEXP = this.baseBounty.exp + Math.pow(this.lvl, 2);
@@ -76,10 +105,12 @@ class Enemy {
         else if (speedR.speedX < 0) {
             this.scaleX = -1;
         }
-        if (speedR.speedX != 0 || speedR.speedY != 0)
-            this.draw('walk');
-        else
-            this.draw('idle');
+        if (speedR.speedX != 0 || speedR.speedY != 0) {
+            this.setSprite('walk');
+        }
+        else {
+            this.setSprite('idle');
+        }
     }
     calcSpeed(cord1, cord2) {
         let dx = cord2.x - cord1.x;
@@ -93,9 +124,9 @@ class Enemy {
         }
         return { speedX: game1.calcDistanceToMove(sin * this.speed), speedY: game1.calcDistanceToMove(cos * this.speed) };
     }
-    draw(str = 'idle') {
+    draw() {
         let ctx = MainInterface.getPlayground().getContext();
-        this.sprites.get(str).draw(ctx, this.cord, this.scale, this.scaleX, 1); // drawing and rotating the sprite if needed
+        this.sprites.get(this.activeSprite[0].sprite).draw(ctx, this.cord, this.scale, this.scaleX, 1); // drawing and rotating the sprite if needed
         this.widgets(); //  DRAWING THE WIDGETS
     }
     highlight() {
@@ -112,14 +143,12 @@ class Enemy {
     }
     destroy() {
         this.status = 'dead';
-        if (this.deadTime == 0) {
-            this.deadTime = Date.now();
+        if (this.activeSprite.length == 1 && this.activeSprite[0].sprite === 'die') {
+            if (this.activeSprite[0].time <= 0) {
+                game1.getEnemiesInterface().removeEnemy(this);
+                return;
+            }
         }
-        else if (Date.now() - this.deadTime > this.deadCD) {
-            game1.getEnemiesInterface().removeEnemy(this);
-            return;
-        }
-        this.draw('die');
     }
     tooltip(mousePosR) {
         let ctx = MainInterface.getPlayground().getContext();

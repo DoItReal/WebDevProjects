@@ -19,6 +19,12 @@ class FPS {
         this.oldTime = performance.now();
         this.initFPSCounter();
     }
+    getFPS() {
+        return this.fps;
+    }
+    getDelta() {
+        return this.delta;
+    }
 update (time) {
     this.measureFPS(time);
     this.delta = this.timer(time);

@@ -14,7 +14,6 @@ interface unit {
     scale: number;
     scaleX: number;
     healthBar: HealthBarUnit;
-    deadTime: number;
     baseBounty: { exp: number, gold: number };
 
 }
@@ -31,12 +30,11 @@ class Enemy implements unit{
     aspeed: number;
     lvl: number;
     sprites;
+    activeSprite:Array< { sprite: string, time: number } >= []; // keeps the active Sprite and the time it is being executed
     scale: number = 0.4;
     scaleX: number = 1;
     healthBar: HealthBarUnit;
     status = 'alive';
-    deadTime: number = 0;
-    deadCD: number = 1500; // [ms]
     baseBounty: { exp: number, gold: number };
     constructor() {
         if (this.constructor === Enemy) {
@@ -46,25 +44,35 @@ class Enemy implements unit{
         this.cord = { x: 0, y: 0 };
     }
     update(): void {
-        if (this.status != 'dead') {
-            if (this.way && this.way.length > 0)
+        let fps = game1.getFPS();
+        if (this.status === 'dead') this.destroy(); //??
+        if (this.activeSprite.length > 0 && this.activeSprite[0].time > 0) {   
+            this.activeSprite[0].time -= 1 / fps;
+        } else if (this.status != 'dead' && this.way && this.way.length > 0) {
+            if (!this.checkForBase()) {
                 this.move();
-            else this.draw('idle');
-        } else {
-            this.destroy();
+            }
+        } else if (this.status != 'dead') {
+            this.setSprite('idle');
         }
-        this.checkForBase();
+     
+        this.draw();
+        if (this.activeSprite.length > 0 && this.activeSprite[0].time <= 0 && this.activeSprite[0].sprite !== 'die') this.activeSprite.splice(0, 1);
     }
     setCord(cord: cord) {
         this.cord.x = cord.x;
         this.cord.y = cord.y;
     }
-    checkForBase() {
+    checkForBase():boolean {
         let base = game1.getPlayer().getBase();
         if (this.status === 'alive' && rectsOverlap(this.cord.x, this.cord.y, this.dim.w, this.dim.h, base.getCord().x, base.getCord().y, base.getDim().w/2, base.getDim().h/2)) {
             game1.getPlayer().getBase().receiveDmg(this.dmg);
+            this.setSprite('attack');
+            this.setSprite('die');
             this.destroy();
+            return true;
         }
+        return false;
     }
     receiveDmg(dmg: number,tower:Tower): number {
 
@@ -75,6 +83,7 @@ class Enemy implements unit{
         if (this.hp <= 0) {
             tower.gainBounty(this.calculateBounty());
             this.hp = 0;
+            this.setSprite('die');
             this.destroy();
 
         }
@@ -89,6 +98,15 @@ class Enemy implements unit{
     }
     getName() {
         return this.name;
+    }
+    private setSprite(str: string) { //setting the active sprite
+        let tmp = { sprite: str, time: 0 };
+        switch (str) {
+            case 'attack': { tmp.time = 1; break; }
+            case 'die': { tmp.time = 1; break; }
+            case 'jump': { tmp.time = 1; break; }
+        }
+        this.activeSprite.push(tmp);
     }
     private calculateBounty() {
         let bountyEXP = this.baseBounty.exp + Math.pow(this.lvl, 2);
@@ -111,8 +129,12 @@ class Enemy implements unit{
         } else if (speedR.speedX < 0) {
             this.scaleX = -1;
         } 
-        if (speedR.speedX != 0 || speedR.speedY != 0) this.draw('walk');
-        else this.draw('idle');
+        if (speedR.speedX != 0 || speedR.speedY != 0) {
+            this.setSprite('walk');
+        }
+        else {
+            this.setSprite('idle');
+        }
     }
     private calcSpeed(cord1: cord, cord2: cord): {speedX:number,speedY:number} {
         let dx = cord2.x - cord1.x;
@@ -126,10 +148,10 @@ class Enemy implements unit{
         }
         return { speedX: game1.calcDistanceToMove(sin * this.speed), speedY: game1.calcDistanceToMove(cos * this.speed) };
     }
-    private draw(str: string = 'idle'): void {
+    private draw(): void {
         let ctx = MainInterface.getPlayground().getContext();
-        
-        this.sprites.get(str).draw(ctx, this.cord, this.scale, this.scaleX, 1); // drawing and rotating the sprite if needed
+
+        this.sprites.get(this.activeSprite[0].sprite).draw(ctx, this.cord, this.scale, this.scaleX, 1); // drawing and rotating the sprite if needed
         
         this.widgets(); //  DRAWING THE WIDGETS
     }
@@ -149,14 +171,12 @@ class Enemy implements unit{
     }
     private destroy(): void {
         this.status = 'dead';
-        if (this.deadTime == 0) {
-            this.deadTime = Date.now();
-        } else if (Date.now() - this.deadTime > this.deadCD) {
-            game1.getEnemiesInterface().removeEnemy(this);
-            return;
+        if (this.activeSprite.length == 1 && this.activeSprite[0].sprite === 'die') {
+            if (this.activeSprite[0].time <= 0) {
+                game1.getEnemiesInterface().removeEnemy(this);
+                return;
+            }
         }
-        this.draw('die');
-        
     }
     private tooltip(mousePosR: cord) {
         let ctx = MainInterface.getPlayground().getContext();

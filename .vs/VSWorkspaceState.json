@@ -4,10 +4,8 @@
     "\\TD",
     "\\TD\\js",
     "\\TD\\styles",
-    "\\TD\\textures\\content",
-    "\\TD\\textures\\content\\castle",
     "\\TD\\Typescript"
   ],
-  "SelectedNode": "\\TD\\Typescript\\Scoreboard.ts",
+  "SelectedNode": "\\TD\\Typescript\\fps.ts",
   "PreviewInSolutionExplorer": false
 }
