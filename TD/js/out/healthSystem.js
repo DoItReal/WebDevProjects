@@ -35,7 +35,7 @@ class HealthBarUnit extends HealthBar {
             0, 0, //x,y location on canvas to draw
             this.dim.w * hpFactor, this.dim.h); //w,h dimensions to draw  
             ctx.fillStyle = "black";
-            ;
+            
             ctx.globalAlpha = 0.4;
             ctx.fillRect(this.dim.w * hpFactor, 0, this.dim.w * (1 - hpFactor), this.dim.h);
         }

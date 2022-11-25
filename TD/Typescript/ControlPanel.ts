@@ -18,8 +18,8 @@ class ControlPanel {
     }
 }
 
-var StartStopButton, PauseResumeButton;
-var AddTowerButton, Wave1Button, Wave2Button;
+let StartStopButton, PauseResumeButton;
+let AddTowerButton, Wave1Button, Wave2Button;
 
 function init_controlPanel() {
     define_controlPanel();

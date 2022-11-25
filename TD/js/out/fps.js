@@ -41,7 +41,7 @@ class FPS {
             this.fpsContainer.innerHTML = 'FPS: ' + this.fps;
         this.frameCount++;
     }
-    ;
+    
     initFPSCounter() {
         // adds a div for displaying the fps value
         this.fpsContainer = document.createElement('div');

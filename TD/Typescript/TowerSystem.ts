@@ -57,7 +57,7 @@ class Tower implements tower{ //declares and implements the methods of all tower
         this.tooltip(mousePosR);
     }
     draw(preview = false) { 
-        let ctx = MainInterface.getPlayground().getContext();
+        const ctx = MainInterface.getPlayground().getContext();
         ctx.save();
         ctx.beginPath();
         ctx.translate(this.cord.x-this.dim.w/2, this.cord.y-this.dim.h/2);
@@ -84,7 +84,7 @@ class Tower implements tower{ //declares and implements the methods of all tower
         return circRectsOverlap(enemy.cord.x, enemy.cord.y, enemy.dim.w, enemy.dim.h, this.cord.x, this.cord.y, this.range);
     }
     private radar(): Enemy {
-        let enemies = this.enemiesInterface.getEnemies();
+        const enemies = this.enemiesInterface.getEnemies();
         for (let i = 0; i < enemies.length; i++) {
             if (this.collisionCheck(enemies[i]) && enemies[i].hp > 0) {
                 return enemies[i];
@@ -108,12 +108,12 @@ class Tower implements tower{ //declares and implements the methods of all tower
         // It have to be implemented in child class
     }
     private reload() {
-        let fps = game1.fps.fps;
+        const fps = game1.fps.fps;
         if (this.atkCD > 0) this.atkCD -= 1 / fps;
         if (this.atkCD < 0) this.atkCD = 0;
     }
     private highlight() {
-        let ctx = MainInterface.getPlayground().getContext();
+        const ctx = MainInterface.getPlayground().getContext();
         ctx.save();
 
         ctx.translate(this.cord.x, this.cord.y);
@@ -124,11 +124,11 @@ class Tower implements tower{ //declares and implements the methods of all tower
     }
     private tooltip(mousePosR:cord) {
 
-        let ctx = MainInterface.getPlayground().getContext();
-        let canvas = MainInterface.getPlayground().getCanvas();
-        let rect = canvas.getBoundingClientRect();
-        let w = 180;
-        let h = 50;
+        const ctx = MainInterface.getPlayground().getContext();
+        const canvas = MainInterface.getPlayground().getCanvas();
+        const rect = canvas.getBoundingClientRect();
+        const w = 180;
+        const h = 50;
         ctx.save();
         if (mousePosR.x + w > rect.width) mousePosR.x = rect.width - w;
         if (mousePosR.y + h > rect.height) mousePosR.y = rect.height - h;
@@ -167,7 +167,7 @@ class TowerAnimation {
     }
     load_assets() {
         this.assets.elements.forEach((value, key) => {
-            let tmpImage = new Image();
+            const tmpImage = new Image();
             tmpImage.src = value.URL;
             this.elements.set(key, tmpImage );
         });
@@ -176,14 +176,14 @@ class TowerAnimation {
         this.animate();
     }
     draw(k: number) {
-        let height = this.elements.get('tower').height;
-        let heightFront = this.elements.get('front').height;
-        let heightBehind = this.elements.get('behind').height;
-        let ctx = MainInterface.getPlayground().getContext();
+        const height = this.elements.get('tower').height;
+        const heightFront = this.elements.get('front').height;
+        const heightBehind = this.elements.get('behind').height;
+        const ctx = MainInterface.getPlayground().getContext();
         ctx.save();
         ctx.translate(this.tower.cord.x - this.tower.dim.w / 2, this.tower.cord.y - this.tower.dim.h / 2);
-        let kX = this.tower.dim.w / this.elements.get('tower').width;
-        let kY = this.tower.dim.h / this.elements.get('tower').height;
+        const kX = this.tower.dim.w / this.elements.get('tower').width;
+        const kY = this.tower.dim.h / this.elements.get('tower').height;
         ctx.scale(kX,kY);
         //draw behind
         let element = this.elements.get('behind');

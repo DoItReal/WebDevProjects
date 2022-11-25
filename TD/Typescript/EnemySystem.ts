@@ -44,7 +44,7 @@ class Enemy implements unit{
         this.cord = { x: 0, y: 0 };
     }
     update(): void {
-        let fps = game1.getFPS();
+        const fps = game1.getFPS();
         if (this.status === 'dead') this.destroy(); //??
         if (this.activeSprite.length > 0 && this.activeSprite[0].time > 0) {   
             this.activeSprite[0].time -= 1 / fps;
@@ -64,7 +64,7 @@ class Enemy implements unit{
         this.cord.y = cord.y;
     }
     checkForBase():boolean {
-        let base = game1.getPlayer().getBase();
+        const base = game1.getPlayer().getBase();
         if (this.status === 'alive' && rectsOverlap(this.cord.x, this.cord.y, this.dim.w, this.dim.h, base.getCord().x, base.getCord().y, base.getDim().w/2, base.getDim().h/2)) {
             game1.getPlayer().getBase().receiveDmg(this.dmg);
             this.setSprite('attack');
@@ -100,7 +100,7 @@ class Enemy implements unit{
         return this.name;
     }
     private setSprite(str: string) { //setting the active sprite
-        let tmp = { sprite: str, time: 0 };
+        const tmp = { sprite: str, time: 0 };
         switch (str) {
             case 'attack': { tmp.time = 1; break; }
             case 'die': { tmp.time = 1; break; }
@@ -109,13 +109,13 @@ class Enemy implements unit{
         this.activeSprite.push(tmp);
     }
     private calculateBounty() {
-        let bountyEXP = this.baseBounty.exp + Math.pow(this.lvl, 2);
-        let bountyGold = this.baseBounty.gold + Math.pow(this.lvl, 2) * 0.3;
+        const bountyEXP = this.baseBounty.exp + Math.pow(this.lvl, 2);
+        const bountyGold = this.baseBounty.gold + Math.pow(this.lvl, 2) * 0.3;
         return { exp: bountyEXP, gold: bountyGold };
     }
     private move(): void {
 
-        let speedR = this.calcSpeed(this.cord, this.way[0]);
+        const speedR = this.calcSpeed(this.cord, this.way[0]);
         if (this.cord.x != speedR.speedX + this.cord.x)
             
         this.cord.x += speedR.speedX;
@@ -137,11 +137,11 @@ class Enemy implements unit{
         }
     }
     private calcSpeed(cord1: cord, cord2: cord): {speedX:number,speedY:number} {
-        let dx = cord2.x - cord1.x;
-        let dy = cord2.y - cord1.y;
-        let c = Math.sqrt((Math.pow(dx, 2) + Math.pow(dy, 2)));
-        let sin = dx / c;
-        let cos = dy / c;
+        const dx = cord2.x - cord1.x;
+        const dy = cord2.y - cord1.y;
+        const c = Math.sqrt((Math.pow(dx, 2) + Math.pow(dy, 2)));
+        const sin = dx / c;
+        const cos = dy / c;
       //  let tan = dy / dx;
         if (!sin && !cos) {
             return { speedX: 0, speedY: 0 };
@@ -149,14 +149,14 @@ class Enemy implements unit{
         return { speedX: game1.calcDistanceToMove(sin * this.speed), speedY: game1.calcDistanceToMove(cos * this.speed) };
     }
     private draw(): void {
-        let ctx = MainInterface.getPlayground().getContext();
+        const ctx = MainInterface.getPlayground().getContext();
 
         this.sprites.get(this.activeSprite[0].sprite).draw(ctx, this.cord, this.scale, this.scaleX, 1); // drawing and rotating the sprite if needed
         
         this.widgets(); //  DRAWING THE WIDGETS
     }
     private highlight() {
-        let ctx = MainInterface.getPlayground().getContext();
+        const ctx = MainInterface.getPlayground().getContext();
         ctx.save();
 
         ctx.translate(this.cord.x, this.cord.y);
@@ -179,10 +179,10 @@ class Enemy implements unit{
         }
     }
     private tooltip(mousePosR: cord) {
-        let ctx = MainInterface.getPlayground().getContext();
-        let canvas = MainInterface.getPlayground();
-        let w = 120; //width of the tooltip
-        let h = 50; //height of the tooltip
+        const ctx = MainInterface.getPlayground().getContext();
+        const canvas = MainInterface.getPlayground();
+        const w = 120; //width of the tooltip
+        const h = 50; //height of the tooltip
 
         ctx.save();
         if (mousePosR.x + w > canvas.width)
@@ -277,13 +277,13 @@ class enemy_PeonSprite {
         var NB_FRAMES_PER_POSTURE = 20;
         */
         // load the spritesheet
-        var spritesheet = new Image();
+        const spritesheet = new Image();
         spritesheet.src = value.URL;
-            let tmp = new Map();
+            const tmp = new Map();
             // Called when the spritesheet has been loaded
             spritesheet.onload =  ()=> {      // Create woman sprites
-                for (var i = 0; i < value.NB_Postures; i++) {
-                    var sprite = new Sprite();
+                for (let i = 0; i < value.NB_Postures; i++) {
+                    const sprite = new Sprite();
                     sprite.extractSprites(spritesheet, value.NB_Postures, (i + 1),
                         value.NB_FramesPerPosture,
                         { w: value.Width, h: value.Height });
@@ -383,12 +383,12 @@ class enemy_WarriorSprite {
     }
     loadAssets() {
         this.sprites.forEach((value, key) => {
-            var spritesheet = new Image();
+            const spritesheet = new Image();
             spritesheet.src = value.URL;
             // Called when the spritesheet has been loaded
             spritesheet.onload = () => {      // Create woman sprites
-                for (var i = 0; i < value.NB_Postures; i++) {
-                    var sprite = new Sprite();
+                for (let i = 0; i < value.NB_Postures; i++) {
+                    const sprite = new Sprite();
                     sprite.extractSprites(spritesheet, value.NB_Postures, (i + 1),
                         value.NB_FramesPerPosture,
                         { w: value.Width, h: value.Height });

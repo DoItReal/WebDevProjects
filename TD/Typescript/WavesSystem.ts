@@ -98,7 +98,7 @@ class Wave {
 		return false;
     }
 	draw():void { // visualising the wave path
-		let ctx = MainInterface.getPlayground().getContext();
+		const ctx = MainInterface.getPlayground().getContext();
 		ctx.save();
 		ctx.beginPath();
 		ctx.lineWidth = 5;
@@ -110,10 +110,10 @@ class Wave {
 			}
 		}
 		function drawArrow(from: cord, to: cord) {
-			let headlen = 20; // length of head in pixels
-			let dx = to.x - from.x;
-			let dy = to.y - from.y;
-			let angle = Math.atan2(dy, dx);
+			const headlen = 20; // length of head in pixels
+			const dx = to.x - from.x;
+			const dy = to.y - from.y;
+			const angle = Math.atan2(dy, dx);
 			ctx.moveTo(from.x, from.y);
 			ctx.lineTo(to.x, to.y);
 			ctx.moveTo(to.x, to.y);
@@ -151,20 +151,20 @@ class WavesGenerator {
 	constructor(){
 	}
 	level_1(way:way) {
-		let wave = new Wave();
+		const wave = new Wave();
 		wave.setWay(way);
 		wave.setDelay(2);
-		let groupA = 2;
+		const groupA = 2;
 		for (let i = 0; i < groupA; i++) {
 			wave.addUnit(new enemy_Peon([]));
 		}
 		wave.setDelay(4);
-		let groupB = 1;
+		const groupB = 1;
 		for (let i = 0; i < groupB; i++) {
 			wave.addUnit(new enemy_Warrior([]));
 		}
 		wave.setDelay(1);
-		let groupC = 2;
+		const groupC = 2;
 		for (let i = 0; i < groupC; i++) {
 			wave.addUnit(new enemy_Peon([]))
         }
@@ -172,20 +172,20 @@ class WavesGenerator {
 		return wave;
 	}
 	level_2(way:way) {
-		let wave = new Wave();
+		const wave = new Wave();
 		wave.setWay(way);
 		wave.setDelay(1);
-		let groupA = 6;
+		const groupA = 6;
 		for (let i = 0; i < groupA; i++) {
 			wave.addUnit(new enemy_Peon([]));
 		}
 		wave.setDelay(2);
-		let groupB = 3;
+		const groupB = 3;
 		for (let i = 0; i < groupB; i++) {
 			wave.addUnit(new enemy_Warrior([]));
 		}
 		wave.setDelay(1.2);
-		let groupC = 8;
+		const groupC = 8;
 		for (let i = 0; i < groupC; i++) {
 			wave.addUnit(new enemy_Peon([]))
 		}

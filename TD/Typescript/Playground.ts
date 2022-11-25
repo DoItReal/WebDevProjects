@@ -32,7 +32,7 @@ class Playground {
             this.png_background.src = 'textures/content/terrain/floor/Floor1.png'
         } catch (e) {
             console.log('Failed to load textures');
-        };
+        }
     }
     update() {
         this.clear();
@@ -60,7 +60,7 @@ class Playground {
 
     //events
     overlapping(e) {
-        let rect = this.#canvas.getBoundingClientRect();
+        const rect = this.#canvas.getBoundingClientRect();
         if (circRectsOverlap(rect.left, rect.top, rect.width, rect.height, e.clientX, e.clientY, 1)) {
             return 1;
         }
@@ -75,8 +75,8 @@ class Playground {
     }
     mouseDown(e) {                  //event on mouse click in Playground
         e.preventDefault();
-        let button = e.button;
-        let mousePos = MainInterface.getMousePos(this, e);
+        const button = e.button;
+        const mousePos = MainInterface.getMousePos(this, e);
         if (button == 0) { //left click  //PLACE, USE, SELECT
             if (MainInterface.clipboard != null && game1.play && !game1.pause) {
                game1.getTowersInterface().addTower(MainInterface.clipboard);
@@ -109,9 +109,9 @@ class Playground {
             this.png_background.onload = () => this.background();
             return;
         }
-        let tileWidth = 50;
-        let tileHeight = 50;
-        let angle = Math.PI; //Math.PI - straight, Math.PI/2 - 90 degr;
+        const tileWidth = 50;
+        const tileHeight = 50;
+        const angle = Math.PI; //Math.PI - straight, Math.PI/2 - 90 degr;
         for (let i = 0; i < this.#canvas.width + tileWidth; i += tileWidth) {
             for (let j = 0; j < this.#canvas.height + tileHeight; j += tileHeight) {
                 this.backgroundTile(i, j, tileWidth, tileHeight, angle);

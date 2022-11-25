@@ -49,7 +49,7 @@ class Base {
         }
         if (!this.img[str].complete) return;
         
-        let ctx = MainInterface.getPlayground().getContext();
+        const ctx = MainInterface.getPlayground().getContext();
 
         ctx.save();     
         setOrientation(this.cord,this.dim);
@@ -59,7 +59,7 @@ class Base {
         ctx.restore();
         function setOrientation(cord:cord,dim:dim) {
             if (game1.getLevel()) {
-                let way = game1.getLevel().getWay();
+                const way = game1.getLevel().getWay();
                 if (way[way.length - 2].x > way[way.length - 1].x) {
                     ctx.scale(-1, 1);
                     ctx.translate(-cord.x-dim.w/2, cord.y - dim.h / 2);

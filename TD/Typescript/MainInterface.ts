@@ -1,9 +1,9 @@
 //getInterface() returning Singleton class Interface()
 //class Interface() - encapsulates all methods for manipulating the DOM elements;  
-var getInterface = (function () {
-    var instance;
+const getInterface = (function () {
+    let instance;
     function createInstance() {
-        let object = new _MainInterface();
+        const object = new _MainInterface();
         return object;
     }
 
@@ -24,7 +24,7 @@ interface mainInterface {
 }
 
 // to do class for this one
-var KeyCodes = new Map();
+const KeyCodes = new Map();
 KeyCodes.set(37, 'left');
 KeyCodes.set(38, 'up');
 KeyCodes.set(39, 'right');
@@ -35,13 +35,13 @@ class _MainInterface implements mainInterface{
     Playground: Playground;
     Scoreboard: Scoreboard;
     ControlPanel: ControlPanel;
-    pressedKeys: Map<Number,String>;
+    pressedKeys: Map<number,string>;
     clipboard; // to rework
     private mousePos: cord;    // GLOBAL SCOPE
     sprites = new Map();
     timer: Timer;
     constructor() {
-        this.pressedKeys = new Map<Number, String>;
+        this.pressedKeys = new Map<number, string>;
         this.timer = new Timer();
         this.Playground = new Playground();
         this.Scoreboard = new Scoreboard();
@@ -151,7 +151,7 @@ class _MainInterface implements mainInterface{
     }
     mouseMove(e) {
         e.preventDefault();
-        let canv = this.getCanvasMouseOverlaping(e);
+        const canv = this.getCanvasMouseOverlaping(e);
         if (canv != null) {
             canv.mouseMove(this.getMousePos(canv, e)); /// ?????
         }
@@ -163,7 +163,7 @@ class _MainInterface implements mainInterface{
         return null;
     }
     getMousePos(canv, e) { // get Relative mouse pos from GLOBAL SCOPE
-        let rect = canv.getCanvas().getBoundingClientRect();
+        const rect = canv.getCanvas().getBoundingClientRect();
         if (e != undefined)
             return {
                 x: e.clientX - rect.left,
@@ -180,9 +180,9 @@ class _MainInterface implements mainInterface{
     }
          //private methods
     private load() {
-        let peonSprite = new enemy_PeonSprite();
+        const peonSprite = new enemy_PeonSprite();
         this.sprites.set('enemy_peon', peonSprite.getSprites());
-        let warriorSprite = new enemy_WarriorSprite();
+        const warriorSprite = new enemy_WarriorSprite();
         this.sprites.set('enemy_warrior', warriorSprite.getSprites());
     }
    

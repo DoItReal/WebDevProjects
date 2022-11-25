@@ -42,7 +42,7 @@ class Playground {
         catch (e) {
             console.log('Failed to load textures');
         }
-        ;
+        
     }
     update() {
         this.clear();
