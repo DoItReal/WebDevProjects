@@ -53,6 +53,8 @@ class Game {
     }
     //setters
     setLevel(level) {
+        if (this.currentLevel != null)
+            return;
         this.currentLevel = level;
         this.currentLevel.init();
     }
@@ -80,6 +82,16 @@ class Game {
         this.animationID = cancelAnimationFrame(this.animationID);
         this.pause = false;
         MainInterface.timer.off();
+        this.player = new Player();
+        this.misslesInterface = new _Missles();
+        this.towersInterface = new _Towers();
+        this.enemyInterface = new _Enemies();
+        this.currentLevel = null;
+        if (this.currentWave != null)
+            this.currentWave.setOFF();
+        this.currentWave = null;
+        MainInterface.getPlayground().clear();
+        MainInterface.getPlayground().background();
     }
     playNow() {
         this.fps.update(performance.now());

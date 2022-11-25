@@ -3,7 +3,7 @@ class Level {
     wayGen = new WayGenerator();
     wave: Wave = null;
     way: way = null;
-
+    completed: boolean = false;
     constructor() {
     if (this.constructor === Level) {
         throw new Error("Abstract classes can't be instantiated.");
@@ -19,7 +19,7 @@ class Level {
     }
 init(){
     game1.player.getBase().setCord(this.wave.getWay()[this.wave.getWay().length - 1]);
-    game1.setWave(this.wave);
+    game1.setWave(this.wave); //?
 
 }
 }

@@ -4,6 +4,7 @@ class Level {
         this.wayGen = new WayGenerator();
         this.wave = null;
         this.way = null;
+        this.completed = false;
         if (this.constructor === Level) {
             throw new Error("Abstract classes can't be instantiated.");
         }
@@ -18,7 +19,7 @@ class Level {
     }
     init() {
         game1.player.getBase().setCord(this.wave.getWay()[this.wave.getWay().length - 1]);
-        game1.setWave(this.wave);
+        game1.setWave(this.wave); //?
     }
 }
 class Level_1 extends Level {

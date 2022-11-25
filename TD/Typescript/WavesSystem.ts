@@ -64,6 +64,9 @@ class Wave {
 		if (this.head != null) this.size = 1;
 		else this.size = 0;
 	}
+	setOFF() {
+		this.active = false;
+    }
 
 	//***
 	init_wave():void {
@@ -126,11 +129,11 @@ class Wave {
 		//private methods 
 
 	private spawnUnits(node: wave_node = this.getHead()) {
-		if (node != null) {
+		if (node != null && this.active) {
 			game1.getEnemiesInterface().addEnemy(node.unit);
 			this.enemies.push(node.unit);
 			node = node.next;
-			if (node != null) {
+			if (node != null && this.active) {
 				setTimeout(() => { this.spawnUnits(node) }, node.delay * 1000);
 			} else {
 				this.active = false;
