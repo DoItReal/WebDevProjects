@@ -30,7 +30,7 @@ class Sprite {
         this.then = performance.now();
         this.totalTimeSinceLastRedraw = 0;
     }
-    ;
+    
     extractSprites(spritesheet, nbPostures, postureToExtract, nbFramesPerPosture, spriteDim) {
         // number of sprites per row in the spritesheet
         var nbSpritesPerRow = Math.floor(spritesheet.width / spriteDim.w);

@@ -1,6 +1,6 @@
 function circleCollide(x1, y1, r1, x2, y2, r2) {
-    var dx = x1 - x2;
-    var dy = y1 - y2;
+    const dx = x1 - x2;
+    const dy = y1 - y2;
     return ((dx * dx + dy * dy) < (r1 + r2) * (r1 + r2));
 }
 
@@ -35,8 +35,8 @@ function rectsOverlap(x1, y1, w1, h1, x2, y2, w2, h2) {
     // overlap and the rectangles intersect
 }
 function circRectsOverlap(x0, y0, w0, h0, cx, cy, r) {
-    var testX = cx;
-    var testY = cy;
+    let testX = cx;
+    let testY = cy;
 
     if (testX < x0) testX = x0;
     if (testX > (x0 + w0)) testX = (x0 + w0);
@@ -87,11 +87,11 @@ function testCollisionWithWalls(ball, w, h, monster, ballArray) {
     }
 
     //circleCollision
-    for (var i = 0; i < ballArray.length - 1; i++) {
-        var tmp = ballArray[i];
-        for (var j = i + 1; j < ballArray.length; j++) {
+    for (let i = 0; i < ballArray.length - 1; i++) {
+        const tmp = ballArray[i];
+        for (let j = i + 1; j < ballArray.length; j++) {
 
-            let tmp2 = ballArray[j];
+            const tmp2 = ballArray[j];
             if (circleCollide(tmp.x, tmp.y, tmp.radius, tmp2.x, tmp2.y, tmp2.radius)) {
                 //        console.log('collision');
                 tmp.angle = -tmp.angle + Math.PI;

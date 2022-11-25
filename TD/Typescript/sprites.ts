@@ -37,7 +37,7 @@ class Sprite {
     scale: number;
     then: number;
     totalTimeSinceLastRedraw: number;
-;
+
     constructor() {
         this.spriteArray = [];
         this.currentFrame = 0;
@@ -48,39 +48,39 @@ class Sprite {
     extractSprites (spritesheet, nbPostures, postureToExtract, nbFramesPerPosture,
         spriteDim:dim) {
         // number of sprites per row in the spritesheet
-        var nbSpritesPerRow = Math.floor(spritesheet.width / spriteDim.w);
+        const nbSpritesPerRow = Math.floor(spritesheet.width / spriteDim.w);
 
         // Extract each sprite
-        var startIndex = (postureToExtract - 1) * nbFramesPerPosture;
-        var endIndex = startIndex + nbFramesPerPosture;
-        for (var index = startIndex; index < endIndex; index++) {
+        const startIndex = (postureToExtract - 1) * nbFramesPerPosture;
+        const endIndex = startIndex + nbFramesPerPosture;
+        for (let index = startIndex; index < endIndex; index++) {
             // Computation of the x and y position that corresponds to the sprite
             // index
             // x is the rest of index/nbSpritesPerRow * width of a sprite
-            let cord: cord = {x:0,y:0};
+            const cord: cord = {x:0,y:0};
             cord.x = (index % nbSpritesPerRow) * spriteDim.w;
             // y is the divisor of index by nbSpritesPerRow * height of a sprite
             cord.y = Math.floor(index / nbSpritesPerRow) * spriteDim.h;
 
             // build a spriteImage object
-            var s = new SpriteImage(spritesheet, cord, spriteDim);
+            const s = new SpriteImage(spritesheet, cord, spriteDim);
 
             this.spriteArray.push(s);
         }
     }
    
     drawStopped(ctx, cord:cord,scale,kX, kY) {
-        var currentSpriteImage = this.spriteArray[this.currentFrame];
+        const currentSpriteImage = this.spriteArray[this.currentFrame];
         currentSpriteImage.draw(ctx, cord, scale, kX, kY);
 
     }
     draw(ctx, cord:cord, scale, kX, kY) {
         // Use time based animation to draw only a few images per second
-        var now = performance.now();
-        var delta = now - this.then;
+        const now = performance.now();
+        const delta = now - this.then;
 
         // draw currentSpriteImage
-        var currentSpriteImage = this.spriteArray[this.currentFrame];
+        const currentSpriteImage = this.spriteArray[this.currentFrame];
         // x, y, scale. 1 = size unchanged
         currentSpriteImage.draw(ctx, cord, scale,kX, kY);
 
