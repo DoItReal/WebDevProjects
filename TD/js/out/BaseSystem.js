@@ -49,14 +49,14 @@ class Base {
         }
         if (!this.img[str].complete)
             return;
-        let ctx = MainInterface.getPlayground().getContext();
+        const ctx = MainInterface.getPlayground().getContext();
         ctx.save();
         setOrientation(this.cord, this.dim);
         ctx.drawImage(this.img[str], 0, 0, this.dim.w, this.dim.h); //drawing the texture
         ctx.restore();
         function setOrientation(cord, dim) {
             if (game1.getLevel()) {
-                let way = game1.getLevel().getWay();
+                const way = game1.getLevel().getWay();
                 if (way[way.length - 2].x > way[way.length - 1].x) {
                     ctx.scale(-1, 1);
                     ctx.translate(-cord.x - dim.w / 2, cord.y - dim.h / 2);

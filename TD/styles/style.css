@@ -86,3 +86,10 @@ canvas{
     border-top: 1px groove darkslategray;
     border-right:1px groove darkslategray;
 }
+input:valid {
+    background: lightgreen;
+}
+
+input:invalid {
+    background: pink;
+}

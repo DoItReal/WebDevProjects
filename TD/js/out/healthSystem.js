@@ -17,9 +17,9 @@ class HealthBarUnit extends HealthBar {
         this.dim = { w: obj.scale * this.dim.w, h: obj.scale * this.dim.h };
     }
     draw() {
-        let ctx = MainInterface.getPlayground().getContext();
+        const ctx = MainInterface.getPlayground().getContext();
         ctx.save();
-        let hpFactor = this.obj.hp / this.obj.maxHP;
+        const hpFactor = this.obj.hp / this.obj.maxHP;
         ctx.translate(this.obj.cord.x - this.dim.w / 2, this.obj.cord.y - (this.dim.h * 2 + this.obj.dim.h * this.obj.scale));
         if (this.obj.hp == this.obj.maxHP) {
             ctx.drawImage(this.greenBar, //image to draw
@@ -35,7 +35,6 @@ class HealthBarUnit extends HealthBar {
             0, 0, //x,y location on canvas to draw
             this.dim.w * hpFactor, this.dim.h); //w,h dimensions to draw  
             ctx.fillStyle = "black";
-            
             ctx.globalAlpha = 0.4;
             ctx.fillRect(this.dim.w * hpFactor, 0, this.dim.w * (1 - hpFactor), this.dim.h);
         }

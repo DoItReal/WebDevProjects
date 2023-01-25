@@ -1,4 +1,4 @@
-var divInvContainer, divInventory, divHeader, divContent, divFooter, invButton, divButton;
+let divInvContainer, divInventory, divHeader, divContent, divFooter, invButton, divButton;
 class Item {
     //stackable = true; TO DO
     constructor(name, type, rarity, value, icon, stack) {
@@ -40,7 +40,7 @@ class Inventory {
         this.fill_emptySpace();
     }
     fill_emptySpace() {
-        let emptyCell = new Item('Empty', 'Empty', 'Empty', 0, '', false);
+        const emptyCell = new Item('Empty', 'Empty', 'Empty', 0, '', false);
         for (let i = 0; i < this.size % 5 || this.size < this.minSize; i++) {
             this.add_item(emptyCell);
         }
@@ -58,11 +58,11 @@ function init_inventory() {
     define_inventoryButton();
     event_moveInventory();
 }
-var openInventory = function () {
+const openInventory = function () {
     divInvContainer.style.display = 'block';
     invButton.status = 'open';
 };
-var closeInventory = function () {
+const closeInventory = function () {
     divInvContainer.style.display = 'none';
     invButton.status = 'closed';
 };
@@ -105,7 +105,7 @@ function define_inventoryButton() {
 }
 function event_moveInventory() {
     let drag = false;
-    var x, y;
+    let x, y;
     divHeader.onmousedown = function (e) {
         drag = true;
         x = e.clientX;
@@ -118,7 +118,7 @@ function event_moveInventory() {
     var move = function (e) {
         if (!drag)
             return;
-        let rect = divInvContainer.getBoundingClientRect();
+        const rect = divInvContainer.getBoundingClientRect();
         divInvContainer.style.left = (e.clientX - x + rect.left) + 'px';
         divInvContainer.style.top = (e.clientY - y + rect.top) + 'px';
         x = e.clientX;
@@ -156,7 +156,7 @@ function setItemDivAttributes(divItem, itemObj, i) {
     divItem.style = ('background-image: url(' + game1.player.inventory.get_item_OBJ(i).icon + ');' +
         'background-color:' + color + ';');
     if (itemObj.stack) {
-        let divValue = document.createElement('div');
+        const divValue = document.createElement('div');
         divValue.classList.add('itemValue');
         divValue.innerHTML = itemObj.value;
         divItem.appendChild(divValue);

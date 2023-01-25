@@ -144,7 +144,7 @@ class Game {
     //private methods
     visualisePreview() {
         if (MainInterface.clipboard != null && this.preview != null) {
-            let obj = MainInterface.clipboard;
+            const obj = MainInterface.clipboard;
             obj.cord.x = this.preview.x; // this way we are chaning the values of the already existing object keeping the references to it 
             obj.cord.y = this.preview.y;
             //  obj.cord = { x: this.preview.x, y: this.preview.y};   // creates new object 
@@ -152,14 +152,14 @@ class Game {
         }
     }
     checkForOverlapingObjectsPlayground() {
-        let tmp = MainInterface.getMouse();
+        const tmp = MainInterface.getMouse();
         if (!MainInterface.getPlayground().overlapping({ clientX: tmp.x, clientY: tmp.y }))
             return;
-        let obj = null;
-        let rect = MainInterface.getPlayground().getCanvas().getBoundingClientRect();
-        let enemies = this.getEnemiesInterface().getEnemies();
-        let mousePos = MainInterface.getMouse();
-        let mousePosR = {
+        const obj = null;
+        const rect = MainInterface.getPlayground().getCanvas().getBoundingClientRect();
+        const enemies = this.getEnemiesInterface().getEnemies();
+        const mousePos = MainInterface.getMouse();
+        const mousePosR = {
             x: mousePos.x - rect.left,
             y: mousePos.y - rect.top
         };
@@ -173,7 +173,7 @@ class Game {
             }
         }
         //checking for overlaping towers
-        let towers = this.getTowersInterface().getTowers();
+        const towers = this.getTowersInterface().getTowers();
         if (towers && towers.length > 0) {
             for (let i = 0; i < towers.length; i++) {
                 if (circRectsOverlap(towers[i].cord.x - towers[i].dim.w / 2, towers[i].cord.y - towers[i].dim.h / 2, towers[i].dim.w, towers[i].dim.h, mousePosR.x, mousePosR.y, 1)) {

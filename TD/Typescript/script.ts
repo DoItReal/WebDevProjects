@@ -16,8 +16,8 @@ function init() {
     MainInterface.init();
     MainInterface.init_events();
     
-    
 
+    init_indexedDB();
     init_inventory();
     init_controlPanel();
     game1.init();

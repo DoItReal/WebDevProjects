@@ -24,8 +24,8 @@ class ControlPanel {
     }
 }
 _ControlPanel_container = new WeakMap();
-var StartStopButton, PauseResumeButton;
-var AddTowerButton, Wave1Button, Wave2Button;
+let StartStopButton, PauseResumeButton;
+let AddTowerButton, Wave1Button, Wave2Button;
 function init_controlPanel() {
     define_controlPanel();
     initialize_events_controlPanel();

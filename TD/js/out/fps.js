@@ -29,7 +29,7 @@ class FPS {
             return;
         }
         //calculate the difference between last & current frame
-        let diffTime = newTime - this.lastTime;
+        const diffTime = newTime - this.lastTime;
         if (diffTime >= 1000) {
             this.fps = this.frameCount;
             this.frameCount = 0;
@@ -41,7 +41,6 @@ class FPS {
             this.fpsContainer.innerHTML = 'FPS: ' + this.fps;
         this.frameCount++;
     }
-    
     initFPSCounter() {
         // adds a div for displaying the fps value
         this.fpsContainer = document.createElement('div');
@@ -50,7 +49,7 @@ class FPS {
     }
     // High resolution timer
     timer(currentTime) {
-        let delta = currentTime - this.oldTime;
+        const delta = currentTime - this.oldTime;
         this.oldTime = currentTime;
         return delta;
     }

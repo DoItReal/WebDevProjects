@@ -1,9 +1,9 @@
 //getInterface() returning Singleton class Interface()
 //class Interface() - encapsulates all methods for manipulating the DOM elements;  
-var getInterface = (function () {
-    var instance;
+const getInterface = (function () {
+    let instance;
     function createInstance() {
-        let object = new _MainInterface();
+        const object = new _MainInterface();
         return object;
     }
     return {
@@ -16,7 +16,7 @@ var getInterface = (function () {
     };
 })();
 // to do class for this one
-var KeyCodes = new Map();
+const KeyCodes = new Map();
 KeyCodes.set(37, 'left');
 KeyCodes.set(38, 'up');
 KeyCodes.set(39, 'right');
@@ -136,7 +136,7 @@ class _MainInterface {
     }
     mouseMove(e) {
         e.preventDefault();
-        let canv = this.getCanvasMouseOverlaping(e);
+        const canv = this.getCanvasMouseOverlaping(e);
         if (canv != null) {
             canv.mouseMove(this.getMousePos(canv, e)); /// ?????
         }
@@ -150,7 +150,7 @@ class _MainInterface {
         return null;
     }
     getMousePos(canv, e) {
-        let rect = canv.getCanvas().getBoundingClientRect();
+        const rect = canv.getCanvas().getBoundingClientRect();
         if (e != undefined)
             return {
                 x: e.clientX - rect.left,
@@ -167,9 +167,9 @@ class _MainInterface {
     }
     //private methods
     load() {
-        let peonSprite = new enemy_PeonSprite();
+        const peonSprite = new enemy_PeonSprite();
         this.sprites.set('enemy_peon', peonSprite.getSprites());
-        let warriorSprite = new enemy_WarriorSprite();
+        const warriorSprite = new enemy_WarriorSprite();
         this.sprites.set('enemy_warrior', warriorSprite.getSprites());
     }
 }

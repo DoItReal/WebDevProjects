@@ -31,7 +31,7 @@ class Missle {
     }
     move() {
         if (this.status == 'fired') {
-            let fps = game1.fps.fps;
+            const fps = game1.fps.fps;
             if (this.cord.x < this.target.cord.x) {
                 if (this.cord.x + (this.speed / fps) > this.target.cord.x)
                     this.cord.x = this.target.cord.x;
@@ -94,11 +94,11 @@ class MissleSprite extends Missle {
         this.missleAnimate = { flag: false, value: 0 }; //flag: false => increment 
     }
     draw(k = 0) {
-        let ctx = MainInterface.getPlayground().getContext();
+        const ctx = MainInterface.getPlayground().getContext();
         ctx.save();
         ctx.beginPath();
-        let kX = this.elements.get('ammo').width / this.tower.dim.w;
-        let kY = this.elements.get('ammo').height / this.tower.dim.h;
+        const kX = this.elements.get('ammo').width / this.tower.dim.w;
+        const kY = this.elements.get('ammo').height / this.tower.dim.h;
         if (this.status == 'idle') {
             this.cord = {
                 x: this.tower.cord.x - this.dim.w / 2, y: k + this.tower.cord.y - this.tower.dim.h / 4
@@ -144,7 +144,7 @@ class MissleSprite extends Missle {
             this.draw();
     }
     destroy_texture() {
-        let kX = this.elements.get('ammo').width / this.tower.dim.w;
+        const kX = this.elements.get('ammo').width / this.tower.dim.w;
         game1.getMisslesInterface().addAnimation(this.elements.get('ammo1'), kX, { x: this.cord.x, y: this.cord.y }, this.destructionCD.cd, null);
         game1.getMisslesInterface().addAnimation(this.elements.get('ammo2'), kX, { x: this.cord.x, y: this.cord.y }, this.destructionCD.cd, null);
         game1.getMisslesInterface().addAnimation(this.elements.get('ammo3'), kX, { x: this.cord.x, y: this.cord.y }, this.destructionCD.cd, null);
@@ -194,9 +194,9 @@ class amm_stone extends MissleSprite {
         this.load_assets();
     }
     load_assets() {
-        var tmp = new ammo_Iron_sprite(); //here to place input
+        const tmp = new ammo_Iron_sprite(); //here to place input
         tmp.elements.forEach((value, key) => {
-            let tmpImage = new Image();
+            const tmpImage = new Image();
             tmpImage.src = value.URL;
             this.elements.set(key, tmpImage);
         });
@@ -259,7 +259,7 @@ class _Missles {
         if (this.animations[0].begin == null)
             this.animations[0].begin = Date.now();
         if (Date.now() - this.animations[0].begin < this.animations[0].time) {
-            let ctx = MainInterface.getPlayground().getContext(); //draw
+            const ctx = MainInterface.getPlayground().getContext(); //draw
             ctx.save();
             ctx.translate(this.animations[0].cord.x, this.animations[0].cord.y);
             ctx.scale(this.animations[0].scale, this.animations[0].scale);

@@ -78,7 +78,7 @@ class ExperienceBar {
         100, 200, // w, h - of the image to draw
         2, 2, // x,y - location of canvas to draw
         this.dim.w, this.dim.h); // w,h - dimensions to drarw
-        let k = exp / maxExp;
+        const k = exp / maxExp;
         //fill the bar
         this.ctx.drawImage(this.img, 150, 955, // img, x, y - cord of the image to draw
         1370, 80, // w, h - of the image to draw

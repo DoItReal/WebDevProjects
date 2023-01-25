@@ -6,7 +6,7 @@ class Canvas {
     }
     init() { }
     overlapping(e) {
-        let rect = this.canvas.getBoundingClientRect();
+        const rect = this.canvas.getBoundingClientRect();
         if (circRectsOverlap(rect.left, rect.top, this.canvas.width, this.canvas.height, e.clientX, e.clientY, 5)) {
             return 1;
         }
@@ -38,7 +38,7 @@ class Scoreboard extends Canvas {
         this.canvas.height = window.innerHeight * 0.1;
         this.ctx = this.canvas.getContext('2d');
         this.init_events();
-        let tmp = new PlayerInfo(this.canvas, this.ctx, game1.player);
+        const tmp = new PlayerInfo(this.canvas, this.ctx, game1.player);
         tmp.init();
         this.widgets.push(tmp);
     }
@@ -51,8 +51,8 @@ class Scoreboard extends Canvas {
     }
     mouseDown(e) {
         e.preventDefault();
-        let button = e.button;
-        let mousePos = MainInterface.getMousePos(this, e);
+        const button = e.button;
+        const mousePos = MainInterface.getMousePos(this, e);
         console.log('Button: ' + button + ' pressed at x: ' + mousePos.x + ' y: ' + mousePos.y);
     }
     //private methods
@@ -75,7 +75,7 @@ class Scoreboard extends Canvas {
         this.waveWidget();
     }
     waveWidget() {
-        let wave = game1.getCurrentWave();
+        const wave = game1.getCurrentWave();
         if (wave != null) {
             this.drawWaveWidget(wave.getSize());
         }
@@ -83,10 +83,10 @@ class Scoreboard extends Canvas {
             this.drawWaveWidget();
     }
     drawWaveWidget(size = 0) {
-        let w = 120;
-        let h = 60;
-        let x = this.canvas.width / 2 + w;
-        let y = (this.canvas.height - h) / 2;
+        const w = 120;
+        const h = 60;
+        const x = this.canvas.width / 2 + w;
+        const y = (this.canvas.height - h) / 2;
         this.ctx.save();
         this.ctx.translate(x, y);
         this.ctx.fillStyle = "lightgray";
@@ -100,13 +100,13 @@ class Scoreboard extends Canvas {
         this.ctx.restore();
     }
     drawTimer() {
-        let dist = MainInterface.getTimerDist();
+        const dist = MainInterface.getTimerDist();
         this.ctx.save();
         this.ctx.beginPath();
-        let w = 200;
-        let h = 60;
-        let x = this.canvas.width / 2 - w / 2;
-        let y = (this.canvas.height - h) / 2;
+        const w = 200;
+        const h = 60;
+        const x = this.canvas.width / 2 - w / 2;
+        const y = (this.canvas.height - h) / 2;
         this.ctx.translate(x, y);
         this.ctx.strokeStyle = 'white';
         this.ctx.lineWidth = 2;
@@ -114,7 +114,7 @@ class Scoreboard extends Canvas {
         this.ctx.rect(5, 5, w - 10, h - 10);
         this.ctx.stroke();
         this.ctx.beginPath();
-        let str = this.timeToString(dist);
+        const str = this.timeToString(dist);
         this.ctx.lineWidth = 1;
         this.ctx.strokeStyle = "red";
         this.ctx.fillStyle = "lime";
@@ -134,7 +134,7 @@ class Scoreboard extends Canvas {
     }
     timeToString(time) {
         //minutes not working TO DO
-        let minutes = Math.floor(((time / 100000) % 60));
+        const minutes = Math.floor(((time / 100000) % 60));
         let minutesStr = '';
         if (minutes > 10) {
             minutesStr = String(minutes);
@@ -144,14 +144,14 @@ class Scoreboard extends Canvas {
         }
         else
             minutesStr = '0' + minutes;
-        let seconds = Math.floor((time / 1000) % 60);
+        const seconds = Math.floor((time / 1000) % 60);
         let secondsStr = '';
         if (seconds < 10) {
             secondsStr = '0' + seconds;
         }
         else
             secondsStr = String(seconds);
-        let milliseconds = Math.floor((time / 10 % 100));
+        const milliseconds = Math.floor((time / 10 % 100));
         let millisecondsStr = '';
         if (milliseconds < 10) {
             millisecondsStr = '0' + milliseconds;
@@ -231,8 +231,8 @@ class PlayerInfo {
         this.ctx.restore();
     }
     drawIcon(x, y) {
-        let w = this.canvas.height * 0.8 - 2;
-        let h = this.canvas.height * 0.8 - 2;
+        const w = this.canvas.height * 0.8 - 2;
+        const h = this.canvas.height * 0.8 - 2;
         this.ctx.save();
         this.ctx.translate(x, y);
         this.ctx.strokeStyle = "white";
@@ -242,10 +242,10 @@ class PlayerInfo {
         this.ctx.restore();
     }
     drawHP(x, y) {
-        let hp = game1.getPlayer().getBase().getHP(); // to do 
-        let maxHp = game1.getPlayer().getBase().getMaxHP(); // to do !!! Needed rework of the hp system for the player
-        let w = 100;
-        let h = this.canvas.height / 8;
+        const hp = game1.getPlayer().getBase().getHP(); // to do 
+        const maxHp = game1.getPlayer().getBase().getMaxHP(); // to do !!! Needed rework of the hp system for the player
+        const w = 100;
+        const h = this.canvas.height / 8;
         this.ctx.save();
         this.ctx.translate(x, y);
         this.ctx.fillStyle = "lightgray";
@@ -257,7 +257,7 @@ class PlayerInfo {
         this.ctx.restore();
     }
     drawGold(x, y) {
-        let gold = game1.player.gold; // to do
+        const gold = game1.player.gold; // to do
         this.ctx.save();
         this.ctx.translate(x, y);
         this.ctx.fillStyle = "gold";
