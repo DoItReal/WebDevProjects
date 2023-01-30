@@ -56,6 +56,9 @@ class Playground {
 
         //event listener on 'mousedown' Playground
         this.#canvas.addEventListener('mousedown', this.mouseDown, false);
+
+        //event listener on 'mousemove' Playground
+        this.#canvas.addEventListener('mousemove', this.mouseMove, false);
     }
 
     //events
@@ -66,9 +69,9 @@ class Playground {
         }
         return 0;
     }
-    mouseMove(mousePosRelative) { // event on mouse move in Playground
+    mouseMove(e) { // event on mouse move in Playground
         if (MainInterface.clipboard != null && game1.play && !game1.pause) { //if there is item in the clipboard 
-            game1.updatePreview(mousePosRelative.x, mousePosRelative.y);
+            game1.updatePreview(MainInterface.getMousePos(this,e).x,MainInterface.getMousePos(this,e).y);
         } else if (MainInterface.clipboard == null && game1.play && !game1.pause) { //if there is no item in the clipboard
 
         }
@@ -79,8 +82,10 @@ class Playground {
         const mousePos = MainInterface.getMousePos(this, e);
         if (button == 0) { //left click  //PLACE, USE, SELECT
             if (MainInterface.clipboard != null && game1.play && !game1.pause) {
-               game1.getTowersInterface().addTower(MainInterface.clipboard);
-                MainInterface.clearClipboard();
+                setTimeout(() => {
+                    game1.getTowersInterface().addTower(MainInterface.clipboard);
+                    MainInterface.clearClipboard();
+                }, 50);
             }
         } else if (button == 1) { //scroll (middle button) click
             //to do

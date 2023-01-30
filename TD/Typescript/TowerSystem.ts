@@ -41,7 +41,6 @@ class Tower implements tower{ //declares and implements the methods of all tower
         this.sprite = new TowerAnimation(this, this.assets.get(String('lvl_' + this.experience.getLevel()))); // to rework it 
         this.draw(); // draw the texture of the tower
         this.experience.update(); // draw the exp bar
-
         if (!this.target || !this.collisionCheck(this.target) || this.target.hp <= 0) { // if No Target || target not reachable || target hp <= 0 ==> seek new target
             this.target = this.radar();
         }
@@ -54,7 +53,12 @@ class Tower implements tower{ //declares and implements the methods of all tower
     }
     mouseOver(mousePosR: cord) {
         this.highlight();
-        this.tooltip(mousePosR);
+        if (MainInterface.MouseState.keys.get('leftButton') && this.set) {
+            console.log('draw Update table'); // to do
+        }
+        else {
+            this.tooltip(mousePosR);
+        }
     }
     draw(preview = false) { 
         const ctx = MainInterface.getPlayground().getContext();
@@ -302,16 +306,19 @@ class _Towers {
     getTowers() {
         return this.towers;
     }
-    addTower(tower:Tower):void {
+    addTower(tower: Tower): void {
+        tower.set = true;
         this.towers.push(tower);
     }
     removeTower(ind: number | cord) {
         if (typeof ind === "number") {
+            this.towers[ind].set = false;
             this.towers.splice(ind, 1);
         } else { // typeof ind === cord
             if (this.towers !== null && this.towers.length > 0) {
                 for (let i = 0; i < this.towers.length; i++) {
                     if (this.towers[i].cord == ind) {
+                        this.towers[i].set = false;
                         this.removeTower(i);
                         return;
                     }

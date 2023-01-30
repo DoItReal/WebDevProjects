@@ -60,6 +60,8 @@ class Playground {
         __classPrivateFieldGet(this, _Playground_canvas, "f").addEventListener('mouseout', this.blurFocus, false);
         //event listener on 'mousedown' Playground
         __classPrivateFieldGet(this, _Playground_canvas, "f").addEventListener('mousedown', this.mouseDown, false);
+        //event listener on 'mousemove' Playground
+        __classPrivateFieldGet(this, _Playground_canvas, "f").addEventListener('mousemove', this.mouseMove, false);
     }
     //events
     overlapping(e) {
@@ -69,9 +71,9 @@ class Playground {
         }
         return 0;
     }
-    mouseMove(mousePosRelative) {
+    mouseMove(e) {
         if (MainInterface.clipboard != null && game1.play && !game1.pause) { //if there is item in the clipboard 
-            game1.updatePreview(mousePosRelative.x, mousePosRelative.y);
+            game1.updatePreview(MainInterface.getMousePos(this, e).x, MainInterface.getMousePos(this, e).y);
         }
         else if (MainInterface.clipboard == null && game1.play && !game1.pause) { //if there is no item in the clipboard
         }
@@ -82,8 +84,10 @@ class Playground {
         const mousePos = MainInterface.getMousePos(this, e);
         if (button == 0) { //left click  //PLACE, USE, SELECT
             if (MainInterface.clipboard != null && game1.play && !game1.pause) {
-                game1.getTowersInterface().addTower(MainInterface.clipboard);
-                MainInterface.clearClipboard();
+                setTimeout(() => {
+                    game1.getTowersInterface().addTower(MainInterface.clipboard);
+                    MainInterface.clearClipboard();
+                }, 50);
             }
         }
         else if (button == 1) { //scroll (middle button) click

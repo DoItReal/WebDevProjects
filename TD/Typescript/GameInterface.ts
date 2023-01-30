@@ -146,7 +146,7 @@ class Game {
     }
 
         //private methods
-   private visualisePreview() {
+    private visualisePreview() {
         if (MainInterface.clipboard != null && this.preview != null) {
             const obj = MainInterface.clipboard;
             obj.cord.x = this.preview.x;        // this way we are chaning the values of the already existing object keeping the references to it 
@@ -165,7 +165,7 @@ class Game {
         const mousePosR:cord = {
             x: mousePos.x - rect.left,
             y: mousePos.y - rect.top
-        };
+       };
 
         //checking for overlaping enemies
         if (enemies && enemies.length > 0) {

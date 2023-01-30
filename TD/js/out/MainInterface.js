@@ -24,16 +24,14 @@ KeyCodes.set(40, 'down');
 class _MainInterface {
     constructor() {
         this.sprites = new Map();
+        this.MouseState = new MouseState();
         this.pressedKeys = new Map;
         this.timer = new Timer();
         this.Playground = new Playground();
         this.Scoreboard = new Scoreboard();
         this.ControlPanel = new ControlPanel();
         this.clipboard = null;
-        this.mousePos = { x: null, y: null };
         this.getCanvasMouseOverlaping = this.getCanvasMouseOverlaping.bind(this);
-        this.mouseMove = this.mouseMove.bind(this);
-        this.setMousePos = this.setMousePos.bind(this);
         this.handleKeyDown = this.handleKeyDown.bind(this);
         this.handleKeyUp = this.handleKeyUp.bind(this);
         this.addKey = this.addKey.bind(this);
@@ -42,7 +40,7 @@ class _MainInterface {
     //public methods
     //getters
     getMouse() {
-        return this.mousePos;
+        return this.MouseState.mousePos;
     }
     getTimerDist() {
         return this.timer.getDist();
@@ -77,14 +75,12 @@ class _MainInterface {
             this.pressedKeys.delete(key);
         }
     }
-    setMousePos(e) {
-        this.mousePos = { x: e.clientX, y: e.clientY };
-    }
     setClipboard(obj) {
         this.clipboard = obj;
     }
     //***
     init() {
+        this.MouseState._init();
         this.Playground.init();
         this.Scoreboard.init();
         this.ControlPanel.init();
@@ -97,11 +93,6 @@ class _MainInterface {
         this.ControlPanel.update();
     }
     init_events() {
-        //event getMousePos
-        document.addEventListener('mouseenter', this.setMousePos, false); //getting the mousepos every time the mouse is moved or entering in the main document
-        document.addEventListener('mousemove', this.setMousePos, false);
-        //event listener on 'mousemove'
-        document.addEventListener('mousemove', this.mouseMove, false);
     }
     //events methods
     handleKeyDown(e) {
@@ -134,13 +125,6 @@ class _MainInterface {
             this.removeKey(e.keyCode);
         }
     }
-    mouseMove(e) {
-        e.preventDefault();
-        const canv = this.getCanvasMouseOverlaping(e);
-        if (canv != null) {
-            canv.mouseMove(this.getMousePos(canv, e)); /// ?????
-        }
-    }
     getCanvasMouseOverlaping(e) {
         e.preventDefault();
         if (this.Playground.overlapping(e))
@@ -158,8 +142,8 @@ class _MainInterface {
             };
         else
             return {
-                x: this.mousePos.x - rect.left,
-                y: this.mousePos.y - rect.top
+                x: this.MouseState.mousePos.x - rect.left,
+                y: this.MouseState.mousePos.y - rect.top
             };
     }
     clearClipboard() {
@@ -171,6 +155,40 @@ class _MainInterface {
         this.sprites.set('enemy_peon', peonSprite.getSprites());
         const warriorSprite = new enemy_WarriorSprite();
         this.sprites.set('enemy_warrior', warriorSprite.getSprites());
+    }
+}
+const MouseKeys = new Map();
+MouseKeys.set(1, 'leftButton');
+MouseKeys.set(2, 'rightButton');
+class MouseState {
+    constructor() {
+        this.mousePos = { x: 0, y: 0 };
+        this.keys = new Map();
+        this.setMousePos = this.setMousePos.bind(this);
+        this.setKey = this.setKey.bind(this);
+        this.removeKey = this.removeKey.bind(this);
+    }
+    _init() {
+        this.keys.set("leftButton", false);
+        this.keys.set("rightButton", false);
+        //event getMousePos
+        document.addEventListener('mouseenter', this.setMousePos, false); //getting the mousepos every time the mouse is moved or entering in the main document
+        document.addEventListener('mousemove', this.setMousePos, false);
+        document.addEventListener('mousedown', this.setKey, false);
+        document.addEventListener('mouseup', this.removeKey, false);
+    }
+    setMousePos(e) {
+        e.preventDefault();
+        this.mousePos = { x: e.clientX, y: e.clientY };
+    }
+    setKey(e) {
+        e.preventDefault();
+        if (MouseKeys.get(e.buttons) != undefined)
+            this.keys.set(MouseKeys.get(e.buttons), true);
+    }
+    removeKey(e) {
+        e.preventDefault();
+        this.keys.forEach((value, key, map) => this.keys.set(key, false));
     }
 }
 //# sourceMappingURL=MainInterface.js.map

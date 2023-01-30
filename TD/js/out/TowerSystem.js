@@ -28,7 +28,12 @@ class Tower {
     }
     mouseOver(mousePosR) {
         this.highlight();
-        this.tooltip(mousePosR);
+        if (MainInterface.MouseState.keys.get('leftButton') && this.set) {
+            console.log('draw Update table'); // to do
+        }
+        else {
+            this.tooltip(mousePosR);
+        }
     }
     draw(preview = false) {
         const ctx = MainInterface.getPlayground().getContext();
@@ -263,16 +268,19 @@ class _Towers {
         return this.towers;
     }
     addTower(tower) {
+        tower.set = true;
         this.towers.push(tower);
     }
     removeTower(ind) {
         if (typeof ind === "number") {
+            this.towers[ind].set = false;
             this.towers.splice(ind, 1);
         }
         else { // typeof ind === cord
             if (this.towers !== null && this.towers.length > 0) {
                 for (let i = 0; i < this.towers.length; i++) {
                     if (this.towers[i].cord == ind) {
+                        this.towers[i].set = false;
                         this.removeTower(i);
                         return;
                     }

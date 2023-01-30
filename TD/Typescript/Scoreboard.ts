@@ -57,7 +57,7 @@ class Scoreboard extends Canvas {
         this.widgets.forEach(e => { e.update(); });
     }
     mouseMove(mousePosRelative) { // event on mouse move in scoreboard
-        //  console.log("x: " + mousePos.x + ' // y: ' + mousePos.y);
+        //  console.log("x: " + mousePosRelative.x + ' // y: ' + mousePosRelative.y);
     }
     mouseDown(e) {
         e.preventDefault();
@@ -80,13 +80,16 @@ class Scoreboard extends Canvas {
         this.background();
 
         //import enemy counter - TO REWORK
-        this.enemyCounter(this.canvas.width / 3, 10);
+        this.enemyCounter();
 
         //import timer
         this.drawTimer();
 
         //import WaveWidget
         this.waveWidget();
+
+        //import UpdateWidget
+        this.updateWidget();
     }
     private waveWidget() {
         const wave = game1.getCurrentWave();
@@ -96,8 +99,8 @@ class Scoreboard extends Canvas {
             this.drawWaveWidget();
     }
     private drawWaveWidget(size: number = 0) {
-        const w = 120;
-        const h = 60;
+        const w = this.canvas.width*0.075;
+        const h = this.canvas.height*0.75;
         const x = this.canvas.width / 2 + w;
         const y = (this.canvas.height - h) / 2;
 
@@ -108,51 +111,69 @@ class Scoreboard extends Canvas {
         this.ctx.strokeStyle = "darkslategray";
         this.ctx.strokeRect(0, 0, w, h);
 
-        this.ctx.font = "15px Roboto";
+        this.ctx.font = h*0.3+"px Roboto";
         this.ctx.fillStyle = "black";
-        this.ctx.fillText("Current Wave", 10, 15);
-        this.ctx.fillText("Size: " + size, 10, 35);
+        this.ctx.fillText("Current Wave", w*0.1, h*0.4);
+        this.ctx.fillText("Size: " + size, w*0.1, h*0.8);
         this.ctx.restore();
     }
+    private updateWidget() {
+        const w = this.canvas.width * 0.1; //10% of canvas width
+        const h = this.canvas.height * 0.9; //90% of canvas height
+        const x = this.canvas.width * 0.2;
+        const y = (this.canvas.height - h) / 2;
 
+        this.ctx.save();
+        this.ctx.translate(x, y);
+        this.ctx.fillStyle = "lightgray";
+        this.ctx.fillRect(0, 0, w, h);
+        this.ctx.strokeStyle = "darkslategray";
+        this.ctx.strokeRect(0, 0, w, h);
+
+        this.ctx.font = h*0.25+"px Roboto";
+        this.ctx.fillStyle = "black";
+        this.ctx.fillText("UPDATE WIDGET", 10, 15);
+        this.ctx.fillText("Update Tower/Base", 10, 35);
+        this.ctx.restore();
+    }
     private drawTimer() {
         const dist = MainInterface.getTimerDist();
         this.ctx.save();
         this.ctx.beginPath();
-        const w = 200;
-        const h = 60;
+        const w = this.canvas.width * 0.12; //12% of canvas width
+        const h = this.canvas.height * 0.9; //90% of canvas height
         const x = this.canvas.width / 2 - w / 2;
         const y = (this.canvas.height - h) / 2;
         this.ctx.translate(x, y);
         this.ctx.strokeStyle = 'white';
-        this.ctx.lineWidth = 2;
+        this.ctx.lineWidth = 0.01*w;
         this.ctx.rect(0, 0, w, h);
-        this.ctx.rect(5, 5, w - 10, h - 10);
+        this.ctx.rect(0.025*w, 0.025*w, w - 0.05*w, h - 0.05*w);
         this.ctx.stroke();
         this.ctx.beginPath();
 
 
         const str = this.timeToString(dist);
 
-        this.ctx.lineWidth = 1;
+        this.ctx.lineWidth = 0.005*w;
         this.ctx.strokeStyle = "red";
         this.ctx.fillStyle = "lime";
 
         //fill minutes + ':'
-        this.ctx.font = "35px Arial";
-        this.ctx.fillText(str.minutesStr + ':', 40, 40);
-        this.ctx.strokeText(str.minutesStr + ':', 40, 40);
+        this.ctx.font = 0.2*w + "px Arial";
+        this.ctx.fillText(str.minutesStr + ':', w*0.18, h*0.65);
+        this.ctx.strokeText(str.minutesStr + ':', w*0.18, h*0.65);
 
 
         //fill seconds
-        this.ctx.font = "30px Arial";
-        this.ctx.fillText(str.secondsStr + ':', 90, 40);
-        this.ctx.strokeText(str.secondsStr + ':', 90, 40);
+        this.ctx.font = 0.18*w +"px Arial";
+        this.ctx.fillText(str.secondsStr + ':', w*0.45, h*0.65);
+        this.ctx.strokeText(str.secondsStr + ':', w*0.45, h*0.65);
 
         //fill millisceonds
-        this.ctx.font = "25px Arial";
-        this.ctx.fillText(str.millisecondsStr, 135, 40);
-        this.ctx.strokeText(str.millisecondsStr, 135, 40);
+        this.ctx.font = 0.15*w+"px Arial";
+        this.ctx.fillText(str.millisecondsStr, w*0.7, h*0.65);
+        this.ctx.strokeText(str.millisecondsStr, w*0.7, h*0.65);
 
         this.ctx.restore();
     }
@@ -186,35 +207,40 @@ class Scoreboard extends Canvas {
         this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
         this.ctx.restore();
     }
-    private enemyCounter(x, y) {
+    private enemyCounter() {
+        let x = this.canvas.width / 3;
+        let y = this.canvas.height * 0.1;
+        let w = this.canvas.width*0.06; 
+        let h = this.canvas.height *0.7;
+
         this.ctx.save();
         this.ctx.beginPath();
         this.ctx.translate(x, y);
         this.ctx.strokeStyle = "white";
-        this.ctx.lineWidth = 1;
-        this.ctx.rect(0, 15, 100, 50);
-        this.ctx.rect(5, 20, 90, 40);
+        this.ctx.lineWidth = 0.01*w;
+        this.ctx.rect(0, h*0.25, w, h*0.95);
+        this.ctx.rect(w*0.05, h*0.35, w*0.9, h*0.75);
         this.ctx.stroke();
         this.ctx.beginPath();
 
         this.ctx.strokeStyle = 'gray';
-        this.ctx.lineWidth = 4;
+        this.ctx.lineWidth = 0.002 * this.canvas.width;
         this.ctx.fillStyle = "white";
-        this.ctx.font = "23px Monaco";
-        this.ctx.strokeText("Enemies: ", 10, 10);
-        this.ctx.fillText("Enemies:", 10, 10);
+        this.ctx.font = h*0.4+"px Monaco";
+        this.ctx.strokeText("Enemies: ", w*0.1, h*0.17);
+        this.ctx.fillText("Enemies:", w*0.1, h*0.17);
 
         this.ctx.strokeStyle = 'yellow';
-        this.ctx.lineWidth = 4;
+        this.ctx.lineWidth = 0.04*w;
         this.ctx.fillStyle = 'red';
         this.ctx.textAlign = 'center';
 
         let enemies = 0;
         if (game1) enemies = game1.getEnemiesInterface().getEnemiesCount();
 
-        this.ctx.font = "25px Arial";
-        this.ctx.strokeText(String(enemies), 50, 50);
-        this.ctx.fillText(String(enemies), 50, 50);
+        this.ctx.font = h*0.6+"px Arial";
+        this.ctx.strokeText(String(enemies), w*0.5, h*0.9);
+        this.ctx.fillText(String(enemies), w*0.5, h*0.9);
         this.ctx.restore();
     }
 }
@@ -231,7 +257,7 @@ class PlayerInfo {
         this.canvas = canvas;
         this.ctx = ctx;
         this.player = player;
-        this.width = 250;
+        this.width = this.canvas.width*0.15;
         this.height = this.canvas.height * 0.9;
     }
         //public methods
@@ -249,8 +275,8 @@ class PlayerInfo {
     private drawPlayerInfo() {
         this.border();
         this.drawIcon(this.canvas.height / 10, this.canvas.height / 10);
-        this.drawHP(this.canvas.height * 1.1, this.canvas.height / 8);
-        this.drawGold(this.canvas.height * 1.1, this.canvas.height / 2);
+        this.drawHP(this.canvas.height * 1.1, this.canvas.height *0.2);
+        this.drawGold(this.canvas.height * 1.1, this.canvas.height*0.7);
     }
     private border() {
         this.ctx.save();
@@ -276,7 +302,7 @@ class PlayerInfo {
     private drawHP(x, y) {
         const hp = game1.getPlayer().getBase().getHP(); // to do 
         const maxHp = game1.getPlayer().getBase().getMaxHP(); // to do !!! Needed rework of the hp system for the player
-        const w = 100;
+        const w = this.canvas.width*0.065;
         const h = this.canvas.height / 8;
         this.ctx.save();
         this.ctx.translate(x, y);
@@ -287,8 +313,8 @@ class PlayerInfo {
         this.ctx.fillStyle = "red";
         this.ctx.fillRect(1, 1, w * hp / maxHp - 2, h - 2);
 
-        this.ctx.font = "20px Roboto";
-        this.ctx.fillText(hp + "/" + maxHp + " HP", w + 5, h, 50);
+        this.ctx.font = this.canvas.height*0.3+"px Roboto";
+        this.ctx.fillText(hp + "/" + maxHp + " HP", w + w*0.01, h, w*0.5);
         this.ctx.restore();
     }
     private drawGold(x, y) {
@@ -297,7 +323,7 @@ class PlayerInfo {
         this.ctx.translate(x, y);
 
         this.ctx.fillStyle = "gold";
-        this.ctx.font = "22px Roboto";
+        this.ctx.font = this.canvas.height*0.35+"px Roboto";
         this.ctx.fillText(Math.floor(gold) + " GOLD", 0, 0, 50);
 
         this.ctx.restore();
