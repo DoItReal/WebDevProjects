@@ -9,6 +9,7 @@ interface tower {
     range: number;          //range radius [px]
     ammunition(): Missle; //object Ammunition()
     atkCD: number;          // [frames] to next attack
+    deployable: boolean;
 
 }
 
@@ -23,6 +24,7 @@ class Tower implements tower{ //declares and implements the methods of all tower
     color: string;
     range: number;
     atkCD: number = 0;
+    deployable: boolean = true;
     ammunition;
     enemiesInterface: _Enemies = game1.getEnemiesInterface();
     sprite: TowerAnimation;
@@ -60,22 +62,34 @@ class Tower implements tower{ //declares and implements the methods of all tower
             this.tooltip(mousePosR);
         }
     }
-    draw(preview = false) { 
+    draw(preview = false, overlap = false) { 
         const ctx = MainInterface.getPlayground().getContext();
         ctx.save();
         ctx.beginPath();
         ctx.translate(this.cord.x-this.dim.w/2, this.cord.y-this.dim.h/2);
         if (preview) {
-            ctx.globalAlpha = 0.5;
-            ctx.strokeStyle = "green";
+            if (overlap) {
+                ctx.strokeStyle = "red";
+            } else {
+                ctx.strokeStyle = "green";
+                
+            }
             ctx.strokeRect(0, 0, this.dim.w + 4, this.dim.h + 4);
             ctx.arc(0+this.dim.w/2, 0+this.dim.h/2, this.range, 0, 2 * Math.PI, false);
             
             ctx.stroke();
         }
         ctx.restore();
+        ctx.save();
+        if (preview) {
+            ctx.globalAlpha = 0.8;
+            if (overlap) {
+                ctx.globalAlpha = 0.3;
+            }
+        }
         this.sprite.update();       // draws the sprite
         this.ammunition.animate();  // draws the idle ammunition
+        ctx.restore();
     }
     gainBounty(bounty: { exp: number, gold: number }) {
         this.experience.addExp(bounty.exp);

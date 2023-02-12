@@ -83,7 +83,7 @@ class Playground {
         const button = e.button;
         const mousePos = MainInterface.getMousePos(this, e);
         if (button == 0) { //left click  //PLACE, USE, SELECT
-            if (MainInterface.clipboard != null && game1.play && !game1.pause) {
+            if (MainInterface.clipboard != null && game1.play && !game1.pause && MainInterface.clipboard.deployable) {
                 setTimeout(() => {
                     game1.getTowersInterface().addTower(MainInterface.clipboard);
                     MainInterface.clearClipboard();

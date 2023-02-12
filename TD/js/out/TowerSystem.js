@@ -2,6 +2,7 @@ class Tower {
     constructor(cord) {
         this.target = null;
         this.atkCD = 0;
+        this.deployable = true;
         this.enemiesInterface = game1.getEnemiesInterface();
         if (this.constructor === Tower) {
             throw new Error("Abstract classes can't be instantiated.");
@@ -35,21 +36,33 @@ class Tower {
             this.tooltip(mousePosR);
         }
     }
-    draw(preview = false) {
+    draw(preview = false, overlap = false) {
         const ctx = MainInterface.getPlayground().getContext();
         ctx.save();
         ctx.beginPath();
         ctx.translate(this.cord.x - this.dim.w / 2, this.cord.y - this.dim.h / 2);
         if (preview) {
-            ctx.globalAlpha = 0.5;
-            ctx.strokeStyle = "green";
+            if (overlap) {
+                ctx.strokeStyle = "red";
+            }
+            else {
+                ctx.strokeStyle = "green";
+            }
             ctx.strokeRect(0, 0, this.dim.w + 4, this.dim.h + 4);
             ctx.arc(0 + this.dim.w / 2, 0 + this.dim.h / 2, this.range, 0, 2 * Math.PI, false);
             ctx.stroke();
         }
         ctx.restore();
+        ctx.save();
+        if (preview) {
+            ctx.globalAlpha = 0.8;
+            if (overlap) {
+                ctx.globalAlpha = 0.3;
+            }
+        }
         this.sprite.update(); // draws the sprite
         this.ammunition.animate(); // draws the idle ammunition
+        ctx.restore();
     }
     gainBounty(bounty) {
         this.experience.addExp(bounty.exp);

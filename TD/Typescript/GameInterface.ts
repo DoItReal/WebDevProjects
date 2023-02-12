@@ -116,9 +116,10 @@ class Game {
                 this.enemyInterface.update();
                 this.towersInterface.update();
                 this.misslesInterface.update();
+                this.checkForOverlapingObjectsPlayground();
                 this.visualisePreview();
 
-                this.checkForOverlapingObjectsPlayground();
+               
             }
         }
 
@@ -151,9 +152,39 @@ class Game {
             const obj = MainInterface.clipboard;
             obj.cord.x = this.preview.x;        // this way we are chaning the values of the already existing object keeping the references to it 
             obj.cord.y = this.preview.y;
+            obj.deployable = true;
           //  obj.cord = { x: this.preview.x, y: this.preview.y};   // creates new object 
+            if (this.checkForOverlapingObjectsPreview(obj)) {
+                obj.draw(true, true);
+                obj.deployable = false;
+            } else
             obj.draw(true);
         }
+    }
+    private checkForOverlapingObjectsPreview(object:any) {
+
+        const enemies: Array<Enemy> = this.getEnemiesInterface().getEnemies();
+
+        /*//checking for overlaping enemies
+        if (enemies && enemies.length > 0) {
+            for (let i = 0; i < enemies.length; i++) {
+                if (rectsOverlap(enemies[i].cord.x - enemies[i].dim.w / 2, enemies[i].cord.y - enemies[i].dim.h / 2, enemies[i].dim.w, enemies[i].dim.h, object.cord.x - object.dim.w /2, object.cord.y - object.dim.h/2, object.dim.w,object.dim.h)) {
+                    return true;
+                    
+                }
+            }
+        }
+        */
+        //checking for overlaping towers
+        const towers: Array<Tower> = this.getTowersInterface().getTowers();
+        if (towers && towers.length > 0) {
+            for (let i = 0; i < towers.length; i++) {
+                if (rectsOverlap(towers[i].cord.x - towers[i].dim.w / 2, towers[i].cord.y - towers[i].dim.h / 2, towers[i].dim.w, towers[i].dim.h, object.cord.x - object.dim.w / 2, object.cord.y - object.dim.h / 2, object.dim.w, object.dim.h)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
    private checkForOverlapingObjectsPlayground() {
         const tmp = MainInterface.getMouse();
