@@ -58,7 +58,7 @@ class Game {
     }
     //setters
     setLevel(level: Level) {
-        if (this.currentLevel != null) return;
+        if (this.currentLevel != null && this.currentLevel.completed != true) return;
         this.currentLevel = level;
         this.currentLevel.init();
     }
