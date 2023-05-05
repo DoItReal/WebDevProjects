@@ -1,10 +1,11 @@
 {
   "ExpandedNodes": [
     "",
-    "\\TD",
-    "\\TD\\styles",
-    "\\TD\\Typescript"
+    "\\SignsToPDF",
+    "\\SignsToPDF\\js",
+    "\\SignsToPDF\\ts",
+    "\\TD\\js"
   ],
-  "SelectedNode": "\\TD\\Typescript\\Levels.ts",
+  "SelectedNode": "\\index.html",
   "PreviewInSolutionExplorer": false
 }

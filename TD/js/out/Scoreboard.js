@@ -28,6 +28,7 @@ class Scoreboard extends Canvas {
     constructor() {
         super();
         this.widgets = [];
+        this.selected = null;
         this.mouseMove = this.mouseMove.bind(this);
         this.mouseDown = this.mouseDown.bind(this);
     }
@@ -45,6 +46,9 @@ class Scoreboard extends Canvas {
     update() {
         this.draw();
         this.widgets.forEach(e => { e.update(); });
+    }
+    setObject(obj) {
+        this.selected = obj;
     }
     mouseMove(mousePosRelative) {
         //  console.log("x: " + mousePosRelative.x + ' // y: ' + mousePosRelative.y);
@@ -112,10 +116,14 @@ class Scoreboard extends Canvas {
         this.ctx.fillRect(0, 0, w, h);
         this.ctx.strokeStyle = "darkslategray";
         this.ctx.strokeRect(0, 0, w, h);
-        this.ctx.font = h * 0.25 + "px Roboto";
+        this.ctx.font = h * 0.23 + "px Roboto";
         this.ctx.fillStyle = "black";
-        this.ctx.fillText("UPDATE WIDGET", 10, 15);
-        this.ctx.fillText("Update Tower/Base", 10, 35);
+        if (this.selected != null) {
+            this.ctx.fillText(this.selected.name + " lvl " + this.selected.experience.getLevel(), 20, 15);
+        }
+        else {
+            this.ctx.fillText("Update Tower Widget", 10, 15);
+        }
         this.ctx.restore();
     }
     drawTimer() {

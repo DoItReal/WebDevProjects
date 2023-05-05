@@ -24,13 +24,16 @@ class Tower {
         else
             this.reload();
     }
-    mouseClick(e) {
+    mouseClick() {
+        console.log('draw Update table'); // to do
+        let scr = MainInterface.getScoreboard();
+        scr.setObject(this);
         // TO DO
     }
     mouseOver(mousePosR) {
         this.highlight();
         if (MainInterface.MouseState.keys.get('leftButton') && this.set) {
-            console.log('draw Update table'); // to do
+            this.mouseClick();
         }
         else {
             this.tooltip(mousePosR);
