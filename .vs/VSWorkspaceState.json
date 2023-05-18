@@ -3,9 +3,8 @@
     "",
     "\\SignsToPDF",
     "\\SignsToPDF\\js",
-    "\\SignsToPDF\\ts",
-    "\\TD\\js"
+    "\\SignsToPDF\\ts"
   ],
-  "SelectedNode": "\\index.html",
+  "SelectedNode": "\\SignsToPDF\\js\\script.js",
   "PreviewInSolutionExplorer": false
 }

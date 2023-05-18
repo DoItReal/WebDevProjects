@@ -1,6 +1,6 @@
 ﻿{
     "compilerOptions": {
-        "target": "ES6",
+      "target": "ES2022",
         "module": "commonjs",
         "sourceMap": true,
         "outDir": "../js"
