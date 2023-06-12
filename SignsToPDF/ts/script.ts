@@ -1,4 +1,4 @@
-
+var pngs: Array<HTMLImageElement>;
 window.onload = function init() {
     //canv = document.getElementById('myCanvas');
    // ctx = canv.getContext('2d');
@@ -25,7 +25,9 @@ class Sign {
     height: number;
     content: SignContent;
     canvas: HTMLCanvasElement;
+    fontSize: number = 16;
     ctx: CanvasRenderingContext2D;
+    pngs: Array<HTMLImageElement> = [];
     constructor(w: number, h: number) {
         this.width = w;
         this.height = h;
@@ -34,31 +36,75 @@ class Sign {
         this.canvas.width = w;
         this.canvas.height = h;
         this.ctx = this.canvas.getContext('2d');
+        this.ctx.textAlign = "center";
     }
     setContent(content: SignContent) {
         this.content = content;
     }
-    generate() {
-        let rows = [this.content.alergens, this.content.name.bg , this.content.name.en, this.content.name.de, this.content.name.rus];
+   async generate() {
+        let arr = this.content.alergens;
+        await this.loadPNGs();
+        let rows = [this.content.name.bg , this.content.name.en, this.content.name.de, this.content.name.rus];
         this.ctx.save();
 
         //border
-        this.ctx.fillStyle = "lightgray";
-        this.ctx.fillRect(0, 0, this.width, this.height);
-
-        let step = (this.height / rows.length) - 10;
+        this.ctx.strokeStyle = "black";
+        this.ctx.lineWidth = 5;
+        this.ctx.fillStyle = "white";
         
-        for (let i = 0; i < rows.length; i++) {
-            let x = this.width / 20;
-            let y = step * (i + 1);
-            this.ctx.font = "20px sans-serif";
-            this.ctx.fillStyle = "blue";
-            this.ctx.fillText(rows[i], x, y);
-            
-        }
+        this.ctx.fillRect(0, 0, this.width, this.height);
+        this.ctx.strokeRect(0, 0, this.width, this.height);
+
+        this.generateTranslations(rows);
+        this.generateAllergens(arr);
+
         this.ctx.restore();
     }
+    private loadPNGs() {
+        for (let i = 1; i <= 15; i++) {
+            let tmp = new Image();
+            tmp.src = "src/png/" + i + ".png";
+            this.pngs.push(tmp);
+        }
+    }
+    private generateTranslations(rows) {
+        for (let i = 0; i < rows.length; i++) {
+            let step = this.fontSize * 1.5;
+            let x = this.width / 2;
+            let y = step * (i + 1)+ this.height*0.35;
+            this.ctx.font = this.fontSize + "px sans-serif";
+            this.txtCalibrate(rows[i]);
+            step = this.fontSize * 1.5;
+            this.ctx.fillStyle = "black";
+            this.ctx.fillText(rows[i], x, y);
+
+        }
+    }
+    private generateAllergens(arr:Array<number>) {
+        var step = 0;
+        for (let i = 0; i < arr.length; i++) {
+            let x = this.width / 2;
+            let y = this.fontSize*2;
+            this.ctx.font = this.fontSize + "px sans-serif";
+            this.ctx.fillStyle = "blue";
+            this.ctx.fillText(String(arr[i]), x, y);
+            console.log(this.pngs[arr[i]-1]);
+            this.ctx.drawImage(this.pngs[arr[i]],x+10,y+10)
+           // step = this.ctx.measureText(arr[i]).width;
+           // x += step;
+
+        }
+    }
+    private txtCalibrate(txt: string) {
+        let textSize = this.fontSize;
+        while (this.ctx.measureText(txt).width > this.width-10) {
+            textSize--;
+            this.ctx.font = textSize + "px sans-serif";
+        }
+    }
 }
+
+
 
 interface translation  {
     bg: string;
@@ -67,16 +113,16 @@ interface translation  {
     rus: string;
 }
 class SignContent {
-    alergens: string;
+    alergens: Array<number>;
     name: translation;
-    constructor(alergens: string, name: translation) {
+    constructor(alergens: Array<number>, name: translation) {
         this.alergens = alergens;
         this.name = name;
     }
 }
 
 async function createPDF() {
-
+    //pngs = await loadPNGs();
     //creates new PDF Document
     const doc = await PDFLib.PDFDocument.create();
 
@@ -91,8 +137,8 @@ async function createPDF() {
   //  const page = doc.addPage(PDFLib.PageSizes.A4);
 
     const data = [
-        { bg: "%D0%9F%D1%8A%D1%80%D0%B6%D0%B5%D0%BD%D0%B8%20%D0%9A%D0%B0%D1%80%D1%82%D0%BE%D1%84%D0%B8", en: 'Translation 1', numbers: [1, 2, 3, 4, 5, 6, 7, 8] },
-        { bg: "%D0%9F%D1%8A%D1%80%D0%B6%D0%B5%D0%BD%D0%B8%20%D0%9A%D0%B0%D1%80%D1%82%D0%BE%D1%84%D0%B8", en: 'Translation 2', numbers: [1, 2, 3, 4, 5, 6, 7, 8] },
+        { bg: "%D0%9F%D1%8A%D1%80%D0%B6%D0%B5%D0%BD%D0%B8%20%D0%9A%D0%B0%D1%80%D1%82%D0%BE%D1%84%D0%B8", en: 'Translation 1 + some very very very very long text', numbers: [1, 2, 3, 4, 5, 6, 7, 8] },
+        { bg: "%D0%9F%D1%8A%D1%80%D0%B6%D0%B5%D0%BD%D0%B8%20%D0%9A%D0%B0%D1%80%D1%82%D0%BE%D1%84%D0%B8", en: 'Translation 2', numbers: [1,2] },
         { bg: "%D0%9F%D1%8A%D1%80%D0%B6%D0%B5%D0%BD%D0%B8%20%D0%9A%D0%B0%D1%80%D1%82%D0%BE%D1%84%D0%B8", en: 'Translation 3', numbers: [1, 2, 3, 4, 5, 6, 7, 8] },
         { bg: "%D0%9F%D1%8A%D1%80%D0%B6%D0%B5%D0%BD%D0%B8%20%D0%9A%D0%B0%D1%80%D1%82%D0%BE%D1%84%D0%B8", en: 'Translation 4', numbers: [1, 2, 3, 4, 5, 6, 7, 8] },
         { bg: "%D0%9F%D1%8A%D1%80%D0%B6%D0%B5%D0%BD%D0%B8%20%D0%9A%D0%B0%D1%80%D1%82%D0%BE%D1%84%D0%B8", en: 'Translation 5', numbers: [1, 2, 3, 4, 5, 6, 7, 8] },
@@ -125,7 +171,7 @@ async function createPDF() {
 
            const signsInPage = 8;
            let sign = new Sign(width/2-10, height/(signsInPage/2)-10);
-            sign.setContent(new SignContent(entry.numbers.join(', '), { bg: decodeURI(entry.bg), en: entry.en, de: "deutsch", rus: decodeURI("%D0%9A%D0%B0%D1%80%D1%82%D0%BE%D1%88%D0%BA%D0%B8%20%D0%A4%D1%80%D0%B8") }));
+            sign.setContent(new SignContent(entry.numbers, { bg: decodeURI(entry.bg), en: entry.en, de: "deutsch", rus: decodeURI("%D0%9A%D0%B0%D1%80%D1%82%D0%BE%D1%88%D0%BA%D0%B8%20%D0%A4%D1%80%D0%B8") }));
             sign.generate();
 
             //creates JPEG image from canvas 

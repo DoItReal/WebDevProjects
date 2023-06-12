@@ -3,8 +3,8 @@
     "",
     "\\SignsToPDF",
     "\\SignsToPDF\\js",
+    "\\SignsToPDF\\packages",
     "\\SignsToPDF\\ts"
   ],
-  "SelectedNode": "\\SignsToPDF\\js\\script.js",
   "PreviewInSolutionExplorer": false
 }
