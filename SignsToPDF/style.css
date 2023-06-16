@@ -1,3 +1,8 @@
 html {
     font-family: 'Arial', sans-serif;
 }
+
+button {
+    min-height: 25px;
+    min-width: 70px;
+}
