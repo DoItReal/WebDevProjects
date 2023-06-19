@@ -71,27 +71,6 @@ const pngFiles: string[] = [
     'src/png/14.png',
     'src/png/15.png',
 ];
-function loadPNGs() {
-    loadImages(pngFiles).then((images) => {
-        console.log('Images loaded: ', images);
-        pngs = images;
-    }).catch((error) => {
-        console.log('Error loading images: ', error);
-        return undefined;
-    });
-}
-async function loadImage(url: string): Promise < HTMLImageElement > {
-    return new Promise((resolve, reject) => {
-        const image = new Image();
-        image.onload = () => resolve(image);
-        image.onerror = (error) => reject(error);
-        image.src = url;
-    });
-}
-async function loadImages(urls: string[]): Promise < HTMLImageElement[] > {
-    const imagePromises = urls.map((url) => this.loadImage(url));
-    return Promise.all(imagePromises);
-}
 
 
 class Sign {
@@ -123,9 +102,6 @@ class Sign {
     }
     generate() {
         let arr = this.content.alergens;
-
-        //to make it load only the needed images or not at all
-       
             let rows = [this.content.name.bg, this.content.name.en, this.content.name.de, this.content.name.rus];
             this.ctx.save();
 
@@ -135,24 +111,24 @@ class Sign {
             this.ctx.fillStyle = "white";
 
             this.ctx.fillRect(0, 0, this.width, this.height);
-            this.ctx.strokeRect(0, 0, this.width, this.height);
-            this.generateTranslations(rows);
-            this.generateAllergens(arr);
+        this.ctx.strokeRect(0, 0, this.width, this.height);
+        this.generateInfoLabelsText(rows);
+        this.generateAllergens(arr);
             this.ctx.restore();
-            document.body.appendChild(this.canvas);
+        document.body.appendChild(this.canvas);
             return this.canvas;
         
     }
 
     
 
-    private generateTranslations(rows) {
+    private generateInfoLabelsText(rows) {
         for (let i = 0; i < rows.length; i++) {
             let step = this.fontSize * 1.5;
             let x = this.width / 2;
             let y = step * (i + 1) + this.height * 0.35;
             this.ctx.font = this.fontSize + "px sans-serif";
-            this.txtCalibrate(rows[i]);
+            this.txtCalibrateCenter(rows[i]);
             step = this.fontSize * 1.5;
             this.ctx.fillStyle = "black";
             this.ctx.fillText(rows[i], x, y);
@@ -160,30 +136,55 @@ class Sign {
         }
     }
     private generateAllergens(arr: Array<number>) {
+        
         let saveFont = this.fontSize;
+        //calibrate and set this.fontSize
+        this.imgCalibrate(arr);
         this.fontSize *= 2;
-        let dx = this.width / 2;
-        let dy = this.border;
+        let dim = this.imgCenter(arr);
+        let dx = this.fontSize/2 + dim.x;
+      //  let dy = this.border+this.fontSize;
+        let dy = dim.y;
         let dWidth = this.fontSize;
         let dHeight = this.fontSize;
         for (let i = 0; i < arr.length; i++) {
-
             this.ctx.font = this.fontSize + "px sans-serif";
             this.ctx.fillStyle = "blue";
             this.ctx.fillText(String(arr[i]), dx, dy + this.fontSize);
              
-            this.ctx.drawImage(pngs[Number(arr[i])], dx + 10, dy, dWidth, dHeight)
+            this.ctx.drawImage(pngs[Number(arr[i]-1)], dx + this.fontSize/2, dy, dWidth, dHeight)
             dx += this.fontSize * 2;
 
         }
         this.fontSize = saveFont;
     }
-    private txtCalibrate(txt: string) {
+    private imgCalibrate(arr: Array<number>) {
+        let txtSize = this.fontSize;
+        let wholeSize = arr.length * txtSize*4;
+        while (wholeSize > this.width - (20)) {
+            txtSize--;
+            wholeSize = arr.length * txtSize*4;
+        }
+        this.fontSize = txtSize;
+    }
+    private imgCenter(arr: Array<number>) {
+        let txtSize = this.fontSize;
+        let wholeSize = arr.length * txtSize * 4/2;
+        console.log(this.width + ' ' + wholeSize);
+        let dx = txtSize*4/2;
+        if (this.width > wholeSize) dx = (this.width - wholeSize) / 2;
+        else dx = (wholeSize - this.width) / 2;
+        let dy = this.fontSize * 1.5 + this.height * 0.35;
+        dy = (dy - this.border) / 2 - this.fontSize;
+        return { x: dx, y: dy };
+    }
+    private txtCalibrateCenter(txt: string) {
         let textSize = this.fontSize;
         while (this.ctx.measureText(txt).width > this.width - 10) {
             textSize--;
             this.ctx.font = textSize + "px sans-serif";
         }
+        
     }
 }
 
@@ -234,7 +235,6 @@ async function createPDF() {
 
         // Print each entry on the page
         for (const sign of chunk) {
-            console.log(sign);
             var jpgImage = await doc.embedJpg(sign.toDataURL('image/jpeg'));
 
             //used for debugging
