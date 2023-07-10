@@ -1,23 +1,44 @@
 <!DOCTYPE HTML>
 <html lang="en">
 <head>
-    <meta http-equiv="Content-Type" content="text/html"; charset="utf-16" />
+    <meta http-equiv="Content-Type" content="text/html" ; charset="utf-16" />
     <title>Signs</title>
 
-    <script src="https://unpkg.com/pdf-lib"></script>    
+    <script src="https://unpkg.com/pdf-lib"></script>
 
+
+    <script src="js/db.js"></script>
+    <script src="js/pngs.js"></script>
+    <script src="js/signs.js"></script>
+    <script src="js/pdf.js"></script>
     <script src="js/script.js"></script>
-    
+
     <link rel="stylesheet" href="style.css">
 
 </head>
 
 <body>
-    <button id="createSignsButton" onclick="loadSigns();">Create Signs</button>
+    <button id="fetchSignsButton" onclick="fetchDBSigns();">Fetch DB Signs</button>
+    <button id="createSignsListButton" onclick="createOptionList();">Update List</button>
+    <button id="createSignsButton" onclick="loadSelectedSigns();">Get Selected Signs</button>
+    <button id="createNewLabelButton" onclick="createNewLabel();">Create Label</button>
     <button id="createPDFbutton" onclick="createPDF();">Create PDF file</button>
-    <div id="Signs" style="width:100%; height:420px; overflow:auto; border:1px solid black"></div>
-    <iframe id="pdf" style="width: 100%; height: 720px"></iframe>
+    <div id="SignsBox">
+        <div id="Signs"></div>
+        <div id="SignPreview"></div>
+        <div id="saveLabel">
+            <button id="closeSignsBox">X</button>
+            <p>Allergens: <input id="LabelAllergens" /></p>
+            <p>BG: <input id="LabelBG" /></p>
+            <p>EN: <input id="LabelEN" /></p>
+            <p>DE: <input id="LabelDE" /></p>
+            <p>RUS: <input id="LabelRUS" /></p>
+            <button id="saveButton" onclick="createLabel();">Save Label</button>
 
-
+        </div>
+        <iframe id="pdf"</iframe>
+    </div>
+    
+    
 </body>
 </html>

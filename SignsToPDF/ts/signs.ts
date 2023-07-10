@@ -1,13 +1,14 @@
 class Sign {
-    id;
-    width;
-    height;
-    border = 5;
-    content;
-    canvas;
-    fontSize = 18;
-    ctx;
-    constructor(w, h) {
+    id: string;
+    width: number;
+    height: number;
+    border: number = 5;
+    content: SignContent;
+    canvas: HTMLCanvasElement;
+    fontSize: number = 18;
+    ctx: CanvasRenderingContext2D;
+ 
+    constructor(w: number, h: number) {
         this.id = undefined;
         this.width = w;
         this.height = h;
@@ -18,26 +19,28 @@ class Sign {
         this.ctx = this.canvas.getContext('2d');
         this.ctx.textAlign = "center";
     }
-    setContent(content) {
+    setContent(content: SignContent) {
         this.content = content;
     }
-    setBorder(num) {
+    setBorder(num: number) {
         this.border = num;
     }
-    setId(id) {
+    setId(id: string) {
         this.id = id;
     }
-    getId() {
+    getId():string {
         return this.id;
     }
     generate() {
         let arr = this.content.alergens;
         let rows = [this.content.name.bg, this.content.name.en, this.content.name.de, this.content.name.rus];
         this.ctx.save();
+
         //border
         this.ctx.strokeStyle = "black";
         this.ctx.lineWidth = this.border;
         this.ctx.fillStyle = "white";
+
         this.ctx.fillRect(0, 0, this.width, this.height);
         this.ctx.strokeRect(0, 0, this.width, this.height);
         this.generateInfoLabelsText(rows);
@@ -45,9 +48,14 @@ class Sign {
         this.ctx.restore();
         // var image: HTMLImageElement = document.createElement('HTMLImageElement');
         //image.src = this.canvas.toDataURL('image/jpeg');
+
         return this.canvas;
+
     }
-    generateInfoLabelsText(rows) {
+
+
+
+    private generateInfoLabelsText(rows) {
         for (let i = 0; i < rows.length; i++) {
             let step = this.fontSize * 1.5;
             let x = this.width / 2;
@@ -57,9 +65,11 @@ class Sign {
             step = this.fontSize * 1.5;
             this.ctx.fillStyle = "black";
             this.ctx.fillText(rows[i], x, y);
+
         }
     }
-    generateAllergens(arr) {
+    private generateAllergens(arr: Array<number>) {
+
         let saveFont = this.fontSize;
         //calibrate and set this.fontSize
         this.imgCalibrate(arr);
@@ -74,12 +84,13 @@ class Sign {
             this.ctx.font = this.fontSize + "px sans-serif";
             this.ctx.fillStyle = "blue";
             this.ctx.fillText(String(arr[i]), dx, dy + this.fontSize);
-            this.ctx.drawImage(pngs[Number(arr[i] - 1)], dx + this.fontSize / 2, dy, dWidth, dHeight);
+            this.ctx.drawImage(pngs[Number(arr[i] - 1)], dx + this.fontSize / 2, dy, dWidth, dHeight)
             dx += this.fontSize * 2;
+
         }
         this.fontSize = saveFont;
     }
-    imgCalibrate(arr) {
+    private imgCalibrate(arr: Array<number>) {
         let txtSize = this.fontSize;
         let wholeSize = arr.length * txtSize * 4;
         while (wholeSize > this.width - (20)) {
@@ -88,34 +99,41 @@ class Sign {
         }
         this.fontSize = txtSize;
     }
-    imgCenter(arr) {
+    private imgCenter(arr: Array<number>) {
         let txtSize = this.fontSize;
         let wholeSize = arr.length * txtSize * 4 / 2;
         let dx = txtSize * 4 / 2;
-        if (this.width > wholeSize)
-            dx = (this.width - wholeSize) / 2;
-        else
-            dx = (wholeSize - this.width) / 2;
+        if (this.width > wholeSize) dx = (this.width - wholeSize) / 2;
+        else dx = (wholeSize - this.width) / 2;
         let dy = this.fontSize * 1.5 + this.height * 0.35;
         dy = (dy - this.border) / 2 - this.fontSize;
         return { x: dx, y: dy };
     }
-    txtCalibrateCenter(txt) {
+    private txtCalibrateCenter(txt: string) {
         let textSize = this.fontSize;
         while (this.ctx.measureText(txt).width > this.width - 10) {
             textSize--;
             this.ctx.font = textSize + "px sans-serif";
         }
+
     }
 }
+
+
+
+interface translation {
+    bg: string;
+    en: string;
+    de: string;
+    rus: string;
+}
 class SignContent {
-    alergens;
-    name;
+    alergens: Array<number>;
+    name: translation;
     //   pngFiles: string[];
     // pngs: Array<HTMLImageElement> = [];
-    constructor(alergens, name) {
+    constructor(alergens: Array<number>, name: translation) {
         this.alergens = alergens;
         this.name = name;
     }
 }
-//# sourceMappingURL=signs.js.map
