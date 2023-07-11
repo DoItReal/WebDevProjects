@@ -48,15 +48,22 @@ class Sign {
         return this.canvas;
     }
     generateInfoLabelsText(rows) {
+        let color = ['black', 'red'];
+        let counter = 0;
         for (let i = 0; i < rows.length; i++) {
             let step = this.fontSize * 1.5;
             let x = this.width / 2;
-            let y = step * (i + 1) + this.height * 0.35;
-            this.ctx.font = this.fontSize + "px sans-serif";
+            let y = step * (i + 1) + this.height * 0.3;
+            this.ctx.font = 'bold ' + this.fontSize + "px sans-serif";
+            console.log(this.ctx.font);
             this.txtCalibrateCenter(rows[i]);
             step = this.fontSize * 1.5;
-            this.ctx.fillStyle = "black";
+            this.ctx.fillStyle = color[counter];
             this.ctx.fillText(rows[i], x, y);
+            if (counter >= 1)
+                counter = 0;
+            else
+                counter++;
         }
     }
     generateAllergens(arr) {
@@ -73,7 +80,7 @@ class Sign {
         for (let i = 0; i < arr.length; i++) {
             this.ctx.font = this.fontSize + "px sans-serif";
             this.ctx.fillStyle = "blue";
-            this.ctx.fillText(String(arr[i]), dx, dy + this.fontSize);
+            this.ctx.fillText(String(arr[i]), dx, dy + this.fontSize * 0.9);
             this.ctx.drawImage(pngs[Number(arr[i] - 1)], dx + this.fontSize / 2, dy, dWidth, dHeight);
             dx += this.fontSize * 2;
         }
@@ -96,7 +103,7 @@ class Sign {
             dx = (this.width - wholeSize) / 2;
         else
             dx = (wholeSize - this.width) / 2;
-        let dy = this.fontSize * 1.5 + this.height * 0.35;
+        let dy = this.fontSize * 1.5 + this.height * 0.25;
         dy = (dy - this.border) / 2 - this.fontSize;
         return { x: dx, y: dy };
     }
