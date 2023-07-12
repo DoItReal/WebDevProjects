@@ -55,7 +55,6 @@ class Sign {
             let x = this.width / 2;
             let y = step * (i + 1) + this.height * 0.3;
             this.ctx.font = 'bold ' + this.fontSize + "px sans-serif";
-            console.log(this.ctx.font);
             this.txtCalibrateCenter(rows[i]);
             step = this.fontSize * 1.5;
             this.ctx.fillStyle = color[counter];
@@ -67,6 +66,8 @@ class Sign {
         }
     }
     generateAllergens(arr) {
+        if (arr.length == 1 && arr[0] == 0)
+            return;
         let saveFont = this.fontSize;
         //calibrate and set this.fontSize
         this.imgCalibrate(arr);
