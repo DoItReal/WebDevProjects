@@ -58,6 +58,11 @@ button {
         width: 20%;
         margin-left:1px;
     }
+        #SignPreview canvas {
+            margin-top: 1%;
+            margin-bottom:auto;
+            width:95%;
+        }
 #saveLabel {
     background-color: white;
     position: absolute;

@@ -129,8 +129,13 @@ function updateList() {
                     deleteButton.className = 'deleteButton';
                     deleteButton.innerHTML = 'Delete';
                     deleteButton.onclick = function () {
-                        deleteLabelDB(label._id);
-                        setTimeout(updateList, 500);
+                        if (confirm('Delete: ' + label.bg) == true) {
+                            deleteLabelDB(label._id);
+                            setTimeout(updateList, 500);
+                        }
+                        else {
+                            console.log('Canceled');
+                        }
                     };
                     return deleteButton;
                 }
