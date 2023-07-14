@@ -74,25 +74,28 @@ function createNewLabel() {
     }
 
 
-function updateList() {
+function updateList(searchBool:boolean = false) {
     let color = ['lightgray', 'white'];
     let i = 0;
     fetchDBSigns();
+    const search = searchBool;
     setTimeout(update, 1000);
     function update() {
-
         let div = document.querySelector('#Signs') as HTMLDivElement;
         div.innerHTML = ''; //clear the div
         const chunks = [];
-
-        let searchInput = document.querySelector('#searchInput') as HTMLInputElement;
-        if (searchInput.value.length == 0) {      
+        var searchInput = '';
+        if (search) {
+            let input = document.querySelector('#searchInput') as HTMLInputElement;
+            searchInput = input.value;
+        }
+        if (searchInput.length == 0) {      
             for (let i = 0; i < data.length; i++) {
                 chunks.push(data[i]);
             }
         } else {
             for (let i = 0; i < data.length; i++) {
-                if (data[i].bg.toLowerCase().search(searchInput.value.toLowerCase()) !== -1) chunks.push(data[i]);
+                if (data[i].bg.toLowerCase().search(searchInput.toLowerCase()) !== -1) chunks.push(data[i]);
             }
         }
         // Generate pages for each chunk of data entries
