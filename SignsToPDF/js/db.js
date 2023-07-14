@@ -1,12 +1,13 @@
+var serverAddress = "https://labels-service-392708.lm.r.appspot.com/";
 function fetchDBSigns() {
     //get data from db
-    fetch('http://localhost:8080/signs').then(response => response.json()).then(Getdata => { data = Getdata; });
+    fetch(serverAddress + 'signs/').then(response => response.json()).then(Getdata => { data = Getdata; });
     let fetchButton = document.querySelector('#fetchSignsButton');
     fetchButton.setAttribute('style', "background-color:lightgreen"); // to do turning green only when connected to DB
     fetchButton.disabled = true;
 }
 async function getSignById(id) {
-    fetch('http://localhost:8080/signs/' + id).then(response => response.json()).then(sign => { return sign; });
+    fetch(serverAddress + 'signs/' + id).then(response => response.json()).then(sign => { return sign; });
 }
 function createNewLabelDB(label) {
     let protocol = "http";
@@ -14,8 +15,8 @@ function createNewLabelDB(label) {
     let port = "8080";
     let address = "signs";
     let xhr = new XMLHttpRequest();
-    xhr.open("POST", protocol + "://" + server + ":" + port + "/" + address);
-    // xhr.open("POST", "http://localhost:8080/signs"); 
+    //xhr.open("POST", protocol + "://" + server + ":" + port + "/" + address);
+    xhr.open("POST", serverAddress + 'signs');
     xhr.setRequestHeader("Accept", "application/json");
     xhr.setRequestHeader("Content-Type", "application/json");
     xhr.onreadystatechange = function () {
@@ -32,8 +33,8 @@ function saveLabelDB(label, id) {
     let port = "8080";
     let address = "signs";
     let xhr = new XMLHttpRequest();
-    xhr.open("PATCH", protocol + "://" + server + ":" + port + "/" + address + "/" + id);
-    // xhr.open("POST", "http://localhost:8080/signs"); 
+    // xhr.open("PATCH", protocol + "://" + server + ":" + port + "/" + address + "/" + id);
+    xhr.open("PATCH", serverAddress + 'signs/' + id);
     xhr.setRequestHeader("Accept", "application/json");
     xhr.setRequestHeader("Content-Type", "application/json");
     xhr.onreadystatechange = function () {
@@ -50,8 +51,8 @@ function deleteLabelDB(id) {
     let port = "8080";
     let address = "signs";
     let xhr = new XMLHttpRequest();
-    xhr.open("DELETE", protocol + "://" + server + ":" + port + "/" + address + "/" + id);
-    // xhr.open("POST", "http://localhost:8080/signs"); 
+    // xhr.open("DELETE", protocol + "://" + server + ":" + port + "/" + address + "/" + id);
+    xhr.open("DELETE", serverAddress + 'signs/' + id);
     xhr.setRequestHeader("Accept", "application/json");
     xhr.setRequestHeader("Content-Type", "application/json");
     xhr.onreadystatechange = function () {
