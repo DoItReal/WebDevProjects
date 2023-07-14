@@ -211,7 +211,7 @@ async function loadSelectedSigns() {
 
     for (let i = 0; i < data.length; i += 1) {
         let checkbox = document.getElementById(data[i]._id) as HTMLInputElement;
-        if (checkbox.checked) {
+        if (checkbox && checkbox.checked) {
             selected.push(data[i]);
         }
     }
