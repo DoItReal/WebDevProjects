@@ -3,6 +3,8 @@ html {
 }
 
 button {
+    border-radius:10px;
+    border:1px solid black;
     min-height: 20px;
     min-width: 20px;
 }
@@ -22,12 +24,24 @@ button {
     border:1px dotted green;
     height:600px;
 }
-
+    #SignsContainer{
+        display:flex;
+        flex-direction:column;
+        border:1px solid black;
+        width:40%;
+    }
+    #searchContainer{
+        display:flex;
+        width:100%;
+    }
+    #searchInput{
+        width:100%;
+    }
     #Signs {
         display:flex;
         flex-direction:column;
         border: 1px solid black;
-        width: 40%;
+
         overflow: auto;
         white-space: nowrap;
         margin-left: 1px;
@@ -97,3 +111,12 @@ button {
     #pdf {
         width:40%;
     }
+#loadSignsButton {
+    margin-left: auto;
+    float: right;
+}
+    #createPDFbutton{
+        margin-left:auto;
+        float:right;
+    }
+ 

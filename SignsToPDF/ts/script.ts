@@ -80,18 +80,23 @@ function updateList() {
     fetchDBSigns();
     setTimeout(update, 1000);
     function update() {
+
         let div = document.querySelector('#Signs') as HTMLDivElement;
         div.innerHTML = ''; //clear the div
         const chunks = [];
-        for (let i = 0; i < data.length; i += 8) {
-            chunks.push(data.slice(i, i + 8));
+
+        let searchInput = document.querySelector('#searchInput') as HTMLInputElement;
+        if (searchInput.value.length == 0) {      
+            for (let i = 0; i < data.length; i++) {
+                chunks.push(data[i]);
+            }
+        } else {
+            for (let i = 0; i < data.length; i++) {
+                if (data[i].bg.toLowerCase().search(searchInput.value.toLowerCase()) !== -1) chunks.push(data[i]);
+            }
         }
         // Generate pages for each chunk of data entries
-        for (const chunk of chunks) {
-
-
-            for (let label of chunk) {
-
+        for (const label of chunks) {
                 //add Title Label
                 function title(): HTMLLabelElement {
                     let lbl: HTMLLabelElement = document.createElement('label');
@@ -186,11 +191,10 @@ function updateList() {
                 span.appendChild(document.createElement('br'));
 
                 div.appendChild(span);
-            }
         }
     }
-
 }
+
 
 async function createOptionList() {
    

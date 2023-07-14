@@ -20,11 +20,19 @@
 <body>
     <button id="fetchSignsButton" onclick="fetchDBSigns();">Fetch DB Signs</button>
     <button id="createSignsListButton" onclick="createOptionList();">Update List</button>
-    <button id="createSignsButton" onclick="loadSelectedSigns();">Get Selected Signs</button>
-    <button id="createNewLabelButton" onclick="createNewLabel();">Create Label</button>
+    <button id="createNewLabelButton" onclick="createNewLabel();">Create New Label</button>
     <button id="createPDFbutton" onclick="createPDF();">Create PDF file</button>
+    <button id="loadSignsButton" onclick="loadSelectedSigns();">Load Selected Signs</button>
+
     <div id="SignsBox">
-        <div id="Signs"></div>
+        <div id="SignsContainer">
+            <div id="searchContainer">
+                <input id="searchInput" />
+                <button id="searchButton">Search</button>
+
+            </div>
+            <div id="Signs"></div>
+        </div>
         <div id="SignPreview"></div>
         <div id="saveLabel">
             <button id="closeSignsBox">X</button>
@@ -38,7 +46,7 @@
         </div>
         <iframe id="pdf"</iframe>
     </div>
-    
-    
+
+
 </body>
 </html>
