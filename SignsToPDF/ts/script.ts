@@ -2,7 +2,7 @@
 const width = PDFLib.PageSizes.A4[0];
 const height = PDFLib.PageSizes.A4[1];
 const signsInPage = 8; // TO DO
-
+var password = '';
 var pngs = [];
 
 var signs: Array<HTMLCanvasElement> = [];
@@ -12,7 +12,13 @@ var data = [];
 
 window.onload = function init() {
     loadPNG();
-
+    let input = document.querySelector('#searchInput');
+    input.addEventListener('keypress', function (event){
+  
+        //  event.preventDefault();
+        document.querySelector('#searchButton').click();
+        
+    });
 }
 
 function createLabel() {
@@ -77,10 +83,10 @@ function createNewLabel() {
 function updateList(searchBool:boolean = false) {
     let color = ['lightgray', 'white'];
     let i = 0;
-    fetchDBSigns();
     const search = searchBool;
-    setTimeout(update, 1000);
+    update();
     function update() {
+
         let div = document.querySelector('#Signs') as HTMLDivElement;
         div.innerHTML = ''; //clear the div
         const chunks = [];
@@ -199,11 +205,6 @@ function updateList(searchBool:boolean = false) {
 }
 
 
-async function createOptionList() {
-   
-    updateList();
-
-}
 
 async function loadSelectedSigns() {
     const selected = [];
@@ -223,16 +224,5 @@ async function loadSelectedSigns() {
             sign.setContent(new SignContent(entry.allergens, { bg: decodeURI(entry.bg), en: entry.en, de: entry.de, rus: entry.rus }));
             sign.setId(entry._id);
             signs.push(sign.generate());
-            /*
-            //used for debugging and visualising
-            let div = document.querySelector('#Signs');
-           // div.appendChild(sign.canvas);
-
-            let input = document.createElement('input');
-            input.type = 'checkbox';
-            input.ariaSetSize = '20px';
-            input.id = "entry._id";
-            div.appendChild(input);
-            */      
     }
 }
