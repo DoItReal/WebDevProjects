@@ -44,6 +44,12 @@ nav {
         width:100%;
         height:6%;
     }
+#fetchSignsButton {
+    width: 6%;
+    background-color: lightcoral;
+    border-radius: 0px;
+    margin:1px;
+}
     #searchInput{
         width:100%;
     }
@@ -119,10 +125,7 @@ nav {
     #saveLabel button {
         width:100%;
     }
-    #fetchSignsButton {
-        background-color:lightcoral;
-        border-radius:10px;
-    }
+  
     #saveLabel input {
         min-width:300px;
     }

@@ -5,6 +5,7 @@
     <title>Signs</title>
 
     <script src="https://unpkg.com/pdf-lib"></script>
+    <script src="https://unpkg.com/jquery"></script>
 
 
     <script src="js/db.js"></script>
@@ -12,17 +13,53 @@
     <script src="js/signs.js"></script>
     <script src="js/pdf.js"></script>
     <script src="js/script.js"></script>
+    <script src="js/nav.js"></script>
 
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/nav.css">
 
 </head>
 
 <body>
+    <nav class="navbar navbar-expand-custom navbar-mainbg">
+        <a class="navbar-brand navbar-logo" href="#">Navbar</a>
+        <button class="navbar-toggler" type="button" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="fas fa-bars text-white"></i>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav ml-auto">
+                <div class="hori-selector"><div class="left"></div><div class="right"></div></div>
+                <li class="nav-item">
+                    <a class="nav-link" href="javascript:createNewLabel();"><i class="fas fa-tachometer-alt"></i>Create new label</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="javascript:loadSelectedSigns();"><i class="far fa-address-book"></i>Load selected labels</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="javascript:void(0);"><i class="far fa-clone"></i>Components</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="javascript:void(0);"><i class="far fa-calendar-alt"></i>Calendar</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="javascript:void(0);"><i class="far fa-chart-bar"></i>Charts</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="javascript:createPDF();"><i class="far fa-copy"></i>PDF</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
     <nav>
-    <button id="fetchSignsButton" onclick="fetchDBSigns();">
-        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" enable-background="new 0 0 128 128" id="Layer_1" version="1.1" viewBox="0 0 128 128" xml:space="preserve">
-        <g>
-        <path d="M18.233,81.666l-0.016,0.003c0.006,0.012,0.01,0.022,0.016,0.036c0.008,0.101,0.026,0.195,0.04,0.293
+       
+    </nav>
+    <div id="SignsBox">
+        <div id="SignsContainer">
+            <div id="searchContainer">
+                <button id="fetchSignsButton" onclick="fetchDBSigns();">
+                    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" enable-background="new 0 0 128 128" id="Layer_1" version="1.1" viewBox="0 0 128 128" xml:space="preserve">
+                    <g>
+                    <path d="M18.233,81.666l-0.016,0.003c0.006,0.012,0.01,0.022,0.016,0.036c0.008,0.101,0.026,0.195,0.04,0.293
                 c0.002,0.017,0,0.029,0.002,0.045l3.929,25.514c0.476,3.098,3.374,5.221,6.47,4.743c3.098-0.476,5.222-3.372,4.746-6.471
                 l-0.611-3.965c0.712,0.587,1.43,1.169,2.175,1.714c10.106,7.42,23.111,10.987,36.486,8.926c13.372-2.056,24.702-9.37,32.109-19.487
                 c3.662-4.988,6.353-10.695,7.922-16.793l-15.479-4.262c-1.044,4.191-2.882,8.109-5.405,11.552
@@ -30,7 +67,7 @@
                 l4.488,0.435c2.872,0.276,5.445-2.025,5.748-5.144c0.3-3.12-1.783-5.873-4.655-6.15l-23.659-2.291
                 c-2.568-0.248-4.884,1.572-5.564,4.188c-0.05,0.185-0.076,0.374-0.109,0.565c-0.021,0.132-0.061,0.255-0.074,0.39
                 c-0.004,0.041,0.002,0.077-0.001,0.114c-0.013,0.174-0.004,0.351-0.002,0.528C18.235,81.406,18.224,81.539,18.233,81.666z" fill="#232323" />
-        <path d="M109.767,46.334l0.015-0.002c-0.006-0.013-0.01-0.024-0.016-0.037c-0.008-0.1-0.027-0.195-0.04-0.293
+                    <path d="M109.767,46.334l0.015-0.002c-0.006-0.013-0.01-0.024-0.016-0.037c-0.008-0.1-0.027-0.195-0.04-0.293
                 c-0.002-0.015,0-0.029-0.002-0.044l-3.928-25.513c-0.477-3.097-3.373-5.221-6.472-4.744c-3.097,0.477-5.221,3.373-4.744,6.47
                 l0.612,3.967c-0.715-0.587-1.433-1.169-2.177-1.715c-10.106-7.419-23.112-10.989-36.484-8.926
                 c-13.374,2.055-24.703,9.371-32.109,19.487c-3.664,4.989-6.355,10.696-7.922,16.794l15.479,4.26
@@ -40,16 +77,9 @@
                 c0.006-0.038-0.003-0.075,0-0.112c0.014-0.175,0.007-0.353,0.003-0.53C109.764,46.595,109.774,46.462,109.767,46.334z" fill="#232323" />
             </g>
         </svg>
-    </button>
-    <button id="createNewLabelButton" onclick="createNewLabel();">Create New Label</button>
-    <button id="createPDFbutton" onclick="createPDF();">Create PDF file</button>
-    <button id="loadSignsButton" onclick="loadSelectedSigns();">Load Selected Signs</button>
-        </nav>
-    <div id="SignsBox">
-        <div id="SignsContainer">
-            <div id="searchContainer">
+                </button>
                 <input id="searchInput" />
-              
+
                 <button id="searchButton" onclick="updateList(true);" aria-label="Search">
                     <svg aria-hidden='true' viewBox='0 0 24 24'>
                         <path d='M9.5,3A6.5,6.5 0 0,1 16,9.5C16,11.11 15.41,12.59 14.44,13.73L14.71,14H15.5L20.5,19L19,20.5L14,15.5V14.71L13.73,14.44C12.59,15.41 11.11,16 9.5,16A6.5,6.5 0 0,1 3,9.5A6.5,6.5 0 0,1 9.5,3M9.5,5C7,5 5,7 5,9.5C5,12 7,14 9.5,14C12,14 14,12 14,9.5C14,7 12,5 9.5,5Z' />

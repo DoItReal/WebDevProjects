@@ -1,11 +1,21 @@
 var serverAddress = "https://labels-service-392708.lm.r.appspot.com/";
 function fetchDBSigns() {
     //get data from db
-    fetch(serverAddress + 'signs/').then(response => response.json()).then(Getdata => { data = Getdata }).then(()=>{ updateList() });
+    var animID = requestAnimationFrame(anim);
+
+    fetch(serverAddress + 'signs/').then(response => response.json()).then(Getdata => { data = Getdata }).then(() => { updateList() }).then(() => { cancelAnimationFrame(animID) });
+
     let fetchButton = document.querySelector('#fetchSignsButton') as HTMLButtonElement;
     fetchButton.setAttribute('style', "background-color:lightgreen"); // to do turning green only when connected to DB
     fetchButton.disabled = true;
-    
+    var svg = document.querySelector('#fetchSignsButton svg');
+    var i = 0;
+    function anim() {
+        svg.setAttribute('transform', 'rotate(' + i + ')');            
+            i += 15;
+            if (i > 360) i = 0;
+        animID = requestAnimationFrame(anim);
+    }
 }
 async function getSignById(id:string) {
     fetch(serverAddress + 'signs/' +id).then(response => response.json()).then(sign => { return sign });
