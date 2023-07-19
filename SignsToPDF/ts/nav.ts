@@ -1,3 +1,4 @@
+
 // ---------Responsive-navbar-active-animation-----------
 function test() {
 	var tabsNewAnim = $('#navbarSupportedContent');
@@ -56,6 +57,11 @@ jQuery(document).ready(function ($) {
 	target.parent().addClass('active');
 });
 
+function addActive(query: string) {
+	$('#SignsBox > .active').removeClass('active');
+	let thisDiv = $(query);
+	thisDiv.addClass('active');
+}
 
 
 

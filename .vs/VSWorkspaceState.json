@@ -1,11 +1,13 @@
 {
   "ExpandedNodes": [
     "",
+    "\\Missle Game",
+    "\\Missle Game\\js",
     "\\SignsToPDF",
+    "\\SignsToPDF\\css",
     "\\SignsToPDF\\js",
     "\\SignsToPDF\\packages",
     "\\SignsToPDF\\ts"
   ],
-  "SelectedNode": "\\SignsToPDF\\ts\\db.ts",
   "PreviewInSolutionExplorer": false
 }

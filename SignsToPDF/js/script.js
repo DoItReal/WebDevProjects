@@ -11,7 +11,8 @@ window.onload = function init() {
     let input = document.querySelector('#searchInput');
     input.addEventListener('keypress', function (event) {
         //  event.preventDefault();
-        document.querySelector('#searchButton').click();
+        let searchButton = document.querySelector('#searchButton');
+        searchButton.click();
     });
 };
 function createLabel() {
@@ -24,6 +25,11 @@ function createLabel() {
     arr = arr.sort((a, b) => a - b);
     let label = '{ "allergens":[' + arr + '],"bg":"' + inputBG.value + '", "en":"' + inputEN.value + '", "de":"' + inputDE.value + '", "rus":"' + inputRUS.value + '"}';
     createNewLabelDB(label);
+    inputAllergens.value = '';
+    inputBG.value = '';
+    inputEN.value = '';
+    inputDE.value = '';
+    inputRUS.value = '';
 }
 function saveLabel(id) {
     let inputAllergens = document.querySelector('#LabelAllergens');
@@ -37,29 +43,9 @@ function saveLabel(id) {
     saveLabelDB(label, id);
 }
 function createNewLabel() {
-    let signsDiv = document.querySelector('#Signs');
-    signsDiv.style.visibility = 'hidden';
-    //Add Edit Button
-    let saveDiv = document.querySelector('#saveLabel');
-    let inputAllergens = document.querySelector('#LabelAllergens');
-    let inputBG = document.querySelector('#LabelBG');
-    let inputEN = document.querySelector('#LabelEN');
-    let inputDE = document.querySelector('#LabelDE');
-    let inputRUS = document.querySelector('#LabelRUS');
-    inputAllergens.value = '';
-    inputBG.value = '';
-    inputEN.value = '';
-    inputDE.value = '';
-    inputRUS.value = '';
-    saveDiv.style.visibility = 'visible';
     let button = document.querySelector('#saveButton');
     button.innerHTML = 'Create New Label';
-    button.setAttribute('onclick', 'createLabel();document.querySelector("#saveLabel").style.visibility = "hidden";document.querySelector("#Signs").style.visibility="visible"');
-    let closeButton = document.querySelector('#closeSignsBox');
-    closeButton.onclick = () => {
-        signsDiv.style.visibility = 'visible';
-        saveDiv.style.visibility = 'hidden';
-    };
+    button.setAttribute('onclick', 'createLabel();');
 }
 function updateList(searchBool = false) {
     let color = ['lightgray', 'white'];
@@ -107,8 +93,8 @@ function updateList(searchBool = false) {
                 editButton.className = 'editButton';
                 editButton.innerHTML = 'Edit';
                 editButton.onclick = function () {
-                    div.style.visibility = 'hidden';
-                    let saveDiv = document.querySelector('#saveLabel');
+                    $('#SignsContainer').removeClass('active');
+                    let saveDiv = $('#saveLabel');
                     let inputAllergens = document.querySelector('#LabelAllergens');
                     let inputBG = document.querySelector('#LabelBG');
                     let inputEN = document.querySelector('#LabelEN');
@@ -119,10 +105,17 @@ function updateList(searchBool = false) {
                     inputEN.value = label.en;
                     inputDE.value = label.de;
                     inputRUS.value = label.rus;
-                    saveDiv.style.visibility = 'visible';
+                    $('#closeSignsBox').addClass('active');
+                    saveDiv.addClass('active');
+                    let closeButton = document.querySelector('#closeSignsBox');
+                    closeButton.onclick = () => {
+                        saveDiv.removeClass('active');
+                        $('#closeSignsBox').removeClass('active');
+                        $('#SignsContainer').addClass('active');
+                    };
                     let button = document.querySelector('#saveButton');
                     button.innerHTML = 'Save Label';
-                    button.setAttribute('onclick', 'saveLabel("' + label._id + '"); document.querySelector("#saveLabel").style.visibility = "hidden";document.querySelector("#Signs").style.visibility = "visible";updateList();');
+                    button.setAttribute('onclick', 'saveLabel("' + label._id + '");$("#SignsContainer").addClass("active"); $("#saveLabel").removeClass("active");updateList();');
                 };
                 return editButton;
             }

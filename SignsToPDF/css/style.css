@@ -26,6 +26,10 @@ nav {
     max-height: 25px;
     right: 0;
     top: 0;
+    visibility: hidden;
+}
+#closeSignsBox.active{
+    visibility:visible;
 }
 #SignsBox {
     display:flex;
@@ -46,7 +50,7 @@ nav {
     }
 #fetchSignsButton {
     width: 6%;
-    background-color: lightcoral;
+    background-color: cornflowerblue;
     border-radius: 0px;
     margin:1px;
 }
@@ -115,6 +119,8 @@ nav {
     margin-left: 1px;
     padding: 2px;
     visibility: hidden;
+    opacity:0;
+    transition:0.3s;
 }
 .deleteButton, .editButton, .previewButton {
     min-width: 60px;

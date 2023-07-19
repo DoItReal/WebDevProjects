@@ -1,5 +1,4 @@
 @import url('https://fonts.googleapis.com/css?family=Roboto');
-
 body {
     font-family: 'Roboto', sans-serif;
 }
@@ -72,11 +71,11 @@ i {
         font-weight: 900;
         transition: 0.5s;
     }
-
+  
     #navbarSupportedContent .active > a:not(:only-child):after {
         transform: rotate(90deg);
     }
-
+    
 .hori-selector {
     display: inline-block;
     position: absolute;
@@ -192,3 +191,19 @@ i {
             left: -25px;
         }
 }
+#SignsContainer {
+    visibility: hidden;
+    opacity:0;
+    transition:0.3s;
+}
+
+    #SignsContainer.active {
+        visibility: visible;
+        opacity:1;
+        transition:0.3s;
+    }
+    #saveLabel.active {
+        visibility:visible;
+        opacity:1;
+        transition:0.3s;
+    }

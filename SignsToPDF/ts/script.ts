@@ -16,7 +16,8 @@ window.onload = function init() {
     input.addEventListener('keypress', function (event){
   
         //  event.preventDefault();
-        document.querySelector('#searchButton').click();
+        let searchButton = document.querySelector('#searchButton') as HTMLButtonElement;
+        searchButton.click();
         
     });
 }
@@ -32,6 +33,11 @@ function createLabel() {
     arr = arr.sort((a,b) => a-b);
     let label = '{ "allergens":[' + arr + '],"bg":"' + inputBG.value + '", "en":"' + inputEN.value + '", "de":"' + inputDE.value + '", "rus":"' + inputRUS.value + '"}';
     createNewLabelDB(label);
+    inputAllergens.value = '';
+    inputBG.value = '';
+    inputEN.value = '';
+    inputDE.value = '';
+    inputRUS.value = '';
 }
 function saveLabel(id:string) {
     let inputAllergens: HTMLInputElement = document.querySelector('#LabelAllergens');
@@ -47,36 +53,11 @@ function saveLabel(id:string) {
 }
 
 function createNewLabel() {
-    let signsDiv = document.querySelector('#Signs') as HTMLDivElement;
-    signsDiv.style.visibility = 'hidden';
-    //Add Edit Button
-
-        let saveDiv = document.querySelector('#saveLabel') as HTMLDivElement;
-
-    let inputAllergens: HTMLInputElement = document.querySelector('#LabelAllergens');
-    let inputBG: HTMLInputElement = document.querySelector('#LabelBG');
-    let inputEN: HTMLInputElement = document.querySelector('#LabelEN');
-    let inputDE: HTMLInputElement = document.querySelector('#LabelDE');
-    let inputRUS: HTMLInputElement = document.querySelector('#LabelRUS');
-
-    inputAllergens.value = '';
-    inputBG.value = '';
-    inputEN.value = '';
-    inputDE.value = '';
-    inputRUS.value = '';
-
-    saveDiv.style.visibility = 'visible';
-
-    
 
         let button = document.querySelector('#saveButton') as HTMLButtonElement;
     button.innerHTML = 'Create New Label';
-    button.setAttribute('onclick', 'createLabel();document.querySelector("#saveLabel").style.visibility = "hidden";document.querySelector("#Signs").style.visibility="visible"');
-    let closeButton = document.querySelector('#closeSignsBox') as HTMLButtonElement;
-    closeButton.onclick = () => {
-        signsDiv.style.visibility = 'visible';
-        saveDiv.style.visibility = 'hidden';
-    }
+    button.setAttribute('onclick', 'createLabel();');
+
     }
 
 
@@ -131,8 +112,9 @@ function updateList(searchBool:boolean = false) {
                     editButton.className = 'editButton';
                     editButton.innerHTML = 'Edit';
                     editButton.onclick = function () {
-                        div.style.visibility = 'hidden';
-                        let saveDiv = document.querySelector('#saveLabel') as HTMLDivElement;
+                        $('#SignsContainer').removeClass('active');
+                        let saveDiv = $('#saveLabel');
+                        
                         let inputAllergens: HTMLInputElement = document.querySelector('#LabelAllergens');
                         let inputBG: HTMLInputElement = document.querySelector('#LabelBG');
                         let inputEN: HTMLInputElement = document.querySelector('#LabelEN');
@@ -144,12 +126,18 @@ function updateList(searchBool:boolean = false) {
                         inputEN.value = label.en;
                         inputDE.value = label.de;
                         inputRUS.value = label.rus;
-                        saveDiv.style.visibility = 'visible';
-
+                        $('#closeSignsBox').addClass('active');
+                        saveDiv.addClass('active');
+                        let closeButton = document.querySelector('#closeSignsBox') as HTMLButtonElement;
+                        closeButton.onclick = () => {
+                            saveDiv.removeClass('active');
+                            $('#closeSignsBox').removeClass('active');
+                            $('#SignsContainer').addClass('active');
+                        };
                         let button = document.querySelector('#saveButton') as HTMLButtonElement;
                         button.innerHTML = 'Save Label';
 
-                        button.setAttribute('onclick', 'saveLabel("' + label._id + '"); document.querySelector("#saveLabel").style.visibility = "hidden";document.querySelector("#Signs").style.visibility = "visible";updateList();');
+                        button.setAttribute('onclick', 'saveLabel("' + label._id + '");$("#SignsContainer").addClass("active"); $("#saveLabel").removeClass("active");updateList();');
                     }
                     return editButton;
                 }

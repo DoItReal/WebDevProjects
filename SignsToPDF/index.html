@@ -22,39 +22,50 @@
 
 <body>
     <nav class="navbar navbar-expand-custom navbar-mainbg">
-        <a class="navbar-brand navbar-logo" href="#">Navbar</a>
+        <a class="navbar-brand navbar-logo" href="#">Labels</a>
         <button class="navbar-toggler" type="button" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <i class="fas fa-bars text-white"></i>
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav ml-auto">
                 <div class="hori-selector"><div class="left"></div><div class="right"></div></div>
-                <li class="nav-item">
-                    <a class="nav-link" href="javascript:createNewLabel();"><i class="fas fa-tachometer-alt"></i>Create new label</a>
-                </li>
                 <li class="nav-item active">
-                    <a class="nav-link" href="javascript:loadSelectedSigns();"><i class="far fa-address-book"></i>Load selected labels</a>
+                    <a class="nav-link" href="javascript:addActive('#SignsContainer');"><i class="fas fa-overview"></i>Overview</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="javascript:void(0);"><i class="far fa-clone"></i>Components</a>
+                    <a class="nav-link" href="javascript:createNewLabel();addActive('#saveLabel');"><i class="far fa-create-label"></i>Create new label</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="javascript:void(0);"><i class="far fa-calendar-alt"></i>Calendar</a>
+                    <a class="nav-link" href="javascript:loadSelectedSigns();"><i class="far fa-load-labels"></i>Load selected labels</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="javascript:void(0);"><i class="far fa-chart-bar"></i>Charts</a>
+                    <a class="nav-link" href="javascript:addActive('#Calendar');"><i class="far fa-calendar-alt"></i>Calendar</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="javascript:createPDF();"><i class="far fa-copy"></i>PDF</a>
+                    <a class="nav-link" href="javascript:addActive('#Charts');"><i class="far fa-chart-bar"></i>Charts</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="javascript:createPDF();"><i class="far fa-pdf"></i>PDF</a>
                 </li>
             </ul>
         </div>
     </nav>
     <nav>
-       
+
     </nav>
     <div id="SignsBox">
-        <div id="SignsContainer">
+        <div id="saveLabel">
+            <button id="closeSignsBox">X</button>
+            <p>Allergens: <input id="LabelAllergens" /></p>
+            <p>BG: <input id="LabelBG" /></p>
+            <p>EN: <input id="LabelEN" /></p>
+            <p>DE: <input id="LabelDE" /></p>
+            <p>RUS: <input id="LabelRUS" /></p>
+            <button id="saveButton" onclick="createLabel();">Save Label</button>
+
+        </div>
+        <div id="SignsContainer" class="active">
+
             <div id="searchContainer">
                 <button id="fetchSignsButton" onclick="fetchDBSigns();">
                     <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" enable-background="new 0 0 128 128" id="Layer_1" version="1.1" viewBox="0 0 128 128" xml:space="preserve">
@@ -90,16 +101,7 @@
             <div id="Signs"></div>
         </div>
         <div id="SignPreview"></div>
-        <div id="saveLabel">
-            <button id="closeSignsBox">X</button>
-            <p>Allergens: <input id="LabelAllergens" /></p>
-            <p>BG: <input id="LabelBG" /></p>
-            <p>EN: <input id="LabelEN" /></p>
-            <p>DE: <input id="LabelDE" /></p>
-            <p>RUS: <input id="LabelRUS" /></p>
-            <button id="saveButton" onclick="createLabel();">Save Label</button>
 
-        </div>
         <iframe id="pdf"</iframe>
     </div>
 

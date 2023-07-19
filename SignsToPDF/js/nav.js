@@ -50,6 +50,11 @@ jQuery(document).ready(function ($) {
     // Add active class to target link
     target.parent().addClass('active');
 });
+function addActive(query) {
+    $('#SignsBox > .active').removeClass('active');
+    let thisDiv = $(query);
+    thisDiv.addClass('active');
+}
 // Add active class on another page linked
 // ==========================================
 // $(window).on('load',function () {
