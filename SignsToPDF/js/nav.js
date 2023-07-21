@@ -51,7 +51,7 @@ jQuery(document).ready(function ($) {
     target.parent().addClass('active');
 });
 function addActive(query) {
-    $('#SignsBox > .active').removeClass('active');
+    $('content div > .active').removeClass('active');
     let thisDiv = $(query);
     thisDiv.addClass('active');
 }

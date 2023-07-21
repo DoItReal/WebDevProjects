@@ -1,15 +1,10 @@
-@import url('https://fonts.googleapis.com/css?family=Roboto');
-body {
-    font-family: 'Roboto', sans-serif;
-}
 
-* {
-    margin: 0;
-    padding: 0;
-}
 
 i {
     margin-right: 10px;
+}
+nav {
+
 }
 /*----------bootstrap-navbar-css------------*/
 .navbar-logo {
@@ -191,19 +186,3 @@ i {
             left: -25px;
         }
 }
-#SignsContainer {
-    visibility: hidden;
-    opacity:0;
-    transition:0.3s;
-}
-
-    #SignsContainer.active {
-        visibility: visible;
-        opacity:1;
-        transition:0.3s;
-    }
-    #saveLabel.active {
-        visibility:visible;
-        opacity:1;
-        transition:0.3s;
-    }

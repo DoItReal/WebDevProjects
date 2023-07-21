@@ -38,6 +38,7 @@ $(window).on('resize', function () {
 $(".navbar-toggler").click(function () {
 	$(".navbar-collapse").slideToggle(300);
 	setTimeout(function () { test(); });
+	
 });
 
 
@@ -58,7 +59,8 @@ jQuery(document).ready(function ($) {
 });
 
 function addActive(query: string) {
-	$('#SignsBox > .active').removeClass('active');
+	$('content div > .active').removeClass('active');
+	
 	let thisDiv = $(query);
 	thisDiv.addClass('active');
 }

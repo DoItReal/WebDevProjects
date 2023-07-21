@@ -1,71 +1,74 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto');
+
 html {
-    font-family: 'Arial', sans-serif;
+    font-family: 'Roboto', sans-serif;
 }
 
+body {
+    
+}
+
+* {
+    margin: 0;
+    padding: 0;
+}
 button {
     border-radius:10px;
     border:1px solid black;
     min-height: 20px;
     min-width: 20px;
 }
-nav > button {
-    min-height:50px;
-    min-width:50px;
-}
-nav {
-    margin-top:0;
-    padding:0;
 
+content {
+    border: 1px solid red;
+    display: flex;
+    flex-direction: row;
 }
-#closeSignsBox {
-    background-color: red;
-    border: 1px solid black;
-    display: inline-block;
-    margin-left:auto;
-    max-width: 25px;
-    max-height: 25px;
-    right: 0;
-    top: 0;
-    visibility: hidden;
+
+    #leftSide {
+    margin: 0;
+    height: 100%;
+    width: 40%;
 }
-#closeSignsBox.active{
-    visibility:visible;
+
+        #SignsContainer {
+    display: none;
+    margin: 0px;
+    padding: 1px;
+    width: 100%;
+    flex-direction: column;
+    border: 1px dotted green;
+    height: 600px;
+    opacity: 0;
+    transition: 0.3s;
 }
-#SignsBox {
-    display:flex;
-    margin:5px;
-    border:1px dotted green;
-    height:600px;
-}
-    #SignsContainer{
-        display:flex;
-        flex-direction:column;
-        border:1px solid black;
-        width:40%;
+        #SignsContainer.active {
+        display: flex;
+        opacity: 1;
     }
-    #searchContainer{
+            #searchContainer{
         display:flex;
         width:100%;
         height:6%;
     }
-#fetchSignsButton {
+                #fetchSignsButton {
     width: 6%;
     background-color: cornflowerblue;
     border-radius: 0px;
     margin:1px;
 }
-    #searchInput{
+                #searchInput{
         width:100%;
     }
-#searchButton {
+                #searchButton {
     border-radius: 0;
     min-width: 6%;
     background-color: #1c5b72;
 }
-    #searchButton svg {
+                #searchButton svg {
         fill:#fff;
     }
-    #Signs {
+            #Signs {
         display:flex;
         flex-direction:column;
         border: 1px solid black;
@@ -74,67 +77,75 @@ nav {
         white-space: nowrap;
         margin-left: 1px;
     }
-        #Signs span {
+                #Signs span {
             display: flex;
             align-items:center;
-            margin: 1px;
-            padding: 1px;
+            vertical-align:central;
+            margin: 0px;
+            padding: 0px;
             flex-direction: row;
-            border-bottom: 1px dotted gray;
         }
-        .editButton {
-            text-align:center;
+                    #Signs span input{
+                        margin:1px;
+                        margin-right:2px;
+                    }
+                    .deleteButton, .editButton, .previewButton {
+    min-width: 60px;
+    float:right;
+    text-align:center;
+    vertical-align:central;
+}
+                    .editButton {
             margin-left:auto;
             margin-right:0;
-            float:right;
         }
-        .previewButton {
-            text-align:center;
-            float:right;
+                    .previewButton {
         }
-    #SignPreview {
-        display:flex;
-        align-items:center;
-        justify-content:center;
-        border: 1px solid gray;
-        width: 20%;
-        margin-left:1px;
-    }
-        #SignPreview canvas {
-            margin-top: 1%;
-            margin-bottom:auto;
-            width:95%;
-        }
-#saveLabel {
+                    .deleteButton{
+                }
+
+        #saveLabel {
+    display: none;
     background-color: white;
-    position: absolute;
-    top: 80px;
-    left: 100px;
-    min-width: 20%;
-    display: flex;
+    width: 100%;
+    height: 100%;
     flex-direction: column;
     align-items: flex-end;
     float: right;
     border: 1px solid black;
-    margin-left: 1px;
     padding: 2px;
+    opacity: 0;
+    transition: 0.3s;
+}
+        #saveLabel.active {
+        display: flex;
+        opacity: 1;
+        transition: 0.3s;
+    }
+            #saveLabel p {
+                float: right;
+            }
+            #saveLabel button {
+                width: 100%;
+            }
+            #saveLabel input {
+                min-width: 300px;
+            }
+            #closeSignsBox {
+    background-color: red;
+    border: 1px solid black;
+    display: inline-block;
+    margin-left: auto;
+    max-width: 25px;
+    max-height: 25px;
+    right: 0;
+    top: 0;
     visibility: hidden;
-    opacity:0;
-    transition:0.3s;
 }
-.deleteButton, .editButton, .previewButton {
-    min-width: 60px;
+            #closeSignsBox.active {
+    visibility: visible;
 }
-    #saveLabel p {
-        float:right;
-    }
-    #saveLabel button {
-        width:100%;
-    }
-  
-    #saveLabel input {
-        min-width:300px;
-    }
+
     #pdf {
         width:40%;
     }
@@ -146,4 +157,17 @@ nav {
         margin-left:auto;
         float:right;
     }
- 
+#SignPreview {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid gray;
+    width: 20%;
+    margin-left: 1px;
+}
+
+    #SignPreview canvas {
+        margin-top: 1%;
+        margin-bottom: auto;
+        width: 95%;
+    }

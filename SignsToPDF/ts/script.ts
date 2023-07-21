@@ -11,6 +11,15 @@ var data = [];
 
 
 window.onload = function init() {
+    $("#SignsContainer #filterContainer input:checkbox").change(function () {
+
+        if ($(this).is(":checked")) {
+            $("#SignsContainer #Signs input:checkbox").prop("checked", true);
+        } else {
+            $("#SignsContainer #Signs input:checkbox").prop("checked", false);
+        }
+    });
+
     loadPNG();
     let input = document.querySelector('#searchInput');
     input.addEventListener('keypress', function (event){
@@ -60,134 +69,144 @@ function createNewLabel() {
 
     }
 
-
+var activeLabels = [];
 function updateList(searchBool:boolean = false) {
     let color = ['lightgray', 'white'];
     let i = 0;
     const search = searchBool;
     update();
     function update() {
+        let div = $('#Signs');
+        div.text(''); //clear the div
 
-        let div = document.querySelector('#Signs') as HTMLDivElement;
-        div.innerHTML = ''; //clear the div
-        const chunks = [];
         var searchInput = '';
         if (search) {
-            let input = document.querySelector('#searchInput') as HTMLInputElement;
-            searchInput = input.value;
+            searchInput = String($('#searchInput').val());
         }
-        if (searchInput.length == 0) {      
+        $("#searchInput").keypress(function (е) {
+            activeLabels = [];
+            let value = String(е.target.value);
             for (let i = 0; i < data.length; i++) {
-                chunks.push(data[i]);
+                if (data[i].bg.toLowerCase().search(value.toLowerCase()) !== -1) activeLabels.push(data[i]);
+            }
+
+        }); 
+        // TO DO add functionality for backspace
+        if (searchInput.length == 0) {  
+            activeLabels = [];
+            for (let i = 0; i < data.length; i++) {
+                activeLabels.push(data[i]);
             }
         } else {
-            for (let i = 0; i < data.length; i++) {
-                if (data[i].bg.toLowerCase().search(searchInput.toLowerCase()) !== -1) chunks.push(data[i]);
-            }
+           
         }
         // Generate pages for each chunk of data entries
-        for (const label of chunks) {
+        for (const label of activeLabels) {
                 //add Title Label
-                function title(): HTMLLabelElement {
-                    let lbl: HTMLLabelElement = document.createElement('label');
-                    lbl.innerHTML = label.bg;
+                function title() {
+                    let lbl = $('<label></label>', {
+                        text: label.bg
+                    });
 
                     return lbl;
                 }
 
 
                 //add Select checkbox
-                function selectCheckbox(): HTMLInputElement {
-                    let input = document.createElement('input');
-                    input.type = 'checkbox';
-                    input.id = label._id;
+                function selectCheckbox(){
+                    let input = $("<input/>", {
+                        type: 'checkbox',
+                        id: label._id
+                    });
 
                     return input;
                 }
 
 
                 //TO DO  * Add Edit Button
-                function editButton(): HTMLButtonElement {
-                    let editButton = document.createElement('button');
-                    editButton.className = 'editButton';
-                    editButton.innerHTML = 'Edit';
-                    editButton.onclick = function () {
-                        $('#SignsContainer').removeClass('active');
-                        let saveDiv = $('#saveLabel');
-                        
-                        let inputAllergens: HTMLInputElement = document.querySelector('#LabelAllergens');
-                        let inputBG: HTMLInputElement = document.querySelector('#LabelBG');
-                        let inputEN: HTMLInputElement = document.querySelector('#LabelEN');
-                        let inputDE: HTMLInputElement = document.querySelector('#LabelDE');
-                        let inputRUS: HTMLInputElement = document.querySelector('#LabelRUS');
+            function editButton(){
+                let editButton = $("<button/>", {
+                    text: 'Edit',
+                    addClass: "editButton",
+                    click: function () {
+                        {
+                            $('#SignsContainer').removeClass('active');
 
-                        inputAllergens.value = label.allergens;
-                        inputBG.value = label.bg;
-                        inputEN.value = label.en;
-                        inputDE.value = label.de;
-                        inputRUS.value = label.rus;
-                        $('#closeSignsBox').addClass('active');
-                        saveDiv.addClass('active');
-                        let closeButton = document.querySelector('#closeSignsBox') as HTMLButtonElement;
-                        closeButton.onclick = () => {
-                            saveDiv.removeClass('active');
-                            $('#closeSignsBox').removeClass('active');
-                            $('#SignsContainer').addClass('active');
-                        };
-                        let button = document.querySelector('#saveButton') as HTMLButtonElement;
-                        button.innerHTML = 'Save Label';
+                            $("#LabelAllergens").val(label.allergens);
+                            $("#LabelBG").val(label.bg);
+                            $("#LabelEN").val(label.en);
+                            $("#LabenDE").val(label.de);
+                            $("#LabelRUS").val(label.rus);
+                            $('#closeSignsBox').addClass('active');
+                            $('#saveLabel').addClass('active');
+                            let closeButton = $('#closeSignsBox');
+                            closeButton.on('click', () => {
+                                $('saveLabel').removeClass('active');
+                                $('#closeSignsBox').removeClass('active');
+                                $('#SignsContainer').addClass('active');
+                            });
+                            $('#saveButton').text('Save Label');
 
-                        button.setAttribute('onclick', 'saveLabel("' + label._id + '");$("#SignsContainer").addClass("active"); $("#saveLabel").removeClass("active");updateList();');
+                            $('#saveButton').on('click', () => {
+                                saveLabel(label._id);
+                                $("#SignsContainer").addClass("active");
+                                $("#saveLabel").removeClass("active");
+                                updateList();
+                            });
+                        }
                     }
-                    return editButton;
+                });
+                   
+                return editButton;
                 }
 
-
-
                 //TO DO  * Add Preview Button
-                function PreviewButton(): HTMLButtonElement {
-                    let previewDiv = document.querySelector('#SignPreview');
-                    let previewButton = document.createElement('button');
-                    previewButton.className = 'previewButton';
-                    previewButton.onclick = () => {
-                        let sign = new Sign(width / 2 - 10, height / (signsInPage / 2) - 10);
-                        sign.setContent(new SignContent(label.allergens, { bg: decodeURI(label.bg), en: label.en, de: label.de, rus: label.rus }));
-                        sign.setId(label._id);
-                        previewDiv.innerHTML = '';
-                        previewDiv.appendChild(sign.generate());
-                    };
-                    previewButton.innerHTML = "Preview";
+                function PreviewButton() {
+                    let previewDiv = $('#SignPreview');
+                    let previewButton = $('<button />', {
+                        addClass: 'previewButton',
+                        text: 'Preview',
+                        click: function () {
+                            let sign = new Sign(width / 2 - 10, height / (signsInPage / 2) - 10);
+                            sign.setContent(new SignContent(label.allergens, { bg: decodeURI(label.bg), en: label.en, de: label.de, rus: label.rus }));
+                            sign.setId(label._id);
+                            $(previewDiv).text('');
+                            $(previewDiv).append(sign.generate());
+                        }
+                    });
 
                     return previewButton;
                 }
 
                 //add Delete Button
-                function deleteButton(): HTMLButtonElement {
-                    let deleteButton = document.createElement('button');
-                    deleteButton.className = 'deleteButton';
-                    deleteButton.innerHTML = 'Delete';
-                    deleteButton.onclick = function () {
-                        if (confirm('Delete: ' + label.bg) == true) {
-                            deleteLabelDB(label._id);
-                            setTimeout(updateList, 500);
-                        } else {
-                            console.log('Canceled');
+                function deleteButton() {
+                    let deleteButton = $('<button/>', {
+                        addClass: 'deleteButton',
+                        text: 'Delete',
+                        click: function () {
+                            if (confirm('Delete: ' + label.bg) == true) {
+                                deleteLabelDB(label._id);
+                                setTimeout(updateList, 500);
+                            } else {
+                                console.log('Canceled');
+                            }
                         }
-                    }
+                    });
                     return deleteButton;
-                }
-                let span = document.createElement('span');
-                span.style.backgroundColor = color[i];
-                if (i >= 1) i = 0; else i++;
+                }            
+            
+            let span = $('<span></span>');
+            $(span).css('background-color', color[i]);
+            if (i >= 1) i = 0; else i++;
 
-                span.appendChild(selectCheckbox());
-                span.appendChild(title());
-                span.appendChild(editButton());
-                span.appendChild(PreviewButton());
-                span.appendChild(deleteButton());
-                span.appendChild(document.createElement('br'));
+            $(span).append(selectCheckbox());
+            $(span).append(title())
+            $(span).append(editButton());
+            $(span).append(PreviewButton());
+            $(span).append(deleteButton());
+            $(span).append("</br>");
 
-                div.appendChild(span);
+            $(div).append($(span));
         }
     }
 }
