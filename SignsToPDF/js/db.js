@@ -42,6 +42,7 @@ function createNewLabelDB(label) {
             labelJSON._id = id;
             data.push(labelJSON);
             console.log(labelJSON);
+            search();
             updateList();
         }
     };
@@ -64,6 +65,7 @@ function saveLabelDB(label, id) {
             let index = findIndexByProperty(data, '_id', id);
             if (index != -1)
                 data[index] = JSON.parse(xhr.responseText);
+            search();
             updateList();
         }
     };
@@ -88,6 +90,7 @@ function deleteLabelDB(id) {
             let index = findIndexByProperty(data, '_id', id);
             if (index != -1)
                 data.splice(index, 1);
+            search();
             updateList();
         }
     };

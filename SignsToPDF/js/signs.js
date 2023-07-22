@@ -4,6 +4,7 @@ class Sign {
     height;
     border = 5;
     content;
+    category;
     canvas;
     fontSize = 18;
     ctx;
@@ -17,9 +18,18 @@ class Sign {
         this.canvas.height = h;
         this.ctx = this.canvas.getContext('2d');
         this.ctx.textAlign = "center";
+        this.category = [];
     }
     setContent(content) {
         this.content = content;
+    }
+    addCategory(cat) {
+        if (!this.category.includes(cat))
+            this.category.push(cat);
+    }
+    removeCategory(cat) {
+        if (this.category.includes(cat))
+            this.category.splice(this.category.indexOf(cat), 1);
     }
     setBorder(num) {
         this.border = num;

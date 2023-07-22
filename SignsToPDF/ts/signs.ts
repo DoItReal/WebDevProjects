@@ -4,9 +4,11 @@ class Sign {
     height: number;
     border: number = 5;
     content: SignContent;
+    category: Array<String>;
     canvas: HTMLCanvasElement;
     fontSize: number = 18;
     ctx: CanvasRenderingContext2D;
+    
  
     constructor(w: number, h: number) {
         this.id = undefined;
@@ -18,9 +20,16 @@ class Sign {
         this.canvas.height = h;
         this.ctx = this.canvas.getContext('2d');
         this.ctx.textAlign = "center";
+        this.category = [];
     }
     setContent(content: SignContent) {
         this.content = content;
+    }
+    addCategory(cat: string) {
+        if (!this.category.includes(cat)) this.category.push(cat);
+    }
+    removeCategory(cat: string) {
+        if (this.category.includes(cat)) this.category.splice(this.category.indexOf(cat), 1);
     }
     setBorder(num: number) {
         this.border = num;

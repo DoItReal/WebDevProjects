@@ -16,10 +16,11 @@
     <script src="js/pdf.js"></script>
     <script src="js/script.js"></script>
     <script src="js/nav.js"></script>
+    <script src="js/categories.js"></script>
 
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/nav.css">
-
+    <link rel="stylesheet" href="css/categories.css">
 </head>
 
 <body>
@@ -80,7 +81,7 @@
                     </button>
                     <input id="searchInput" />
 
-                    <button id="searchButton" onclick="updateList(true);" aria-label="Search">
+                    <button id="searchButton"  aria-label="Search" disabled>
                         <svg aria-hidden='true' viewBox='0 0 24 24'>
                             <path d='M9.5,3A6.5,6.5 0 0,1 16,9.5C16,11.11 15.41,12.59 14.44,13.73L14.71,14H15.5L20.5,19L19,20.5L14,15.5V14.71L13.73,14.44C12.59,15.41 11.11,16 9.5,16A6.5,6.5 0 0,1 3,9.5A6.5,6.5 0 0,1 9.5,3M9.5,5C7,5 5,7 5,9.5C5,12 7,14 9.5,14C12,14 14,12 14,9.5C14,7 12,5 9.5,5Z' />
                         </svg>
@@ -94,15 +95,38 @@
             </div>
             <div id="saveLabel">
                 <button id="closeSignsBox">X</button>
+
+              
+
+
+     
+
+
+
+
+
+
+
+
+                <p>
+                   <div id="categoriesDiv">Categories:<select class="custom-select" placeholder="categories">
+                        <option value="salads">Salads</option>
+                        <option value="soups">Soups</option>
+                        <option value="breakfast">Breakfast</option>
+                        <option value="vegan">Vegan</option>
+                    </select></div>
+                </p>
+                <div class="labelsContent">
                 <p>Allergens: <input id="LabelAllergens" /></p>
                 <p>BG: <input id="LabelBG" /></p>
                 <p>EN: <input id="LabelEN" /></p>
                 <p>DE: <input id="LabelDE" /></p>
                 <p>RUS: <input id="LabelRUS" /></p>
+                </div>
                 <button id="saveButton" onclick="createLabel();">Save Label</button>
 
             </div>
-        </div>
+            </div>
         
         <div id="SignPreview"></div>
 

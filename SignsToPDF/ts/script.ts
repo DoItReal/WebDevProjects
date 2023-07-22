@@ -4,13 +4,14 @@ const height = PDFLib.PageSizes.A4[1];
 const signsInPage = 8; // TO DO
 var password = '';
 var pngs = [];
-
+var activeLabels = [];
 var signs: Array<HTMLCanvasElement> = [];
 var data = []; 
 
 
 
 window.onload = function init() {
+
     $("#SignsContainer #filterContainer input:checkbox").change(function () {
 
         if ($(this).is(":checked")) {
@@ -19,7 +20,7 @@ window.onload = function init() {
             $("#SignsContainer #Signs input:checkbox").prop("checked", false);
         }
     });
-
+    initEventsSearch();
     loadPNG();
     let input = document.querySelector('#searchInput');
     input.addEventListener('keypress', function (event){
@@ -38,9 +39,11 @@ function createLabel() {
     let inputEN: HTMLInputElement = document.querySelector('#LabelEN');
     let inputDE: HTMLInputElement = document.querySelector('#LabelDE');
     let inputRUS: HTMLInputElement = document.querySelector('#LabelRUS');
+    let inputCat: HTMLInputElement = document.querySelector('#inputCat');
     let arr = inputAllergens.value.split(',').map(Number);
+    let categories = inputCat.value.split(',').map(String);
     arr = arr.sort((a,b) => a-b);
-    let label = '{ "allergens":[' + arr + '],"bg":"' + inputBG.value + '", "en":"' + inputEN.value + '", "de":"' + inputDE.value + '", "rus":"' + inputRUS.value + '"}';
+    let label = '{ "allergens":[' + arr + '],"bg":"' + inputBG.value + '", "en":"' + inputEN.value + '", "de":"' + inputDE.value + '", "rus":"' + inputRUS.value + '",'+ '"category":'+ categories+'}';
     createNewLabelDB(label);
     inputAllergens.value = '';
     inputBG.value = '';
@@ -62,43 +65,43 @@ function saveLabel(id:string) {
 }
 
 function createNewLabel() {
-
-        let button = document.querySelector('#saveButton') as HTMLButtonElement;
-    button.innerHTML = 'Create New Label';
-    button.setAttribute('onclick', 'createLabel();');
-
+    $("#saveButton").text("Create New Label");
+    $("#saveLabel > p > input").val('');
+    $("#saveButton").attr('onclick','createLabel();');
+    
     }
 
-var activeLabels = [];
-function updateList(searchBool:boolean = false) {
+function search() {
+    activeLabels = [];
+    let value = String($('#searchInput').val());
+    for (let i = 0; i < data.length; i++) {
+        if (data[i].bg.toLowerCase().search(value.toLowerCase()) !== -1) activeLabels.push(data[i]);
+    }
+    if (activeLabels.length == 0) updateList(false);
+    else updateList();
+
+}
+function initEventsSearch() {
+    $("#searchInput").keyup(function (e) {
+        search();
+    });
+        }
+function updateList(found:boolean = true) {
     let color = ['lightgray', 'white'];
     let i = 0;
-    const search = searchBool;
-    update();
-    function update() {
+    update(found);
+    function update(found:boolean) {
         let div = $('#Signs');
         div.text(''); //clear the div
-
-        var searchInput = '';
-        if (search) {
-            searchInput = String($('#searchInput').val());
-        }
-        $("#searchInput").keypress(function (е) {
-            activeLabels = [];
-            let value = String(е.target.value);
-            for (let i = 0; i < data.length; i++) {
-                if (data[i].bg.toLowerCase().search(value.toLowerCase()) !== -1) activeLabels.push(data[i]);
-            }
-
-        }); 
+       
         // TO DO add functionality for backspace
-        if (searchInput.length == 0) {  
+        if (activeLabels.length == 0 && found) {  
             activeLabels = [];
             for (let i = 0; i < data.length; i++) {
                 activeLabels.push(data[i]);
             }
         } else {
-           
+
         }
         // Generate pages for each chunk of data entries
         for (const label of activeLabels) {
@@ -135,13 +138,13 @@ function updateList(searchBool:boolean = false) {
                             $("#LabelAllergens").val(label.allergens);
                             $("#LabelBG").val(label.bg);
                             $("#LabelEN").val(label.en);
-                            $("#LabenDE").val(label.de);
+                            $("#LabelDE").val(label.de);
                             $("#LabelRUS").val(label.rus);
                             $('#closeSignsBox').addClass('active');
                             $('#saveLabel').addClass('active');
                             let closeButton = $('#closeSignsBox');
                             closeButton.on('click', () => {
-                                $('saveLabel').removeClass('active');
+                                $('#saveLabel').removeClass('active');
                                 $('#closeSignsBox').removeClass('active');
                                 $('#SignsContainer').addClass('active');
                             });
