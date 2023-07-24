@@ -43,8 +43,8 @@
             transition: all 0.3s linear;
         }
 
-            .select_box_area p em.angle-up {
-                transform: rotate(180deg);
+            .select_box_area p svg.angle-up {
+                transform: rotateX(180deg);
             }
 
         .select_box_area p .option {
@@ -103,4 +103,10 @@
 
 .custom-select {
     display: none;
+}
+.down-angle {
+   height:2rem;
+   float:right;
+   opacity:0.9;
+   transition:0.3s;
 }

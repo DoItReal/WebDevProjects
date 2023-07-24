@@ -3,10 +3,9 @@
     "",
     "\\SignsToPDF",
     "\\SignsToPDF\\css",
-    "\\SignsToPDF\\js",
     "\\SignsToPDF\\packages",
     "\\SignsToPDF\\ts"
   ],
-  "SelectedNode": "\\SignsToPDF\\js\\categories.js",
+  "SelectedNode": "\\SignsToPDF\\ts\\db.ts",
   "PreviewInSolutionExplorer": false
 }

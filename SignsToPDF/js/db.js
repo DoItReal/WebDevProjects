@@ -1,4 +1,5 @@
 var serverAddress = "https://labels-service-392708.lm.r.appspot.com/";
+//var serverAddress = "http://localhost:8080/";
 function fetchDBSigns() {
     //get data from db
     var svg = document.querySelector('#fetchSignsButton svg');
@@ -41,7 +42,6 @@ function createNewLabelDB(label) {
             let labelJSON = JSON.parse(label);
             labelJSON._id = id;
             data.push(labelJSON);
-            console.log(labelJSON);
             search();
             updateList();
         }
@@ -69,6 +69,7 @@ function saveLabelDB(label, id) {
             updateList();
         }
     };
+    console.log(label);
     xhr.send(label);
 }
 function deleteLabelDB(id) {

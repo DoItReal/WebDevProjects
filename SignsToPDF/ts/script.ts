@@ -39,17 +39,26 @@ function createLabel() {
     let inputEN: HTMLInputElement = document.querySelector('#LabelEN');
     let inputDE: HTMLInputElement = document.querySelector('#LabelDE');
     let inputRUS: HTMLInputElement = document.querySelector('#LabelRUS');
-    let inputCat: HTMLInputElement = document.querySelector('#inputCat');
+ //   let inputCat: Array<string> = selectedCategories;
     let arr = inputAllergens.value.split(',').map(Number);
-    let categories = inputCat.value.split(',').map(String);
-    arr = arr.sort((a,b) => a-b);
-    let label = '{ "allergens":[' + arr + '],"bg":"' + inputBG.value + '", "en":"' + inputEN.value + '", "de":"' + inputDE.value + '", "rus":"' + inputRUS.value + '",'+ '"category":'+ categories+'}';
-    createNewLabelDB(label);
+ //   let categories = inputCat.value.split(',').map(String);
+    arr = arr.sort((a, b) => a - b);
+    let label = {
+        'allergens': arr,
+        'bg': inputBG.value,
+        'en': inputEN.value,
+        'de': inputDE.value,
+        'rus': inputRUS.value,
+        'category': selectedCategories
+    };
+ //   let label = '{ "allergens":[' + arr + '],"bg":"' + inputBG.value + '", "en":"' + inputEN.value + '", "de":"' + inputDE.value + '", "rus":"' + inputRUS.value + '",' + '"category":[' + selectedCategories + ']}';
+    createNewLabelDB(JSON.stringify(label));
     inputAllergens.value = '';
     inputBG.value = '';
     inputEN.value = '';
     inputDE.value = '';
     inputRUS.value = '';
+    
 }
 function saveLabel(id:string) {
     let inputAllergens: HTMLInputElement = document.querySelector('#LabelAllergens');
@@ -59,15 +68,26 @@ function saveLabel(id:string) {
     let inputRUS: HTMLInputElement = document.querySelector('#LabelRUS');
     let arr = inputAllergens.value.split(',').map(Number);
     arr = arr.sort((a,b) => a-b);
+    let label = {
+        "allergens": arr,
+        "bg": inputBG.value,
+        "en": inputEN.value,
+        "de": inputDE.value,
+        "rus": inputRUS.value,
+        "category": selectedCategories
+    }
 
-    let label = '{"allergens":[' + arr + '],"bg":"' + inputBG.value + '", "en":"' + inputEN.value + '", "de":"' + inputDE.value + '", "rus":"' + inputRUS.value + '"}';
-    saveLabelDB(label, id);
+   // let label = '{"allergens":[' + arr + '],"bg":"' + inputBG.value + '", "en":"' + inputEN.value + '", "de":"' + inputDE.value + '", "rus":"' + inputRUS.value + '"}';
+    saveLabelDB(JSON.stringify(label), id);
 }
 
 function createNewLabel() {
     $("#saveButton").text("Create New Label");
     $("#saveLabel > p > input").val('');
-    $("#saveButton").attr('onclick','createLabel();');
+    $('#saveButton').unbind();
+
+    $("#saveButton").on('click', () => {createLabel();
+});
     
     }
 
@@ -135,6 +155,13 @@ function updateList(found:boolean = true) {
                         {
                             $('#SignsContainer').removeClass('active');
 
+                          for (let i = 0; i < label.category.length; i++) {
+                                $('.filter_list input[type="checkbox"]').each(function () {
+                                    var inputVal = $(this).parent("label").text();
+                                    if (inputVal == label.category[i]) $(this).click();
+                                });
+                            }
+                            $('.select').next('.filter_list').fadeOut();
                             $("#LabelAllergens").val(label.allergens);
                             $("#LabelBG").val(label.bg);
                             $("#LabelEN").val(label.en);
@@ -147,16 +174,23 @@ function updateList(found:boolean = true) {
                                 $('#saveLabel').removeClass('active');
                                 $('#closeSignsBox').removeClass('active');
                                 $('#SignsContainer').addClass('active');
+                                $('.filter_list input[type="checkbox"]').each(function () {
+                                    if ($(this).is(":checked")) $(this).click();
+                                });
+                                selectedCategories = [];
                             });
                             $('#saveButton').text('Save Label');
 
-                            $('#saveButton').on('click', () => {
+                            $('#saveButton').unbind();
+                            $('#saveButton').on('click', ()=> {
                                 saveLabel(label._id);
                                 $("#SignsContainer").addClass("active");
                                 $("#saveLabel").removeClass("active");
                                 updateList();
                             });
+                            
                         }
+                    
                     }
                 });
                    

@@ -31,12 +31,20 @@ function createLabel() {
     let inputEN = document.querySelector('#LabelEN');
     let inputDE = document.querySelector('#LabelDE');
     let inputRUS = document.querySelector('#LabelRUS');
-    let inputCat = document.querySelector('#inputCat');
+    //   let inputCat: Array<string> = selectedCategories;
     let arr = inputAllergens.value.split(',').map(Number);
-    let categories = inputCat.value.split(',').map(String);
+    //   let categories = inputCat.value.split(',').map(String);
     arr = arr.sort((a, b) => a - b);
-    let label = '{ "allergens":[' + arr + '],"bg":"' + inputBG.value + '", "en":"' + inputEN.value + '", "de":"' + inputDE.value + '", "rus":"' + inputRUS.value + '",' + '"category":' + categories + '}';
-    createNewLabelDB(label);
+    let label = {
+        'allergens': arr,
+        'bg': inputBG.value,
+        'en': inputEN.value,
+        'de': inputDE.value,
+        'rus': inputRUS.value,
+        'category': selectedCategories
+    };
+    //   let label = '{ "allergens":[' + arr + '],"bg":"' + inputBG.value + '", "en":"' + inputEN.value + '", "de":"' + inputDE.value + '", "rus":"' + inputRUS.value + '",' + '"category":[' + selectedCategories + ']}';
+    createNewLabelDB(JSON.stringify(label));
     inputAllergens.value = '';
     inputBG.value = '';
     inputEN.value = '';
@@ -51,13 +59,24 @@ function saveLabel(id) {
     let inputRUS = document.querySelector('#LabelRUS');
     let arr = inputAllergens.value.split(',').map(Number);
     arr = arr.sort((a, b) => a - b);
-    let label = '{"allergens":[' + arr + '],"bg":"' + inputBG.value + '", "en":"' + inputEN.value + '", "de":"' + inputDE.value + '", "rus":"' + inputRUS.value + '"}';
-    saveLabelDB(label, id);
+    let label = {
+        "allergens": arr,
+        "bg": inputBG.value,
+        "en": inputEN.value,
+        "de": inputDE.value,
+        "rus": inputRUS.value,
+        "category": selectedCategories
+    };
+    // let label = '{"allergens":[' + arr + '],"bg":"' + inputBG.value + '", "en":"' + inputEN.value + '", "de":"' + inputDE.value + '", "rus":"' + inputRUS.value + '"}';
+    saveLabelDB(JSON.stringify(label), id);
 }
 function createNewLabel() {
     $("#saveButton").text("Create New Label");
     $("#saveLabel > p > input").val('');
-    $("#saveButton").attr('onclick', 'createLabel();');
+    $('#saveButton').unbind();
+    $("#saveButton").on('click', () => {
+        createLabel();
+    });
 }
 function search() {
     activeLabels = [];
@@ -117,6 +136,14 @@ function updateList(found = true) {
                     click: function () {
                         {
                             $('#SignsContainer').removeClass('active');
+                            for (let i = 0; i < label.category.length; i++) {
+                                $('.filter_list input[type="checkbox"]').each(function () {
+                                    var inputVal = $(this).parent("label").text();
+                                    if (inputVal == label.category[i])
+                                        $(this).click();
+                                });
+                            }
+                            $('.select').next('.filter_list').fadeOut();
                             $("#LabelAllergens").val(label.allergens);
                             $("#LabelBG").val(label.bg);
                             $("#LabelEN").val(label.en);
@@ -129,8 +156,14 @@ function updateList(found = true) {
                                 $('#saveLabel').removeClass('active');
                                 $('#closeSignsBox').removeClass('active');
                                 $('#SignsContainer').addClass('active');
+                                $('.filter_list input[type="checkbox"]').each(function () {
+                                    if ($(this).is(":checked"))
+                                        $(this).click();
+                                });
+                                selectedCategories = [];
                             });
                             $('#saveButton').text('Save Label');
+                            $('#saveButton').unbind();
                             $('#saveButton').on('click', () => {
                                 saveLabel(label._id);
                                 $("#SignsContainer").addClass("active");
