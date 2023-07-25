@@ -17,11 +17,13 @@
     <script src="js/script.js"></script>
     <script src="js/nav.js"></script>
     <script src="js/categories.js"></script>
+    <script src="js/allergens.js"></script>
 
     <link rel="stylesheet" href="path/to/font-awesome/css/font-awesome.min.css">
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/nav.css">
     <link rel="stylesheet" href="css/categories.css">
+    <link rel="stylesheet" href="css/allergens.css"
 
 
 </head>
@@ -98,8 +100,8 @@
             </div>
             <div id="saveLabel">
                 <button id="closeSignsBox">X</button>
-                <p>
-                   <div id="categoriesDiv">Categories:<select class="custom-select" placeholder="categories">
+                
+                   <div id="categoriesDiv" class="categories">Categories:<select class="custom-select" placeholder="categories">
                         <option value="Salads">Salads</option>
                         <option value="Soups">Soups</option>
                         <option value="Breakfast">Breakfast</option>
@@ -110,13 +112,32 @@
                         <option value="Pasta">Pasta</option>
                         <option value="Rice">Rice</option>
                     </select></div>
-                </p>
-                <div class="labelsContent">
-                <p>Allergens: <input id="LabelAllergens" /></p>
-                <p>BG: <input id="LabelBG" /></p>
-                <p>EN: <input id="LabelEN" /></p>
-                <p>DE: <input id="LabelDE" /></p>
-                <p>RUS: <input id="LabelRUS" /></p>
+                
+                    <div class="labelsContent">
+                        <div id="allergensDiv">
+                            Allergens:
+                            <select class="allergens-select" placeholder="allergens">
+                                <option value="1">1 Gluten</option>
+                                <option value="2">2 Celery</option>
+                                <option value="3">3 Peanuts</option>
+                                <option value="4">4 Lupin</option>
+                                <option value="5">5 Soya</option>
+                                <option value="6">6 Eggs</option>
+                                <option value="7">7 Molluscs</option>
+                                <option value="8">8 Lactose</option>
+                                <option value="9">9 Nuts</option>
+                                <option value="10">10 Sulphur dioxide</option>
+                                <option value="11">11 Sesame</option>
+                                <option value="12">12 Fish</option>
+                                <option value="13">13 Crustaceans</option>
+                                <option value="14">14 Mustard</option>
+                                <option value="15">15 Mushrooms</option>
+                            </select>
+                        </div>
+                    <p>BG: <input id="LabelBG" /></p>
+                    <p>EN: <input id="LabelEN" /></p>
+                    <p>DE: <input id="LabelDE" /></p>
+                    <p>RUS: <input id="LabelRUS" /></p>
                 </div>
                 <button id="saveButton">Save Label</button>
 

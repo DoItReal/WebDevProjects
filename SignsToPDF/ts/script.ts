@@ -41,7 +41,8 @@ function createLabel() {
     let inputRUS: HTMLInputElement = document.querySelector('#LabelRUS');
  //   let inputCat: Array<string> = selectedCategories;
     let arr = inputAllergens.value.split(',').map(Number);
- //   let categories = inputCat.value.split(',').map(String);
+    //   let categories = inputCat.value.split(',').map(String);
+    arr = selectedAllergens.map(Number);
     arr = arr.sort((a, b) => a - b);
     let label = {
         'allergens': arr,
@@ -67,7 +68,8 @@ function saveLabel(id:string) {
     let inputDE: HTMLInputElement = document.querySelector('#LabelDE');
     let inputRUS: HTMLInputElement = document.querySelector('#LabelRUS');
     let arr = inputAllergens.value.split(',').map(Number);
-    arr = arr.sort((a,b) => a-b);
+    arr = selectedAllergens.map(Number);
+    arr = arr.sort((a, b) => a - b);
     let label = {
         "allergens": arr,
         "bg": inputBG.value,
@@ -83,9 +85,11 @@ function saveLabel(id:string) {
 
 function createNewLabel() {
     $("#saveButton").text("Create New Label");
-    $("#saveLabel > p > input").val('');
+    $("#saveLabel p input").val('');
+    $('.filter_list input[type="checkbox"]').each(function () {
+        if ($(this).is(":checked")) $(this).click();
+    });
     $('#saveButton').unbind();
-
     $("#saveButton").on('click', () => {createLabel();
 });
     
@@ -156,9 +160,15 @@ function updateList(found:boolean = true) {
                             $('#SignsContainer').removeClass('active');
 
                           for (let i = 0; i < label.category.length; i++) {
-                                $('.filter_list input[type="checkbox"]').each(function () {
+                                $('#categoriesDiv .filter_list input[type="checkbox"]').each(function () {
                                     var inputVal = $(this).parent("label").text();
                                     if (inputVal == label.category[i]) $(this).click();
+                                });
+                            }
+                            for (let i = 0; i < label.allergens.length; i++) {
+                                $('#allergensDiv .filter_list input[type="checkbox"]').each(function () {
+                                    var inputVal = $(this).parent("label").attr('value');
+                                    if (Number(inputVal) == label.allergens[i]) $(this).click();
                                 });
                             }
                             $('.select').next('.filter_list').fadeOut();

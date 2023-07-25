@@ -1,14 +1,14 @@
-var selectedCategories = [];
+var selectedAllergens = [];
 $(document).ready(function () {
     "use strict";
     /*---------------
     --------- Converting Options into list (own structure) -------- */
     var myUl = [];
-    $(".categories .custom-select option").each(function () {
+    $(".allergens-select option").each(function () {
         var optionText = $(this).text();
         var optionValue = $(this).val();
         var thisList = $(this).parent();
-        myUl.push('<li><label><input type="checkbox"/>' + optionText + '</label></li>');
+        myUl.push('<li><label value=' + optionValue + '><input type="checkbox" />' + optionText + '</label></li>');
     });
     var $p = $("<p />", {
         class: "select",
@@ -22,10 +22,10 @@ $(document).ready(function () {
         class: "select_box_area",
         html: [$p, $ul]
     });
-    $(".categories .custom-select").before(expendBefore);
+    $(".allergens-select").before(expendBefore);
     /*---------------
     --------- Toggle Multiselect list -------- */
-    $(document).on("click", ".categories .select", function () {
+    $(document).on("click", ".labelsContent .select", function () {
         var filterList = $(this).next(".filter_list");
         if (filterList.is(":hidden")) {
             $(filterList).fadeIn();
@@ -38,29 +38,30 @@ $(document).ready(function () {
     });
     /*---------------
     --------- Check and uncheck Options from the list -------- */
-    $(document).on("click", '.categories .filter_list input[type="checkbox"]', function () {
-        var inputVal = $(this).parent("label").text();
-        var placeholderSpan = $(".placeHolder");
-        var findVal = $(".categories .select").find('span[data-title="' + inputVal + '"]');
+    $(document).on("click", '.labelsContent .filter_list input[type="checkbox"]', function () {
+        var inputText = $(this).parent("label").text();
+        var inputVal = $(this).parent("label").attr('value');
+        var placeholderSpan = $(".labelsContent .placeHolder");
+        var findVal = $(".labelsContent .select").find('span[data-title="' + inputText + '"]');
         if ($(this).is(":checked")) {
             placeholderSpan.remove();
-            $(".categories .select").append('<span data-title="' +
-                inputVal +
+            $(".labelsContent .select").append('<span data-title="' +
+                inputText +
                 '" class="option">' +
-                inputVal +
+                inputText +
                 "</span>");
-            selectedCategories.push(inputVal);
+            selectedAllergens.push(inputVal);
         }
         else {
-            if ($(".categories .select span").length >= 1) {
+            if ($(".labelsContent .select span").length >= 1) {
                 findVal.remove();
                 //TO FIX NOT WORKING RIGHT
-                selectedCategories.splice(selectedCategories.indexOf(inputVal), 1);
+                selectedAllergens.splice(selectedCategories.indexOf(inputText), 1);
             }
-            if ($(".categories .select span").length < 1) {
-                $(".categories .select").append('<span class="placeHolder">Select</span>');
+            if ($(".labelsContent .select span").length < 1) {
+                $(".labelsContent .select").append('<span class="placeHolder">Select</span>');
             }
         }
     });
 });
-//# sourceMappingURL=categories.js.map
+//# sourceMappingURL=allergens.js.map

@@ -1,0 +1,16 @@
+/*---------------
+ * ---------Variables-------- */
+/*---------------
+ * ---------Global-------- */
+
+
+.allergens-select {
+    display:none;
+}
+#allergensDiv {
+    display: flex;
+    align-items: center;
+    vertical-align: central;
+    margin: 5px;
+    float:right;
+}

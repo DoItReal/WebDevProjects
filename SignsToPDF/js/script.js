@@ -34,6 +34,7 @@ function createLabel() {
     //   let inputCat: Array<string> = selectedCategories;
     let arr = inputAllergens.value.split(',').map(Number);
     //   let categories = inputCat.value.split(',').map(String);
+    arr = selectedAllergens.map(Number);
     arr = arr.sort((a, b) => a - b);
     let label = {
         'allergens': arr,
@@ -58,6 +59,7 @@ function saveLabel(id) {
     let inputDE = document.querySelector('#LabelDE');
     let inputRUS = document.querySelector('#LabelRUS');
     let arr = inputAllergens.value.split(',').map(Number);
+    arr = selectedAllergens.map(Number);
     arr = arr.sort((a, b) => a - b);
     let label = {
         "allergens": arr,
@@ -72,7 +74,11 @@ function saveLabel(id) {
 }
 function createNewLabel() {
     $("#saveButton").text("Create New Label");
-    $("#saveLabel > p > input").val('');
+    $("#saveLabel p input").val('');
+    $('.filter_list input[type="checkbox"]').each(function () {
+        if ($(this).is(":checked"))
+            $(this).click();
+    });
     $('#saveButton').unbind();
     $("#saveButton").on('click', () => {
         createLabel();
@@ -137,9 +143,16 @@ function updateList(found = true) {
                         {
                             $('#SignsContainer').removeClass('active');
                             for (let i = 0; i < label.category.length; i++) {
-                                $('.filter_list input[type="checkbox"]').each(function () {
+                                $('#categoriesDiv .filter_list input[type="checkbox"]').each(function () {
                                     var inputVal = $(this).parent("label").text();
                                     if (inputVal == label.category[i])
+                                        $(this).click();
+                                });
+                            }
+                            for (let i = 0; i < label.allergens.length; i++) {
+                                $('#allergensDiv .filter_list input[type="checkbox"]').each(function () {
+                                    var inputVal = $(this).parent("label").attr('value');
+                                    if (Number(inputVal) == label.allergens[i])
                                         $(this).click();
                                 });
                             }
