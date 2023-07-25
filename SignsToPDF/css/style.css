@@ -148,8 +148,22 @@ content {
     visibility: visible;
 }
 
+#midSide {
+    margin: 0;
+    height: 100%;
+    width: 30%;
+    border: 1px solid black;
+}
+#rightSide {
+    margin: 0;
+    height: 100%;
+    width: 30%;
+    border: 1px solid black;
+}
     #pdf {
-        width:40%;
+        display:none;
+        width:100%;
+        height:100%;
     }
 #loadSignsButton {
     margin-left: auto;
@@ -160,11 +174,10 @@ content {
         float:right;
     }
 #SignPreview {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 20%;
-    margin-left: 1px;
+    display: relative;
+    margin-left:auto;
+    margin-right:auto;
+    width: 60%;
 }
 
     #SignPreview canvas {

@@ -83,3 +83,10 @@ $(document).ready(function () {
 
 
 });
+
+//tools
+function resetCatnAll() {
+    $('.filter_list input[type="checkbox"]').each(function () {
+        if ($(this).is(":checked")) $(this).click();
+    });
+}

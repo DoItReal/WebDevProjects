@@ -52,6 +52,7 @@ async function createPDF() {
     //adding the PDF document to the DOM
     var framePDF: HTMLIFrameElement = document.querySelector('#pdf');
     framePDF.src = pdfDataUri;
+    $('#pdf').show();
 }
 
 

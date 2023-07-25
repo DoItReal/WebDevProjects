@@ -7,6 +7,7 @@ var pngs = [];
 var activeLabels = [];
 var signs = [];
 var data = [];
+var labelList;
 window.onload = function init() {
     $("#SignsContainer #filterContainer input:checkbox").change(function () {
         if ($(this).is(":checked")) {
@@ -18,23 +19,19 @@ window.onload = function init() {
     });
     initEventsSearch();
     loadPNG();
+    initAllergens();
     let input = document.querySelector('#searchInput');
     input.addEventListener('keypress', function (event) {
-        //  event.preventDefault();
-        let searchButton = document.querySelector('#searchButton');
-        searchButton.click();
+        labelList = new addedLabelsList();
+        // labelList.addLabel(data[0]);
     });
 };
 function createLabel() {
-    let inputAllergens = document.querySelector('#LabelAllergens');
     let inputBG = document.querySelector('#LabelBG');
     let inputEN = document.querySelector('#LabelEN');
     let inputDE = document.querySelector('#LabelDE');
     let inputRUS = document.querySelector('#LabelRUS');
-    //   let inputCat: Array<string> = selectedCategories;
-    let arr = inputAllergens.value.split(',').map(Number);
-    //   let categories = inputCat.value.split(',').map(String);
-    arr = selectedAllergens.map(Number);
+    let arr = selectedAllergens.map(Number);
     arr = arr.sort((a, b) => a - b);
     let label = {
         'allergens': arr,
@@ -46,20 +43,17 @@ function createLabel() {
     };
     //   let label = '{ "allergens":[' + arr + '],"bg":"' + inputBG.value + '", "en":"' + inputEN.value + '", "de":"' + inputDE.value + '", "rus":"' + inputRUS.value + '",' + '"category":[' + selectedCategories + ']}';
     createNewLabelDB(JSON.stringify(label));
-    inputAllergens.value = '';
     inputBG.value = '';
     inputEN.value = '';
     inputDE.value = '';
     inputRUS.value = '';
 }
 function saveLabel(id) {
-    let inputAllergens = document.querySelector('#LabelAllergens');
     let inputBG = document.querySelector('#LabelBG');
     let inputEN = document.querySelector('#LabelEN');
     let inputDE = document.querySelector('#LabelDE');
     let inputRUS = document.querySelector('#LabelRUS');
-    let arr = inputAllergens.value.split(',').map(Number);
-    arr = selectedAllergens.map(Number);
+    let arr = selectedAllergens.map(Number);
     arr = arr.sort((a, b) => a - b);
     let label = {
         "allergens": arr,
@@ -69,6 +63,7 @@ function saveLabel(id) {
         "rus": inputRUS.value,
         "category": selectedCategories
     };
+    console.log(label);
     // let label = '{"allergens":[' + arr + '],"bg":"' + inputBG.value + '", "en":"' + inputEN.value + '", "de":"' + inputDE.value + '", "rus":"' + inputRUS.value + '"}';
     saveLabelDB(JSON.stringify(label), id);
 }
@@ -108,7 +103,6 @@ function updateList(found = true) {
     function update(found) {
         let div = $('#Signs');
         div.text(''); //clear the div
-        // TO DO add functionality for backspace
         if (activeLabels.length == 0 && found) {
             activeLabels = [];
             for (let i = 0; i < data.length; i++) {
@@ -141,6 +135,7 @@ function updateList(found = true) {
                     addClass: "editButton",
                     click: function () {
                         {
+                            resetCatnAll();
                             $('#SignsContainer').removeClass('active');
                             for (let i = 0; i < label.category.length; i++) {
                                 $('#categoriesDiv .filter_list input[type="checkbox"]').each(function () {
@@ -164,16 +159,13 @@ function updateList(found = true) {
                             $("#LabelRUS").val(label.rus);
                             $('#closeSignsBox').addClass('active');
                             $('#saveLabel').addClass('active');
+                            //CLOSE BUTTON
                             let closeButton = $('#closeSignsBox');
                             closeButton.on('click', () => {
                                 $('#saveLabel').removeClass('active');
                                 $('#closeSignsBox').removeClass('active');
                                 $('#SignsContainer').addClass('active');
-                                $('.filter_list input[type="checkbox"]').each(function () {
-                                    if ($(this).is(":checked"))
-                                        $(this).click();
-                                });
-                                selectedCategories = [];
+                                resetCatnAll();
                             });
                             $('#saveButton').text('Save Label');
                             $('#saveButton').unbind();
@@ -237,8 +229,38 @@ function updateList(found = true) {
         }
     }
 }
+class addedLabelsList {
+    box;
+    ul;
+    labels;
+    constructor() {
+        this.labels = [];
+        this.box = $('#AddedLabels');
+        this.ul = $('<ul/>');
+        $(this.box).append($(this.ul));
+    }
+    addLabel(label) {
+        this.labels.push(label);
+        let remButton = $('<button/>', {
+            text: '<<',
+            click: function () {
+                //to DO
+                console.log('remove');
+            }
+        });
+        let p = $('<p/>');
+        p.append($(remButton));
+        p.append(label.bg);
+        let li = $('<li/>');
+        li.append($(p));
+        //to do
+        $(this.ul).append($(li));
+    }
+}
 async function loadSelectedSigns() {
+    //to become a function clear()
     const selected = [];
+    signs = [];
     for (let i = 0; i < data.length; i += 1) {
         let checkbox = document.getElementById(data[i]._id);
         if (checkbox && checkbox.checked) {

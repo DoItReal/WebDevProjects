@@ -7,10 +7,10 @@ var pngs = [];
 var activeLabels = [];
 var signs: Array<HTMLCanvasElement> = [];
 var data = []; 
-
+var labelList; 
 
 window.onload = function init() {
-
+    
     $("#SignsContainer #filterContainer input:checkbox").change(function () {
 
         if ($(this).is(":checked")) {
@@ -24,11 +24,10 @@ window.onload = function init() {
     initAllergens();
     let input = document.querySelector('#searchInput');
     input.addEventListener('keypress', function (event){
-  
-        //  event.preventDefault();
-        let searchButton = document.querySelector('#searchButton') as HTMLButtonElement;
-        searchButton.click();
+        labelList = new addedLabelsList();
+
         
+       // labelList.addLabel(data[0]);
     });
 }
 
@@ -114,7 +113,7 @@ function updateList(found:boolean = true) {
         let div = $('#Signs');
         div.text(''); //clear the div
        
-        // TO DO add functionality for backspace
+        
         if (activeLabels.length == 0 && found) {  
             activeLabels = [];
             for (let i = 0; i < data.length; i++) {
@@ -153,14 +152,15 @@ function updateList(found:boolean = true) {
                     addClass: "editButton",
                     click: function () {
                         {
+                            resetCatnAll();
                             $('#SignsContainer').removeClass('active');
-
-                          for (let i = 0; i < label.category.length; i++) {
+                            for (let i = 0; i < label.category.length; i++) {
                                 $('#categoriesDiv .filter_list input[type="checkbox"]').each(function () {
                                     var inputVal = $(this).parent("label").text();
                                     if (inputVal == label.category[i]) $(this).click();
                                 });
                             }
+                         
                             for (let i = 0; i < label.allergens.length; i++) {
                                 $('#allergensDiv .filter_list input[type="checkbox"]').each(function () {
                                     var inputVal = $(this).parent("label").attr('value');
@@ -175,15 +175,14 @@ function updateList(found:boolean = true) {
                             $("#LabelRUS").val(label.rus);
                             $('#closeSignsBox').addClass('active');
                             $('#saveLabel').addClass('active');
+
+                            //CLOSE BUTTON
                             let closeButton = $('#closeSignsBox');
                             closeButton.on('click', () => {
                                 $('#saveLabel').removeClass('active');
                                 $('#closeSignsBox').removeClass('active');
                                 $('#SignsContainer').addClass('active');
-                                $('.filter_list input[type="checkbox"]').each(function () {
-                                    if ($(this).is(":checked")) $(this).click();
-                                });
-                                selectedCategories = [];
+                                resetCatnAll();
                             });
                             $('#saveButton').text('Save Label');
 
@@ -256,8 +255,43 @@ function updateList(found:boolean = true) {
 
 
 
+class addedLabelsList{
+    box;
+    ul;
+    labels;
+    constructor() {
+        this.labels = [];
+        this.box = $('#AddedLabels');
+        this.ul = $('<ul/>');
+        $(this.box).append($(this.ul));
+    }
+    addLabel(label) {
+        this.labels.push(label);
+        let remButton = $('<button/>', {
+            text: '<<',
+            click: function () {
+                
+                //to DO
+                console.log('remove');
+            }
+        });
+        let p = $('<p/>');
+        p.append($(remButton));
+        p.append(label.bg);
+        let li = $('<li/>');
+        li.append($(p));
+        
+
+        //to do
+        $(this.ul).append($(li));
+    }
+}
+
 async function loadSelectedSigns() {
+
+    //to become a function clear()
     const selected = [];
+    signs = [];
     
 
     for (let i = 0; i < data.length; i += 1) {

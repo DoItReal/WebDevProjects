@@ -1,5 +1,5 @@
 var selectedAllergens = [];
-$(document).ready(function () {
+function initAllergens() {
     "use strict";
     /*---------------
     --------- Converting Options into list (own structure) -------- */
@@ -45,17 +45,17 @@ $(document).ready(function () {
         var findVal = $(".labelsContent .select").find('span[data-title="' + inputText + '"]');
         if ($(this).is(":checked")) {
             placeholderSpan.remove();
-            $(".labelsContent .select").append('<span data-title="' +
-                inputText +
-                '" class="option">' +
-                inputText +
-                "</span>");
+            let span = $('<span/>', {
+                'addClass': 'option',
+                'html': pngs[Number(inputVal) - 1]
+            });
+            $(span).attr('data-title', inputText);
+            $(".labelsContent .select").append(span);
             selectedAllergens.push(inputVal);
         }
         else {
             if ($(".labelsContent .select span").length >= 1) {
                 findVal.remove();
-                //TO FIX NOT WORKING RIGHT
                 selectedAllergens.splice(selectedCategories.indexOf(inputText), 1);
             }
             if ($(".labelsContent .select span").length < 1) {
@@ -63,5 +63,5 @@ $(document).ready(function () {
             }
         }
     });
-});
+}
 //# sourceMappingURL=allergens.js.map

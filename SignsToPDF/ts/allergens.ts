@@ -40,7 +40,7 @@ function initAllergens() {
 
     $(document).on("click", ".labelsContent .select", function () {
         var filterList = $(this).next(".filter_list");
-
+        
         if (filterList.is(":hidden")) {
             $(filterList).fadeIn();
             $(this).find("svg").addClass("angle-up");
@@ -58,7 +58,6 @@ function initAllergens() {
         var inputVal = $(this).parent("label").attr('value');
         var placeholderSpan = $(".labelsContent .placeHolder");
         var findVal = $(".labelsContent .select").find('span[data-title="' + inputText + '"]');
-
         if ($(this).is(":checked")) {
             placeholderSpan.remove();
             let span = $('<span/>', {
