@@ -9,7 +9,6 @@ var signs: Array<HTMLCanvasElement> = [];
 var data = []; 
 
 
-
 window.onload = function init() {
 
     $("#SignsContainer #filterContainer input:checkbox").change(function () {
@@ -22,6 +21,7 @@ window.onload = function init() {
     });
     initEventsSearch();
     loadPNG();
+    initAllergens();
     let input = document.querySelector('#searchInput');
     input.addEventListener('keypress', function (event){
   
@@ -34,16 +34,14 @@ window.onload = function init() {
 
 function createLabel() {
    
-    let inputAllergens: HTMLInputElement = document.querySelector('#LabelAllergens');
     let inputBG: HTMLInputElement = document.querySelector('#LabelBG');
     let inputEN: HTMLInputElement = document.querySelector('#LabelEN');
     let inputDE: HTMLInputElement = document.querySelector('#LabelDE');
     let inputRUS: HTMLInputElement = document.querySelector('#LabelRUS');
- //   let inputCat: Array<string> = selectedCategories;
-    let arr = inputAllergens.value.split(',').map(Number);
-    //   let categories = inputCat.value.split(',').map(String);
-    arr = selectedAllergens.map(Number);
+
+  let arr = selectedAllergens.map(Number);
     arr = arr.sort((a, b) => a - b);
+    
     let label = {
         'allergens': arr,
         'bg': inputBG.value,
@@ -54,21 +52,19 @@ function createLabel() {
     };
  //   let label = '{ "allergens":[' + arr + '],"bg":"' + inputBG.value + '", "en":"' + inputEN.value + '", "de":"' + inputDE.value + '", "rus":"' + inputRUS.value + '",' + '"category":[' + selectedCategories + ']}';
     createNewLabelDB(JSON.stringify(label));
-    inputAllergens.value = '';
     inputBG.value = '';
     inputEN.value = '';
     inputDE.value = '';
     inputRUS.value = '';
     
 }
-function saveLabel(id:string) {
-    let inputAllergens: HTMLInputElement = document.querySelector('#LabelAllergens');
+function saveLabel(id: string) {
+    
     let inputBG: HTMLInputElement = document.querySelector('#LabelBG');
     let inputEN: HTMLInputElement = document.querySelector('#LabelEN');
     let inputDE: HTMLInputElement = document.querySelector('#LabelDE');
     let inputRUS: HTMLInputElement = document.querySelector('#LabelRUS');
-    let arr = inputAllergens.value.split(',').map(Number);
-    arr = selectedAllergens.map(Number);
+    let arr = selectedAllergens.map(Number);
     arr = arr.sort((a, b) => a - b);
     let label = {
         "allergens": arr,
@@ -78,7 +74,7 @@ function saveLabel(id:string) {
         "rus": inputRUS.value,
         "category": selectedCategories
     }
-
+    console.log(label);
    // let label = '{"allergens":[' + arr + '],"bg":"' + inputBG.value + '", "en":"' + inputEN.value + '", "de":"' + inputDE.value + '", "rus":"' + inputRUS.value + '"}';
     saveLabelDB(JSON.stringify(label), id);
 }
