@@ -1,4 +1,5 @@
-﻿var PDFLib = PDFLib;
+﻿import test from '../js/test';
+var PDFLib = PDFLib;
 const width = PDFLib.PageSizes.A4[0];
 const height = PDFLib.PageSizes.A4[1];
 const signsInPage = 8; // TO DO
@@ -10,7 +11,7 @@ var data = [];
 var labelList; 
 
 window.onload = function init() {
-    
+    test();
     $("#SignsContainer #filterContainer input:checkbox").change(function () {
 
         if ($(this).is(":checked")) {

@@ -1,14 +1,7 @@
 class Sign {
-    id;
-    width;
-    height;
-    border = 5;
-    content;
-    category;
-    canvas;
-    fontSize = 18;
-    ctx;
     constructor(w, h) {
+        this.border = 5;
+        this.fontSize = 18;
         this.id = undefined;
         this.width = w;
         this.height = h;
@@ -127,8 +120,6 @@ class Sign {
     }
 }
 class SignContent {
-    alergens;
-    name;
     //   pngFiles: string[];
     // pngs: Array<HTMLImageElement> = [];
     constructor(alergens, name) {

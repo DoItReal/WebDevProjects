@@ -1,3 +1,15 @@
+"use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const test_1 = require("../js/test.js");
 var PDFLib = PDFLib;
 const width = PDFLib.PageSizes.A4[0];
 const height = PDFLib.PageSizes.A4[1];
@@ -9,6 +21,7 @@ var signs = [];
 var data = [];
 var labelList;
 window.onload = function init() {
+    (0, test_1.default)();
     $("#SignsContainer #filterContainer input:checkbox").change(function () {
         if ($(this).is(":checked")) {
             $("#SignsContainer #Signs input:checkbox").prop("checked", true);
@@ -230,9 +243,6 @@ function updateList(found = true) {
     }
 }
 class addedLabelsList {
-    box;
-    ul;
-    labels;
     constructor() {
         this.labels = [];
         this.box = $('#AddedLabels');
@@ -257,22 +267,24 @@ class addedLabelsList {
         $(this.ul).append($(li));
     }
 }
-async function loadSelectedSigns() {
-    //to become a function clear()
-    const selected = [];
-    signs = [];
-    for (let i = 0; i < data.length; i += 1) {
-        let checkbox = document.getElementById(data[i]._id);
-        if (checkbox && checkbox.checked) {
-            selected.push(data[i]);
+function loadSelectedSigns() {
+    return __awaiter(this, void 0, void 0, function* () {
+        //to become a function clear()
+        const selected = [];
+        signs = [];
+        for (let i = 0; i < data.length; i += 1) {
+            let checkbox = document.getElementById(data[i]._id);
+            if (checkbox && checkbox.checked) {
+                selected.push(data[i]);
+            }
         }
-    }
-    // Generate pages for each chunk of data entries
-    for (const entry of selected) {
-        let sign = new Sign(width / 2 - 10, height / (signsInPage / 2) - 10);
-        sign.setContent(new SignContent(entry.allergens, { bg: decodeURI(entry.bg), en: entry.en, de: entry.de, rus: entry.rus }));
-        sign.setId(entry._id);
-        signs.push(sign.generate());
-    }
+        // Generate pages for each chunk of data entries
+        for (const entry of selected) {
+            let sign = new Sign(width / 2 - 10, height / (signsInPage / 2) - 10);
+            sign.setContent(new SignContent(entry.allergens, { bg: decodeURI(entry.bg), en: entry.en, de: entry.de, rus: entry.rus }));
+            sign.setId(entry._id);
+            signs.push(sign.generate());
+        }
+    });
 }
 //# sourceMappingURL=script.js.map
