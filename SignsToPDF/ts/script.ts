@@ -1,17 +1,22 @@
-﻿import test from '../js/test';
-var PDFLib = PDFLib;
+﻿var PDFLib = PDFLib;
 const width = PDFLib.PageSizes.A4[0];
 const height = PDFLib.PageSizes.A4[1];
 const signsInPage = 8; // TO DO
 var password = '';
-var pngs = [];
 var activeLabels = [];
 var signs: Array<HTMLCanvasElement> = [];
-var data = []; 
+//var data = []; 
 var labelList; 
-
+var db, png, categories, allergens;
+function test1() { console.log('test1') };
 window.onload = function init() {
-    test();
+    db = new DB();
+    png = new PNGs();
+    categories = new Categories();
+    allergens = new Allergens();
+
+    $('#fetchSignsButton').on('click', () => {db.fetchSigns();
+});
     $("#SignsContainer #filterContainer input:checkbox").change(function () {
 
         if ($(this).is(":checked")) {
@@ -21,14 +26,12 @@ window.onload = function init() {
         }
     });
     initEventsSearch();
-    loadPNG();
-    initAllergens();
     let input = document.querySelector('#searchInput');
     input.addEventListener('keypress', function (event){
-        labelList = new addedLabelsList();
+      //  labelList = new addedLabelsList();
 
         
-       // labelList.addLabel(data[0]);
+        //labelList.addLabel(db.data[0]);
     });
 }
 
@@ -39,7 +42,7 @@ function createLabel() {
     let inputDE: HTMLInputElement = document.querySelector('#LabelDE');
     let inputRUS: HTMLInputElement = document.querySelector('#LabelRUS');
 
-  let arr = selectedAllergens.map(Number);
+  let arr = allergens.selectedAllergens.map(Number);
     arr = arr.sort((a, b) => a - b);
     
     let label = {
@@ -48,10 +51,10 @@ function createLabel() {
         'en': inputEN.value,
         'de': inputDE.value,
         'rus': inputRUS.value,
-        'category': selectedCategories
+        'category': categories.selectedCategories
     };
  //   let label = '{ "allergens":[' + arr + '],"bg":"' + inputBG.value + '", "en":"' + inputEN.value + '", "de":"' + inputDE.value + '", "rus":"' + inputRUS.value + '",' + '"category":[' + selectedCategories + ']}';
-    createNewLabelDB(JSON.stringify(label));
+    db.createNewLabel(JSON.stringify(label));
     inputBG.value = '';
     inputEN.value = '';
     inputDE.value = '';
@@ -64,7 +67,7 @@ function saveLabel(id: string) {
     let inputEN: HTMLInputElement = document.querySelector('#LabelEN');
     let inputDE: HTMLInputElement = document.querySelector('#LabelDE');
     let inputRUS: HTMLInputElement = document.querySelector('#LabelRUS');
-    let arr = selectedAllergens.map(Number);
+    let arr = allergens.selectedAllergens.map(Number);
     arr = arr.sort((a, b) => a - b);
     let label = {
         "allergens": arr,
@@ -72,11 +75,11 @@ function saveLabel(id: string) {
         "en": inputEN.value,
         "de": inputDE.value,
         "rus": inputRUS.value,
-        "category": selectedCategories
+        "category": categories.selectedCategories
     }
     console.log(label);
    // let label = '{"allergens":[' + arr + '],"bg":"' + inputBG.value + '", "en":"' + inputEN.value + '", "de":"' + inputDE.value + '", "rus":"' + inputRUS.value + '"}';
-    saveLabelDB(JSON.stringify(label), id);
+    db.saveLabel(JSON.stringify(label), id);
 }
 
 function createNewLabel() {
@@ -94,8 +97,8 @@ function createNewLabel() {
 function search() {
     activeLabels = [];
     let value = String($('#searchInput').val());
-    for (let i = 0; i < data.length; i++) {
-        if (data[i].bg.toLowerCase().search(value.toLowerCase()) !== -1) activeLabels.push(data[i]);
+    for (let i = 0; i < db.data.length; i++) {
+        if (db.data[i].bg.toLowerCase().search(value.toLowerCase()) !== -1) activeLabels.push(db.data[i]);
     }
     if (activeLabels.length == 0) updateList(false);
     else updateList();
@@ -117,8 +120,8 @@ function updateList(found:boolean = true) {
         
         if (activeLabels.length == 0 && found) {  
             activeLabels = [];
-            for (let i = 0; i < data.length; i++) {
-                activeLabels.push(data[i]);
+            for (let i = 0; i < db.data.length; i++) {
+                activeLabels.push(db.data[i]);
             }
         } else {
 
@@ -153,7 +156,7 @@ function updateList(found:boolean = true) {
                     addClass: "editButton",
                     click: function () {
                         {
-                            resetCatnAll();
+                            categories.resetCatnAll();
                             $('#SignsContainer').removeClass('active');
                             for (let i = 0; i < label.category.length; i++) {
                                 $('#categoriesDiv .filter_list input[type="checkbox"]').each(function () {
@@ -183,7 +186,7 @@ function updateList(found:boolean = true) {
                                 $('#saveLabel').removeClass('active');
                                 $('#closeSignsBox').removeClass('active');
                                 $('#SignsContainer').addClass('active');
-                                resetCatnAll();
+                                categories.resetCatnAll();
                             });
                             $('#saveButton').text('Save Label');
 
@@ -228,7 +231,7 @@ function updateList(found:boolean = true) {
                         text: 'Delete',
                         click: function () {
                             if (confirm('Delete: ' + label.bg) == true) {
-                                deleteLabelDB(label._id);
+                                db.deleteLabel(label._id);
                                 setTimeout(updateList, 500);
                             } else {
                                 console.log('Canceled');
@@ -295,10 +298,10 @@ async function loadSelectedSigns() {
     signs = [];
     
 
-    for (let i = 0; i < data.length; i += 1) {
-        let checkbox = document.getElementById(data[i]._id) as HTMLInputElement;
+    for (let i = 0; i < db.data.length; i += 1) {
+        let checkbox = document.getElementById(db.data[i]._id) as HTMLInputElement;
         if (checkbox && checkbox.checked) {
-            selected.push(data[i]);
+            selected.push(db.data[i]);
         }
     }
     // Generate pages for each chunk of data entries

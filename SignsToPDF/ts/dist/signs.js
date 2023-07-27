@@ -1,16 +1,8 @@
+"use strict";
 class Sign {
-    id: string;
-    width: number;
-    height: number;
-    border: number = 5;
-    content: SignContent;
-    category: Array<String>;
-    canvas: HTMLCanvasElement;
-    fontSize: number = 18;
-    ctx: CanvasRenderingContext2D;
-    
- 
-    constructor(w: number, h: number) {
+    constructor(w, h) {
+        this.border = 5;
+        this.fontSize = 18;
         this.id = undefined;
         this.width = w;
         this.height = h;
@@ -22,34 +14,34 @@ class Sign {
         this.ctx.textAlign = "center";
         this.category = [];
     }
-    setContent(content: SignContent) {
+    setContent(content) {
         this.content = content;
     }
-    addCategory(cat: string) {
-        if (!this.category.includes(cat)) this.category.push(cat);
+    addCategory(cat) {
+        if (!this.category.includes(cat))
+            this.category.push(cat);
     }
-    removeCategory(cat: string) {
-        if (this.category.includes(cat)) this.category.splice(this.category.indexOf(cat), 1);
+    removeCategory(cat) {
+        if (this.category.includes(cat))
+            this.category.splice(this.category.indexOf(cat), 1);
     }
-    setBorder(num: number) {
+    setBorder(num) {
         this.border = num;
     }
-    setId(id: string) {
+    setId(id) {
         this.id = id;
     }
-    getId():string {
+    getId() {
         return this.id;
     }
     generate() {
         let arr = this.content.alergens;
         let rows = [this.content.name.bg, this.content.name.en, this.content.name.de, this.content.name.rus];
         this.ctx.save();
-
         //border
         this.ctx.strokeStyle = "black";
         this.ctx.lineWidth = this.border;
         this.ctx.fillStyle = "white";
-
         this.ctx.fillRect(0, 0, this.width, this.height);
         this.ctx.strokeRect(0, 0, this.width, this.height);
         this.generateInfoLabelsText(rows);
@@ -57,14 +49,9 @@ class Sign {
         this.ctx.restore();
         // var image: HTMLImageElement = document.createElement('HTMLImageElement');
         //image.src = this.canvas.toDataURL('image/jpeg');
-
         return this.canvas;
-
     }
-
-
-
-    private generateInfoLabelsText(rows) {
+    generateInfoLabelsText(rows) {
         let color = ['black', 'red'];
         let counter = 0;
         for (let i = 0; i < rows.length; i++) {
@@ -76,12 +63,15 @@ class Sign {
             step = this.fontSize * 1.5;
             this.ctx.fillStyle = color[counter];
             this.ctx.fillText(rows[i], x, y);
-            if (counter >= 1) counter = 0; else counter++;
-
+            if (counter >= 1)
+                counter = 0;
+            else
+                counter++;
         }
     }
-    private generateAllergens(arr: Array<number>) {
-        if (arr.length == 1 && arr[0] == 0) return;
+    generateAllergens(arr) {
+        if (arr.length == 1 && arr[0] == 0)
+            return;
         let saveFont = this.fontSize;
         //calibrate and set this.fontSize
         this.imgCalibrate(arr);
@@ -95,14 +85,13 @@ class Sign {
         for (let i = 0; i < arr.length; i++) {
             this.ctx.font = this.fontSize + "px sans-serif";
             this.ctx.fillStyle = "blue";
-            this.ctx.fillText(String(arr[i]), dx, dy + this.fontSize*0.9);
-            this.ctx.drawImage(png.images[Number(arr[i] - 1)], dx + this.fontSize / 2, dy, dWidth, dHeight)
+            this.ctx.fillText(String(arr[i]), dx, dy + this.fontSize * 0.9);
+            this.ctx.drawImage(pngs[Number(arr[i] - 1)], dx + this.fontSize / 2, dy, dWidth, dHeight);
             dx += this.fontSize * 2;
-
         }
         this.fontSize = saveFont;
     }
-    private imgCalibrate(arr: Array<number>) {
+    imgCalibrate(arr) {
         let txtSize = this.fontSize;
         let wholeSize = arr.length * txtSize * 4;
         while (wholeSize > this.width - (20)) {
@@ -111,40 +100,30 @@ class Sign {
         }
         this.fontSize = txtSize;
     }
-    private imgCenter(arr: Array<number>) {
+    imgCenter(arr) {
         let txtSize = this.fontSize;
         let wholeSize = arr.length * txtSize * 4 / 2;
         let dx = txtSize * 4 / 2;
-        if (this.width > wholeSize) dx = (this.width - wholeSize) / 2;
-        else dx = (wholeSize - this.width) / 2;
+        if (this.width > wholeSize)
+            dx = (this.width - wholeSize) / 2;
+        else
+            dx = (wholeSize - this.width) / 2;
         let dy = this.fontSize * 1.5 + this.height * 0.25;
         dy = (dy - this.border) / 2 - this.fontSize;
         return { x: dx, y: dy };
     }
-    private txtCalibrateCenter(txt: string) {
+    txtCalibrateCenter(txt) {
         let textSize = this.fontSize;
         while (this.ctx.measureText(txt).width > this.width - 10) {
             textSize--;
             this.ctx.font = textSize + "px sans-serif";
         }
-
     }
 }
-
-
-
-interface translation {
-    bg: string;
-    en: string;
-    de: string;
-    rus: string;
-}
 class SignContent {
-    alergens: Array<number>;
-    name: translation;
     //   pngFiles: string[];
     // pngs: Array<HTMLImageElement> = [];
-    constructor(alergens: Array<number>, name: translation) {
+    constructor(alergens, name) {
         this.alergens = alergens;
         this.name = name;
     }

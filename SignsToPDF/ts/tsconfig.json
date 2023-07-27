@@ -1,8 +1,11 @@
 ﻿{
-    "compilerOptions": {
-      "target": "ES2022",
-        "module": "commonjs",
-        "sourceMap": true,
-        "outDir": "../js"
-    }
+  "compilerOptions": {
+    "target": "es2016", /* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */
+    "module": "es2015",
+    "moduleResolution": "node16",
+    "sourceMap": true,
+    "outDir": "../js",
+    "esModuleInterop": false,
+    "forceConsistentCasingInFileNames": false
+  }
 }
