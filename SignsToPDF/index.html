@@ -3,15 +3,25 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html" ; charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Signs</title>
+
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+
+    <title>Labels</title>
 
     <script src="https://unpkg.com/pdf-lib"></script>
     <script src="https://unpkg.com/jquery"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
-    <script> var exports = {};
-        </script>
-    <script type="module" src="js.text.js"></script>
+    <script>
+        var exports = {};
+    </script>
+    <script type="module" src="js/test.mjs"></script>
+    <script type="module">
+        import { test } from './js/test.mjs';
+        test();</script>
     <script src="js/db.js"></script>
     <script src="js/pngs.js"></script>
     <script src="js/signs.js"></script>
@@ -20,6 +30,7 @@
     <script src="js/nav.js"></script>
     <script src="js/categories.js"></script>
     <script src="js/allergens.js"></script>
+    <script src="js/addedLabelsList.js"></script>
 
     <link rel="stylesheet" href="path/to/font-awesome/css/font-awesome.min.css">
     <link rel="stylesheet" href="css/style.css">
@@ -64,7 +75,7 @@
         <div id="leftSide">
             <div id="SignsContainer" class="active">
                 <div id="searchContainer">
-                    <button id="fetchSignsButton" onclick="fetchDBSigns();">
+                    <button id="fetchSignsButton">
                         <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" enable-background="new 0 0 128 128" id="Layer_1" version="1.1" viewBox="0 0 128 128" xml:space="preserve">
                         <g>
                         <path d="M18.233,81.666l-0.016,0.003c0.006,0.012,0.01,0.022,0.016,0.036c0.008,0.101,0.026,0.195,0.04,0.293

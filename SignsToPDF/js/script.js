@@ -1,4 +1,3 @@
-"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -8,20 +7,26 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-Object.defineProperty(exports, "__esModule", { value: true });
-const test_1 = require("../js/test.js");
 var PDFLib = PDFLib;
 const width = PDFLib.PageSizes.A4[0];
 const height = PDFLib.PageSizes.A4[1];
 const signsInPage = 8; // TO DO
 var password = '';
-var pngs = [];
 var activeLabels = [];
 var signs = [];
-var data = [];
+//var data = []; 
 var labelList;
+var db, png, categories, allergens;
+function test1() { console.log('test1'); }
+;
 window.onload = function init() {
-    (0, test_1.default)();
+    db = new DB();
+    png = new PNGs();
+    categories = new Categories();
+    allergens = new Allergens();
+    $('#fetchSignsButton').on('click', () => {
+        db.fetchSigns();
+    });
     $("#SignsContainer #filterContainer input:checkbox").change(function () {
         if ($(this).is(":checked")) {
             $("#SignsContainer #Signs input:checkbox").prop("checked", true);
@@ -31,12 +36,10 @@ window.onload = function init() {
         }
     });
     initEventsSearch();
-    loadPNG();
-    initAllergens();
     let input = document.querySelector('#searchInput');
+    labelList = new addedLabelsList();
     input.addEventListener('keypress', function (event) {
-        labelList = new addedLabelsList();
-        // labelList.addLabel(data[0]);
+        labelList.addLabel(db.data[1]);
     });
 };
 function createLabel() {
@@ -44,7 +47,7 @@ function createLabel() {
     let inputEN = document.querySelector('#LabelEN');
     let inputDE = document.querySelector('#LabelDE');
     let inputRUS = document.querySelector('#LabelRUS');
-    let arr = selectedAllergens.map(Number);
+    let arr = allergens.selectedAllergens.map(Number);
     arr = arr.sort((a, b) => a - b);
     let label = {
         'allergens': arr,
@@ -52,10 +55,10 @@ function createLabel() {
         'en': inputEN.value,
         'de': inputDE.value,
         'rus': inputRUS.value,
-        'category': selectedCategories
+        'category': categories.selectedCategories
     };
     //   let label = '{ "allergens":[' + arr + '],"bg":"' + inputBG.value + '", "en":"' + inputEN.value + '", "de":"' + inputDE.value + '", "rus":"' + inputRUS.value + '",' + '"category":[' + selectedCategories + ']}';
-    createNewLabelDB(JSON.stringify(label));
+    db.createNewLabel(JSON.stringify(label));
     inputBG.value = '';
     inputEN.value = '';
     inputDE.value = '';
@@ -66,7 +69,7 @@ function saveLabel(id) {
     let inputEN = document.querySelector('#LabelEN');
     let inputDE = document.querySelector('#LabelDE');
     let inputRUS = document.querySelector('#LabelRUS');
-    let arr = selectedAllergens.map(Number);
+    let arr = allergens.selectedAllergens.map(Number);
     arr = arr.sort((a, b) => a - b);
     let label = {
         "allergens": arr,
@@ -74,11 +77,9 @@ function saveLabel(id) {
         "en": inputEN.value,
         "de": inputDE.value,
         "rus": inputRUS.value,
-        "category": selectedCategories
+        "category": categories.selectedCategories
     };
-    console.log(label);
-    // let label = '{"allergens":[' + arr + '],"bg":"' + inputBG.value + '", "en":"' + inputEN.value + '", "de":"' + inputDE.value + '", "rus":"' + inputRUS.value + '"}';
-    saveLabelDB(JSON.stringify(label), id);
+    db.saveLabel(JSON.stringify(label), id);
 }
 function createNewLabel() {
     $("#saveButton").text("Create New Label");
@@ -95,9 +96,9 @@ function createNewLabel() {
 function search() {
     activeLabels = [];
     let value = String($('#searchInput').val());
-    for (let i = 0; i < data.length; i++) {
-        if (data[i].bg.toLowerCase().search(value.toLowerCase()) !== -1)
-            activeLabels.push(data[i]);
+    for (let i = 0; i < db.data.length; i++) {
+        if (db.data[i].bg.toLowerCase().search(value.toLowerCase()) !== -1)
+            activeLabels.push(db.data[i]);
     }
     if (activeLabels.length == 0)
         updateList(false);
@@ -118,8 +119,8 @@ function updateList(found = true) {
         div.text(''); //clear the div
         if (activeLabels.length == 0 && found) {
             activeLabels = [];
-            for (let i = 0; i < data.length; i++) {
-                activeLabels.push(data[i]);
+            for (let i = 0; i < db.data.length; i++) {
+                activeLabels.push(db.data[i]);
             }
         }
         else {
@@ -148,7 +149,7 @@ function updateList(found = true) {
                     addClass: "editButton",
                     click: function () {
                         {
-                            resetCatnAll();
+                            categories.resetCatnAll();
                             $('#SignsContainer').removeClass('active');
                             for (let i = 0; i < label.category.length; i++) {
                                 $('#categoriesDiv .filter_list input[type="checkbox"]').each(function () {
@@ -178,7 +179,7 @@ function updateList(found = true) {
                                 $('#saveLabel').removeClass('active');
                                 $('#closeSignsBox').removeClass('active');
                                 $('#SignsContainer').addClass('active');
-                                resetCatnAll();
+                                categories.resetCatnAll();
                             });
                             $('#saveButton').text('Save Label');
                             $('#saveButton').unbind();
@@ -216,7 +217,7 @@ function updateList(found = true) {
                     text: 'Delete',
                     click: function () {
                         if (confirm('Delete: ' + label.bg) == true) {
-                            deleteLabelDB(label._id);
+                            db.deleteLabel(label._id);
                             setTimeout(updateList, 500);
                         }
                         else {
@@ -242,40 +243,15 @@ function updateList(found = true) {
         }
     }
 }
-class addedLabelsList {
-    constructor() {
-        this.labels = [];
-        this.box = $('#AddedLabels');
-        this.ul = $('<ul/>');
-        $(this.box).append($(this.ul));
-    }
-    addLabel(label) {
-        this.labels.push(label);
-        let remButton = $('<button/>', {
-            text: '<<',
-            click: function () {
-                //to DO
-                console.log('remove');
-            }
-        });
-        let p = $('<p/>');
-        p.append($(remButton));
-        p.append(label.bg);
-        let li = $('<li/>');
-        li.append($(p));
-        //to do
-        $(this.ul).append($(li));
-    }
-}
 function loadSelectedSigns() {
     return __awaiter(this, void 0, void 0, function* () {
         //to become a function clear()
         const selected = [];
         signs = [];
-        for (let i = 0; i < data.length; i += 1) {
-            let checkbox = document.getElementById(data[i]._id);
+        for (let i = 0; i < db.data.length; i += 1) {
+            let checkbox = document.getElementById(db.data[i]._id);
             if (checkbox && checkbox.checked) {
-                selected.push(data[i]);
+                selected.push(db.data[i]);
             }
         }
         // Generate pages for each chunk of data entries

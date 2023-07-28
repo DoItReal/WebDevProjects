@@ -27,11 +27,12 @@ window.onload = function init() {
     });
     initEventsSearch();
     let input = document.querySelector('#searchInput');
+    labelList = new addedLabelsList();
     input.addEventListener('keypress', function (event){
-      //  labelList = new addedLabelsList();
+       
 
         
-        //labelList.addLabel(db.data[0]);
+        labelList.addLabel(db.data[1]);
     });
 }
 
@@ -77,8 +78,6 @@ function saveLabel(id: string) {
         "rus": inputRUS.value,
         "category": categories.selectedCategories
     }
-    console.log(label);
-   // let label = '{"allergens":[' + arr + '],"bg":"' + inputBG.value + '", "en":"' + inputEN.value + '", "de":"' + inputDE.value + '", "rus":"' + inputRUS.value + '"}';
     db.saveLabel(JSON.stringify(label), id);
 }
 
@@ -259,37 +258,7 @@ function updateList(found:boolean = true) {
 
 
 
-class addedLabelsList{
-    box;
-    ul;
-    labels;
-    constructor() {
-        this.labels = [];
-        this.box = $('#AddedLabels');
-        this.ul = $('<ul/>');
-        $(this.box).append($(this.ul));
-    }
-    addLabel(label) {
-        this.labels.push(label);
-        let remButton = $('<button/>', {
-            text: '<<',
-            click: function () {
-                
-                //to DO
-                console.log('remove');
-            }
-        });
-        let p = $('<p/>');
-        p.append($(remButton));
-        p.append(label.bg);
-        let li = $('<li/>');
-        li.append($(p));
-        
 
-        //to do
-        $(this.ul).append($(li));
-    }
-}
 
 async function loadSelectedSigns() {
 

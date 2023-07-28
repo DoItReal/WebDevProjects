@@ -85,7 +85,7 @@ class Sign {
             this.ctx.font = this.fontSize + "px sans-serif";
             this.ctx.fillStyle = "blue";
             this.ctx.fillText(String(arr[i]), dx, dy + this.fontSize * 0.9);
-            this.ctx.drawImage(pngs[Number(arr[i] - 1)], dx + this.fontSize / 2, dy, dWidth, dHeight);
+            this.ctx.drawImage(png.images[Number(arr[i] - 1)], dx + this.fontSize / 2, dy, dWidth, dHeight);
             dx += this.fontSize * 2;
         }
         this.fontSize = saveFont;

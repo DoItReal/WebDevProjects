@@ -23,6 +23,7 @@ content {
     display: flex;
     flex-direction: row;
     height:85vh;
+    min-height:600px;
 }
 
     #leftSide {
@@ -31,14 +32,14 @@ content {
     width: 40%;
 }
 
-        #SignsContainer {
+#SignsContainer {
     display: none;
     margin: 0px;
     padding: 1px;
+    height:100%;
     width: 100%;
     flex-direction: column;
     border: 1px dotted green;
-    height: 600px;
     opacity: 0;
     transition: 0.3s;
 }
