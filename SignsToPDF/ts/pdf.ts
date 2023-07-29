@@ -1,5 +1,14 @@
 async function createPDF() {
-    //pngs = await loadPNGs();
+    signs = [];
+    for (const entry of labelList.labels) {
+
+
+        let sign = new Sign(width / 2 - 10, height / (signsInPage / 2) - 10);
+        sign.setContent(new SignContent(entry.allergens, { bg: decodeURI(entry.bg), en: entry.en, de: entry.de, rus: entry.rus }));
+        sign.setId(entry._id);
+        signs.push(sign.generate());
+    }
+
     //creates new PDF Document
     const doc = await PDFLib.PDFDocument.create();
 
@@ -12,6 +21,7 @@ async function createPDF() {
      * 
      */
     //  const page = doc.addPage(PDFLib.PageSizes.A4);
+    
     const chunks = [];
     for (let i = 0; i < signs.length; i += 8) {
         chunks.push(signs.slice(i, i + 8));

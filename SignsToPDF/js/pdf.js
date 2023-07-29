@@ -9,7 +9,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 function createPDF() {
     return __awaiter(this, void 0, void 0, function* () {
-        //pngs = await loadPNGs();
+        signs = [];
+        for (const entry of labelList.labels) {
+            let sign = new Sign(width / 2 - 10, height / (signsInPage / 2) - 10);
+            sign.setContent(new SignContent(entry.allergens, { bg: decodeURI(entry.bg), en: entry.en, de: entry.de, rus: entry.rus }));
+            sign.setId(entry._id);
+            signs.push(sign.generate());
+        }
         //creates new PDF Document
         const doc = yield PDFLib.PDFDocument.create();
         //adds page to just created PDF Document

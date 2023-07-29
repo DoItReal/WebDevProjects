@@ -1,12 +1,3 @@
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 var PDFLib = PDFLib;
 const width = PDFLib.PageSizes.A4[0];
 const height = PDFLib.PageSizes.A4[1];
@@ -24,6 +15,7 @@ window.onload = function init() {
     png = new PNGs();
     categories = new Categories();
     allergens = new Allergens();
+    labelList = new addedLabelsList();
     $('#fetchSignsButton').on('click', () => {
         db.fetchSigns();
     });
@@ -37,7 +29,6 @@ window.onload = function init() {
     });
     initEventsSearch();
     let input = document.querySelector('#searchInput');
-    labelList = new addedLabelsList();
     input.addEventListener('keypress', function (event) {
         labelList.addLabel(db.data[1]);
     });
@@ -242,25 +233,5 @@ function updateList(found = true) {
             $(div).append($(span));
         }
     }
-}
-function loadSelectedSigns() {
-    return __awaiter(this, void 0, void 0, function* () {
-        //to become a function clear()
-        const selected = [];
-        signs = [];
-        for (let i = 0; i < db.data.length; i += 1) {
-            let checkbox = document.getElementById(db.data[i]._id);
-            if (checkbox && checkbox.checked) {
-                selected.push(db.data[i]);
-            }
-        }
-        // Generate pages for each chunk of data entries
-        for (const entry of selected) {
-            let sign = new Sign(width / 2 - 10, height / (signsInPage / 2) - 10);
-            sign.setContent(new SignContent(entry.allergens, { bg: decodeURI(entry.bg), en: entry.en, de: entry.de, rus: entry.rus }));
-            sign.setId(entry._id);
-            signs.push(sign.generate());
-        }
-    });
 }
 //# sourceMappingURL=script.js.map

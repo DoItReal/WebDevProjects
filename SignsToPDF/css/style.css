@@ -78,6 +78,26 @@ content {
         white-space: nowrap;
         margin-left: 1px;
     }
+                #filterContainer{
+                    display:flex;
+                    padding: 1px;
+                }
+                #filterContainer, #filterContainer > * {
+                    font-size: 15px;
+                    margin:1px;
+                }
+                #filterContainer input {
+                    height:1.5em;
+                    width:1.5em;
+                }
+                #filterContainer #addSelectedLabels {
+                    margin-top:0;
+                    padding:0;
+                    height:1.5em;
+                    width: 1.5em;
+                    border-radius:5px;
+                    text-align:center;
+                }
                 #Signs span {
             display: flex;
             align-items:center;
@@ -154,6 +174,7 @@ content {
     height: 100%;
     width: 30%;
     border: 1px solid black;
+    overflow:auto;
 }
 #rightSide {
     margin: 0;

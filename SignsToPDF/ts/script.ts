@@ -14,7 +14,7 @@ window.onload = function init() {
     png = new PNGs();
     categories = new Categories();
     allergens = new Allergens();
-
+    labelList = new addedLabelsList();
     $('#fetchSignsButton').on('click', () => {db.fetchSigns();
 });
     $("#SignsContainer #filterContainer input:checkbox").change(function () {
@@ -27,7 +27,7 @@ window.onload = function init() {
     });
     initEventsSearch();
     let input = document.querySelector('#searchInput');
-    labelList = new addedLabelsList();
+    
     input.addEventListener('keypress', function (event){
        
 
@@ -80,7 +80,6 @@ function saveLabel(id: string) {
     }
     db.saveLabel(JSON.stringify(label), id);
 }
-
 function createNewLabel() {
     $("#saveButton").text("Create New Label");
     $("#saveLabel p input").val('');
@@ -260,26 +259,4 @@ function updateList(found:boolean = true) {
 
 
 
-async function loadSelectedSigns() {
 
-    //to become a function clear()
-    const selected = [];
-    signs = [];
-    
-
-    for (let i = 0; i < db.data.length; i += 1) {
-        let checkbox = document.getElementById(db.data[i]._id) as HTMLInputElement;
-        if (checkbox && checkbox.checked) {
-            selected.push(db.data[i]);
-        }
-    }
-    // Generate pages for each chunk of data entries
-    for (const entry of selected) {
-
-           
-            let sign = new Sign(width / 2 - 10, height / (signsInPage / 2) - 10);
-            sign.setContent(new SignContent(entry.allergens, { bg: decodeURI(entry.bg), en: entry.en, de: entry.de, rus: entry.rus }));
-            sign.setId(entry._id);
-            signs.push(sign.generate());
-    }
-}

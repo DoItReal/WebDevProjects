@@ -7,6 +7,10 @@ class addedLabelsList {
         this.box = $('#AddedLabels');
         this.ul = $('<ul/>');
         $(this.box).append($(this.ul));
+        this.initEvents();
+    }
+    private initEvents() {
+        $('#addSelectedLabels').on('click', () => { this.addSelectedLabels(); });
     }
    addLabel(label) {
         label = JSON.parse(JSON.stringify(label));
@@ -58,4 +62,13 @@ class addedLabelsList {
             $(this.ul).append($(li));
         }
     }
+    addSelectedLabels() {
+    for (let i = 0; i < db.data.length; i += 1) {
+        let checkbox = document.getElementById(db.data[i]._id) as HTMLInputElement;
+        if (checkbox && checkbox.checked) {
+            this.addLabel(db.data[i]);
+        }
+    }
 }
+}
+
