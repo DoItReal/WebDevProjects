@@ -2,8 +2,8 @@ class addedLabelsList {
     constructor() {
         this.labels = [];
         this.box = $('#AddedLabels');
-        this.ul = $('<ul/>');
-        $(this.box).append($(this.ul));
+        this.table = $('<table/>');
+        $(this.box).append($(this.table));
         this.initEvents();
     }
     initEvents() {
@@ -40,7 +40,7 @@ class addedLabelsList {
         }
     }
     updateUI() {
-        $(this.ul).html('');
+        $(this.table).html('<tr><th>Remove</th><th>Label</th><th>Count</th></tr>');
         for (let i = 0; i < this.labels.length; i++) {
             let remButton = $('<button/>', {
                 text: '<<',
@@ -48,17 +48,13 @@ class addedLabelsList {
                     this.removeLabel(this.labels[i]._id);
                 }
             });
-            let count = $('<span/>', {
-                text: '    Count: ' + this.labels[i].count
-            });
-            let p = $('<p/>');
-            p.append($(remButton));
-            p.append(this.labels[i].bg);
-            p.append($(count));
-            let li = $('<li/>');
-            li.append($(p));
+            let tr = $('<tr/>');
+            let td = $('<td/>');
+            tr.append($(td).clone().append($(remButton)));
+            tr.append($(td).clone().text(this.labels[i].bg));
+            tr.append($(td).clone().text(this.labels[i].count));
             //to do
-            $(this.ul).append($(li));
+            $(this.table).append($(tr));
         }
     }
     addSelectedLabels() {

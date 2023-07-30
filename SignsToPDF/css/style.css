@@ -207,3 +207,17 @@ content {
         margin-bottom: auto;
         width: 95%;
     }
+    #AddedLabels table {
+        width:100%;
+        border:1px solid black;
+    }
+    #AddedLabels table th {
+        border: 1px solid black;
+        background-color:lightblue;
+    }
+    #AddedLabels tr:nth-child(odd){
+        background-color:lightgray;
+    }
+    #AddedLabels table td {
+        border:1px dotted black;
+    }
