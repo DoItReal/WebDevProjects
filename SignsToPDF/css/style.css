@@ -110,7 +110,7 @@ content {
                         margin:1px;
                         margin-right:2px;
                     }
-                    .deleteButton, .editButton, .previewButton {
+                    .editButton, .previewButton {
     min-width: 60px;
     float:right;
     text-align:center;
@@ -122,8 +122,7 @@ content {
         }
                     .previewButton {
         }
-                    .deleteButton{
-                }
+               
 
         #saveLabel {
     display: none;
@@ -220,4 +219,10 @@ content {
     }
     #AddedLabels table td {
         border:1px dotted black;
+    }
+    #btnDeleteLabels{
+        float:right;
+        margin-left:auto;
+        padding:1px;
+        border-radius:3px;
     }

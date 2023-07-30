@@ -16,6 +16,7 @@ window.onload = function init() {
     categories = new Categories();
     allergens = new Allergens();
     labelList = new addedLabelsList();
+    $('#btnDeleteLabels').on('click', () => { deleteButton(); });
     $('#fetchSignsButton').on('click', () => {
         db.fetchSigns();
     });
@@ -201,23 +202,6 @@ function updateList(found = true) {
                 });
                 return previewButton;
             }
-            //add Delete Button
-            function deleteButton() {
-                let deleteButton = $('<button/>', {
-                    addClass: 'deleteButton',
-                    text: 'Delete',
-                    click: function () {
-                        if (confirm('Delete: ' + label.bg) == true) {
-                            db.deleteLabel(label._id);
-                            setTimeout(updateList, 500);
-                        }
-                        else {
-                            console.log('Canceled');
-                        }
-                    }
-                });
-                return deleteButton;
-            }
             let span = $('<span></span>');
             $(span).css('background-color', color[i]);
             if (i >= 1)
@@ -228,10 +212,33 @@ function updateList(found = true) {
             $(span).append(title());
             $(span).append(editButton());
             $(span).append(PreviewButton());
-            $(span).append(deleteButton());
+            //  $(span).append(deleteButton());
             $(span).append("</br>");
             $(div).append($(span));
         }
     }
+}
+//add Delete Button
+function deleteButton() {
+    var inputID = [];
+    for (let i = 0; i < db.data.length; i += 1) {
+        let checkbox = document.getElementById(db.data[i]._id);
+        if (checkbox && checkbox.checked) {
+            inputID.push(db.data[i]);
+        }
+    }
+    console.log(inputID);
+    if (inputID.length > 1) {
+        if (confirm('Delete ' + inputID.length + ' labels?') == true) {
+            for (let i = 0; i < inputID.length; i++) {
+                db.deleteLabel(String(inputID[i]._id));
+            }
+        }
+    }
+    else if (inputID.length == 1) {
+        if (confirm('Delete 1 Label: ' + inputID[0].bg))
+            db.deleteLabel(inputID[0]._id);
+    }
+    setTimeout(updateList, 500);
 }
 //# sourceMappingURL=script.js.map
