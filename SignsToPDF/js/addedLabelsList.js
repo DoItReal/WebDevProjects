@@ -30,17 +30,12 @@ class addedLabelsList {
     }
     removeLabel(id) {
         let indFind = this.findLabel(id);
-        if (indFind != -1) {
-            if (this.labels[indFind].count <= 1)
-                this.labels.splice(indFind, 1);
-            else
-                this.labels[indFind].count -= 1;
-            this.updateUI();
-            return;
-        }
+        this.labels.splice(indFind, 1);
+        this.updateUI();
+        return;
     }
     updateUI() {
-        $(this.table).html('<tr><th>Remove</th><th>Label</th><th>Count</th></tr>');
+        $(this.table).html('<tr><th style="width:4em;">Remove</th><th style="width:auto">Label</th><th style="width:3em">Count</th></tr>');
         for (let i = 0; i < this.labels.length; i++) {
             let remButton = $('<button/>', {
                 text: '<<',
@@ -50,9 +45,14 @@ class addedLabelsList {
             });
             let tr = $('<tr/>');
             let td = $('<td/>');
+            let count = $('<input type="number" min=1 max=100/>');
+            $(count).val(this.labels[i].count);
+            let tmp = this.labels[i];
+            $(count).keypress(function (evt) { evt.preventDefault(); });
+            $(count).on('change', function () { tmp.count = Number($(this).val()); });
             tr.append($(td).clone().append($(remButton)));
             tr.append($(td).clone().text(this.labels[i].bg));
-            tr.append($(td).clone().text(this.labels[i].count));
+            tr.append($(td).clone().append($(count)));
             //to do
             $(this.table).append($(tr));
         }

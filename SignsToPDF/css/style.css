@@ -226,3 +226,22 @@ content {
         padding:1px;
         border-radius:3px;
     }
+    #AddedLabels input{
+        width:100%;
+        
+    }
+    table{
+        display:table;
+        table-layout:fixed;
+    }
+    th{
+        display:table-cell;
+        text-align:center;
+        
+    }
+    tr{
+        display:table-row;
+    }
+    td {
+        display:table-cell;
+    }

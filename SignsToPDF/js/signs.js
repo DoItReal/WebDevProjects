@@ -12,6 +12,7 @@ class Sign {
         this.ctx = this.canvas.getContext('2d');
         this.ctx.textAlign = "center";
         this.category = [];
+        this.generated = false;
     }
     setContent(content) {
         this.content = content;
@@ -34,6 +35,8 @@ class Sign {
         return this.id;
     }
     generate() {
+        if (this.generated)
+            return this.canvas;
         let arr = this.content.alergens;
         let rows = [this.content.name.bg, this.content.name.en, this.content.name.de, this.content.name.rus];
         this.ctx.save();
@@ -48,6 +51,7 @@ class Sign {
         this.ctx.restore();
         // var image: HTMLImageElement = document.createElement('HTMLImageElement');
         //image.src = this.canvas.toDataURL('image/jpeg');
+        this.generated = true;
         return this.canvas;
     }
     generateInfoLabelsText(rows) {

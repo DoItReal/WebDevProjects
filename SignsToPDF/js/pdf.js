@@ -14,7 +14,14 @@ function createPDF() {
             let sign = new Sign(width / 2 - 10, height / (signsInPage / 2) - 10);
             sign.setContent(new SignContent(entry.allergens, { bg: decodeURI(entry.bg), en: entry.en, de: entry.de, rus: entry.rus }));
             sign.setId(entry._id);
-            signs.push(sign.generate());
+            if (entry.count && entry.count > 1) {
+                for (let i = 1; i <= entry.count; i++) {
+                    signs.push(sign.generate());
+                }
+            }
+            else {
+                signs.push(sign.generate());
+            }
         }
         //creates new PDF Document
         const doc = yield PDFLib.PDFDocument.create();

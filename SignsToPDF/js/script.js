@@ -30,9 +30,6 @@ window.onload = function init() {
     });
     initEventsSearch();
     let input = document.querySelector('#searchInput');
-    input.addEventListener('keypress', function (event) {
-        labelList.addLabel(db.data[1]);
-    });
 };
 function createLabel() {
     let inputBG = document.querySelector('#LabelBG');
