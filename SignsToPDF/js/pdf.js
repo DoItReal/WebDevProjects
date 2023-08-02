@@ -11,8 +11,8 @@ function createPDF() {
     return __awaiter(this, void 0, void 0, function* () {
         signs = [];
         for (const entry of labelList.labels) {
-            let sign = new Sign(width / 2 - 10, height / (signsInPage / 2) - 10);
-            sign.setContent(new SignContent(entry.allergens, { bg: decodeURI(entry.bg), en: entry.en, de: entry.de, rus: entry.rus }));
+            let sign = new Label(width / 2 - 10, height / (signsInPage / 2) - 10);
+            sign.setContent(new LabelContent(entry.allergens, { bg: decodeURI(entry.bg), en: entry.en, de: entry.de, rus: entry.rus }));
             sign.setId(entry._id);
             if (entry.count && entry.count > 1) {
                 for (let i = 1; i <= entry.count; i++) {

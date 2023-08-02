@@ -11,7 +11,7 @@ class DB {
         var i = 0;
         var animID = requestAnimationFrame(anim);
 
-        fetch(this.address + 'signs/').then(response => response.json()).then(Getdata => { this.data = Getdata }).then(() => { updateList() }).then(() => {
+        fetch(this.address + 'signs/').then(response => response.json()).then(Getdata => { this.data = Getdata }).then(() => { labels.update() }).then(() => {
             cancelAnimationFrame(animID);
             let fetchButton = document.querySelector('#fetchSignsButton') as HTMLButtonElement;
             fetchButton.setAttribute('style', "background-color:lawngreen"); // to do turning green only when connected to DB
@@ -52,7 +52,7 @@ class DB {
                 labelJSON._id = id;
                 data.push(labelJSON);
                 search();
-                updateList();
+                labels.update();
             }
         };
         xhr.send(label);
@@ -76,10 +76,9 @@ class DB {
                 let index = findIndexByProperty(data, '_id', id);
                 if (index != -1) data[index] = JSON.parse(xhr.responseText);
                 search();
-                updateList();
+                labels.update();
             }
         };
-        console.log(label);
         xhr.send(label);
     }
     deleteLabel(id: string, data = this.data) {
@@ -101,7 +100,7 @@ class DB {
                 let index = findIndexByProperty(data, '_id', id);
                 if (index != -1) data.splice(index, 1);
                 search();
-                updateList();
+                labels.update();
             }
         };
         xhr.send();

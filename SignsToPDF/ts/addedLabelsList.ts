@@ -5,7 +5,7 @@ class addedLabelsList {
     constructor() {
         this.labels = [];
         this.box = $('#AddedLabels');
-        this.table = $('<table/>');
+        this.table = $('<table/>', {addClass:'labelsTable'});
         $(this.box).append($(this.table));
         this.initEvents();
     }

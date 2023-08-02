@@ -1,9 +1,9 @@
-class Sign {
+class Label {
     id: string;
     width: number;
     height: number;
     border: number = 5;
-    content: SignContent;
+    content: LabelContent;
     category: Array<String>;
     canvas: HTMLCanvasElement;
     fontSize: number = 18;
@@ -24,7 +24,7 @@ class Sign {
         this.category = [];
         this.generated = false;
     }
-    setContent(content: SignContent) {
+    setContent(content: LabelContent) {
         this.content = content;
     }
     addCategory(cat: string) {
@@ -142,7 +142,7 @@ interface translation {
     de: string;
     rus: string;
 }
-class SignContent {
+class LabelContent {
     alergens: Array<number>;
     name: translation;
     //   pngFiles: string[];
@@ -151,4 +151,152 @@ class SignContent {
         this.alergens = alergens;
         this.name = name;
     }
+}
+
+class Labels {
+    box;
+    table;
+    labels: Array<any>;
+    init: boolean;
+    constructor() {
+        this.labels = [];
+        this.init = false;
+        this.box = $('#Signs');
+        this.table = $('<table/>', { addClass:'labelsTable'});
+        this.box.append($(this.table));
+        this.initEvent();
+    }
+    private header() {
+        let header = $('<tr><th style="width:1.5em;"><input type="checkbox" /></th><th style="width:auto">Label</th><th style="width:10em"></th></tr>');
+       
+        return header;
+    }
+    private initEvent() {
+        $(".labelsTable > tr > th > input").change(function () {
+            console.log($(this));
+            if ($(this).is(":checked")) {
+                $(".labelsTable > tr > td > input:checkbox").prop("checked", true);
+            } else {
+                $(".labelsTable > tr > td > input:checkbox").prop("checked", false);
+            }
+        });
+    }
+    update(reset: boolean = false) {
+        // Empty the active label list
+        if (!this.init) {
+            for (let i = 0; i < db.data.length; i++) {
+                this.labels.push(db.data[i]);
+            }
+            this.init = true;
+        }
+        this.updateDOM();
+    }
+   
+    private updateDOM() {
+        this.table.html('');
+        this.table.append(this.header());
+        this.initEvent();
+        for (const label of this.labels) {
+
+            let tr = $('<tr/>');
+            let options = $('<td/>');
+            tr.append(($('<td/>')).append(this.selectCheckbox(label)));
+            tr.append(($('<td/>')).append(this.title(label)));
+            options.append(this.editButton(label));
+            options.append(this.PreviewButton(label));
+            tr.append($(options));
+            $(this.table).append($(tr));
+        }
+        if (this.labels.length == 0) {
+            $(this.table).append($('<tr><td/><td style="text-align:center; color:red;font-weight:bold;">No Matching Items</td></td></tr>'));
+        }
+    }
+    title(label) {
+        let lbl = $('<label></label>', {
+            text: label.bg
+        });
+
+        return lbl;
+    }
+    //add Select checkbox
+    selectCheckbox(label) {
+        let input = $("<input/>", {
+            type: 'checkbox',
+            id: label._id
+        });
+
+        return input;
+    }
+    editButton(label) {
+        let editButton = $("<button/>", {
+            text: 'Edit',
+            addClass: "editButton",
+            click: function () {
+                {
+                    categories.resetCatnAll();
+                    $('#SignsContainer').removeClass('active');
+                    for (let i = 0; i < label.category.length; i++) {
+                        $('#categoriesDiv .filter_list input[type="checkbox"]').each(function () {
+                            var inputVal = $(this).parent("label").text();
+                            if (inputVal == label.category[i]) $(this).click();
+                        });
+                    }
+
+                    for (let i = 0; i < label.allergens.length; i++) {
+                        $('#allergensDiv .filter_list input[type="checkbox"]').each(function () {
+                            var inputVal = $(this).parent("label").attr('value');
+                            if (Number(inputVal) == label.allergens[i]) $(this).click();
+                        });
+                    }
+                    $('.select').next('.filter_list').fadeOut();
+                    $("#LabelAllergens").val(label.allergens);
+                    $("#LabelBG").val(label.bg);
+                    $("#LabelEN").val(label.en);
+                    $("#LabelDE").val(label.de);
+                    $("#LabelRUS").val(label.rus);
+                    $('#closeSignsBox').addClass('active');
+                    $('#saveLabel').addClass('active');
+
+                    //CLOSE BUTTON
+                    let closeButton = $('#closeSignsBox');
+                    closeButton.on('click', () => {
+                        $('#saveLabel').removeClass('active');
+                        $('#closeSignsBox').removeClass('active');
+                        $('#SignsContainer').addClass('active');
+                        categories.resetCatnAll();
+                    });
+                    $('#saveButton').text('Save Label');
+
+                    $('#saveButton').unbind();
+                    $('#saveButton').on('click', () => {
+                        saveLabel(label._id);
+                        $("#SignsContainer").addClass("active");
+                        $("#saveLabel").removeClass("active");
+                        labels.update();
+                    });
+
+                }
+
+            }
+        });
+
+        return editButton;
+    }
+    PreviewButton(label) {
+        let previewDiv = $('#SignPreview');
+        let previewButton = $('<button />', {
+            addClass: 'previewButton',
+            text: 'Preview',
+            click: function () {
+                let sign = new Label(width / 2 - 10, height / (signsInPage / 2) - 10);
+                sign.setContent(new LabelContent(label.allergens, { bg: decodeURI(label.bg), en: label.en, de: label.de, rus: label.rus }));
+                sign.setId(label._id);
+                $(previewDiv).text('');
+                $(previewDiv).append(sign.generate());
+            }
+        });
+
+        return previewButton;
+    }
+
 }
